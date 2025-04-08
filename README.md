@@ -1,6 +1,6 @@
 # Tuntasin
 
-Tuntasin adalah sebuah platform berbasis web yang memungkinkan pengguna untuk **menjual** dan **membeli jasa secara online**, mirip seperti platform Fiverr. Aplikasi ini dikembangkan sebagai solusi untuk memfasilitasi para freelancer dan pencari jasa dalam satu tempat yang efisien, mudah digunakan, dan terpercaya.
+Tuntasin adalah sebuah platform berbasis web yang memungkinkan pengguna untuk **menjual** dan **membeli jasa secara online**. Aplikasi ini dikembangkan sebagai solusi untuk memfasilitasi para freelancer dan pencari jasa dalam satu tempat yang efisien, mudah digunakan, dan terpercaya.
 
 ## Fitur Utama
 
