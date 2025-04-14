@@ -32,16 +32,16 @@
                 <label for="email">Email Address</label>
                 <input type="email" id="email" name="email" required value="{{ old('email') }}">
             </div>
-
+ 
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
-
+ 
             <div class="form-group">
                 <button type="submit" class="login-submit-btn">Login</button>
             </div>
-
+ 
             <p class="register-link">
                 Don't have an account? <a href="{{ route('register') }}">Register here</a>
             </p>
