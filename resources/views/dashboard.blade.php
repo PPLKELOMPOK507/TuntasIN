@@ -6,7 +6,7 @@
         <div class="logo">
             <a href="/">TUNTAS<span class="logo-in">IN</span></a>
         </div>
-        
+         
         <div class="user-profile">
             <div class="user-info">
                 <span class="user-name">{{ auth()->user()->full_name }}</span>
@@ -22,7 +22,7 @@
             </div>
         </div>
     </nav>
-
+ 
     <div class="dashboard-content">
         <h1>Welcome, {{ auth()->user()->first_name }}!</h1>
         <p>This is your dashboard. More features coming soon.</p>
