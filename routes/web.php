@@ -9,8 +9,8 @@ Route::post('/register', [RegistrationController::class, 'store'])->name('regist
 Route::get('/registration-success', [RegistrationController::class, 'showSuccessPage'])->name('registration.success');
 
 // Home page
-Route::get('/', function () {
-    return view('welcome'); // home view
+Route ::get('/', function(){
+    return view('welcome');
 })->name('home');
 
 // Login route (if you're implementing this)
