@@ -20,7 +20,7 @@
                 <span class="title-main">TuntasIN:</span>
                 <span class="title-sub">Satu Tempat, Semua Beres.</span>
             </h1>
-            <p>Please register to be a part of the event.</p>
+            <p>Please register to be a part of the event!</p>
             <a href="{{ route('register') }}" class="register-now-btn">Register Now</a>
         </div>
         <div class="content-right">
