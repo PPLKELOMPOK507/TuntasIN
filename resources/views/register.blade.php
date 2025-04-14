@@ -13,7 +13,7 @@
     </div>
 
     <div class="form-container">
-        <h1>Register Now!</h1>
+        <h1>Register  Now!</h1>
         <p class="subtitle">to be a part of the event.</p>
         <p class="instruction">Fill the information carefully</p>
 
