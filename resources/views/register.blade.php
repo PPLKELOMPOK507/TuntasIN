@@ -4,7 +4,7 @@
 <div class="register-container">
     <div class="nav-container">
         <div class="logo">
-            <a href="/">TUNTAS<span class="logo-in">IN</span></a>
+            <a href="/">Tuntas<span class="logo-in">IN</span></a>
         </div>
         <div class="nav-buttons">
             <a href="{{ route('login') }}" class="login-btn">Login</a>
