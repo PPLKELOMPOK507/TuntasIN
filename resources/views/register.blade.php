@@ -49,7 +49,7 @@
                         <option value="Pengguna Jasa">Pengguna Jasa</option>
                     </select>
                 </div>
-                
+                 
                 <div class="form-group">
                     <label for="email">Email Address <span class="required">*</span></label>
                     <input type="email" id="email" name="email" placeholder="Enter your email" required>
@@ -75,7 +75,7 @@
                 </div>
                 
                 <div class="form-group">
-                    <button type="submit" class="done-btn">Done</button>
+                    <button type="submit" class="done-btn"> Done</button>
                 </div>
             </div>
         </form>
