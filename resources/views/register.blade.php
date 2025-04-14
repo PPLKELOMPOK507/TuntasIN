@@ -11,7 +11,7 @@
             <a href="{{ route('register') }}" class="register-btn">Register</a>
         </div>
     </div>
-
+ 
     <div class="form-container">
         <h1>Register Now!</h1>
         <p class="subtitle">to be a part of the event.</p>
