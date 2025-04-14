@@ -30,12 +30,12 @@
             @endif
             <div class="form-section">
                 <h3>Personal Information</h3>
-                
+                 
                 <div class="form-group">
                     <label for="first_name">First name <span class="required">*</span></label>
                     <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
                 </div>
-                
+                 
                 <div class="form-group">
                     <label for="last_name">Last Name <span class="required">*</span></label>
                     <input type="text" id="last_name" name="last_name" placeholder="Enter your last name" required>
