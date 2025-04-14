@@ -6,7 +6,9 @@
     <title>TuntasIN</title>
     @stack('styles')
 </head>
+
 <body>
     @yield('content')
 </body>
+
 </html>
