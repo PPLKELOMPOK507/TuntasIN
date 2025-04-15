@@ -4,16 +4,16 @@
 <div class="register-container">
     <div class="nav-container">
         <div class="logo">
-            <a href="/">Tuntas<span class="logo-in">IN</span></a>
+            <a href="/">TUNTAS<span class="logo-in">IN</span></a>
         </div>
         <div class="nav-buttons">
             <a href="{{ route('login') }}" class="login-btn">Login</a>
             <a href="{{ route('register') }}" class="register-btn">Register</a>
         </div>
     </div>
- 
+
     <div class="form-container">
-        <h1>Re gister Now!</h1>
+        <h1>Register Now!</h1>
         <p class="subtitle">to be a part of the event.</p>
         <p class="instruction">Fill the information carefully</p>
 

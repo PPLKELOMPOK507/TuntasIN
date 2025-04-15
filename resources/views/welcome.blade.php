@@ -5,7 +5,7 @@
     <!-- Navigation -->
     <nav class="nav-container">
         <div class="logo">
-            <a href="/">Tuntas<span class="logo-in">IN</span></a>
+            <a href="/">TUNTAS<span class="logo-in">IN</span></a>
         </div>
         <div class="nav-buttons">
             <a href="{{ route('login') }}" class="login-btn">Login</a>
@@ -17,10 +17,10 @@
     <div class="main-content">
         <div class="content-left">
             <h1>
-                <span class="title-main">TuntasIN:</span>
+                <span class="title-main">Tuntasin:</span>
                 <span class="title-sub">Satu Tempat, Semua Beres.</span>
             </h1>
-            <p>Please register to be a part of the event!</p>
+            <p>Please register to be a part of the event.</p>
             <a href="{{ route('register') }}" class="register-now-btn">Register Now</a>
         </div>
         <div class="content-right">
