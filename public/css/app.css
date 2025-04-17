@@ -22,7 +22,7 @@ a {
 .welcome-container {
     min-height: 100vh; /* Changed from height to min-height */
     position: relative;
-    background-color: white;
+    background: linear-gradient(to top, #4fbafc, #dadada);
     display: flex;
     flex-direction: column;
     padding: 0 2rem;
@@ -37,16 +37,20 @@ a {
 }
 
 .logo {
-    font-size: 1.8rem;
+    font-size: 2.5rem;
     font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px #00000047;
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.465);
 }
 
+
 .logo a {
-    color: black;
+    color: #0e69a1;
 }
 
 .logo-in {
-    color: #666;
+    color: #ffffff;
 }
 
 .nav-buttons {
@@ -55,12 +59,12 @@ a {
 }
 
 .login-btn {
-    color: #333;
+    color: #188ad0;
     padding: 0.5rem 1rem;
 }
 
 .register-btn {
-    background: black;
+    background: #188ad0;
     color: white;
     padding: 0.5rem 1.5rem;
     border-radius: 8px;
@@ -91,26 +95,27 @@ a {
 }
 
 .title-main {
-    color: #888;
+    color:  #ffffff;
     display: block;
+    font-size: 5rem;
 }
 
 .title-sub {
-    color: #aaa;
+    color: #ffffff;
     display: block;
-    font-size: 3.5rem; /* Reduced from 4.5rem */
+    font-size: 4rem; /* Reduced from 4.5rem */
 }
 
 .content-left p {
-    color: #666;
+    color: #ffffff;
     margin-bottom: 2rem;
     font-size: 1.1rem;
 }
 
 .register-now-btn {
     display: inline-block;
-    background: black;
-    color: white;
+    background: #188ad0;
+    color: #ffffff;
     padding: 0.75rem 2.5rem;
     border-radius: 8px;
     font-weight: 500;
@@ -122,6 +127,7 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-right: 0.5px; /* Reduced from 50px */
 }
 
 .illustration {
