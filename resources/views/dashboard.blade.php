@@ -60,7 +60,7 @@
                 @for ($i = 1; $i <= 8; $i++)
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="https://via.placeholder.com/300x200" alt="Service">
+                        <img src="{{ asset('images/Dashboard (2).png') }}" alt="Checklist Illustration" class="illustration" style="width: 1000px; ">
                         <button class="favorite-btn">❤</button>
                     </div>
                     <div class="service-info">
