@@ -26,16 +26,20 @@ class RegistrationController extends Controller
             'password' => 'required|string|min:8'
         ]);
 
-        try {
-            $photoPath = $request->file('photo')->store('profile-photos', 'public');
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo')->store('profile-photos', 'public');
+        } else {
+            $photo = null;
+        }
 
+        try {
             $user = User::create([
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
                 'role' => $validated['user_as'],
                 'email' => $validated['email'],
-                'mobile_number' => $validated['mobile_number'],
-                'photo' => $photoPath,
+                'mobile_number' => $validated['mobile_number'], 
+                'photo' => $photo,
                 'password' => Hash::make($validated['password'])
             ]);
 
