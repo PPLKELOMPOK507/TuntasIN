@@ -161,9 +161,11 @@
 
     .form-container {
         background-color: #ffffff;
-        padding: 1.5rem;
+        padding: 2rem 3rem;
         border-radius: 10px;
         box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        max-width: 600px;
+        margin: 0 auto;
     }
 
     .form-section h3 {
