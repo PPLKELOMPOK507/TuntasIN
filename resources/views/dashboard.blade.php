@@ -21,7 +21,6 @@
         <!-- User Menu -->
         <div class="user-profile">
             <div class="user-info">
-                <span class="user-name">{{ Auth::user()->full_name }}</span>
                 <div class="profile-image">
                     @if(Auth::user()->photo)
                         <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Profile">
@@ -29,11 +28,21 @@
                         <div class="profile-placeholder"></div>
                     @endif
                 </div>
+                <span class="user-name">{{ Auth::user()->full_name }}</span>
             </div>
             <div class="dropdown-menu">
+                @if(Auth::user()->role === 'Penyedia Jasa')
+                    <a href="{{ route('sales.history') }}" class="menu-item">
+                        <i class="fas fa-history"></i>
+                        <span>Riwayat Penjualan</span>
+                    </a>
+                @endif
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="logout-btn">Logout</button>
+                    <button type="submit" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
                 </form>
             </div>
         </div>
