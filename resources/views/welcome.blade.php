@@ -24,7 +24,7 @@
             <a href="{{ route('register') }}" class="register-now-btn">Register Now</a>
         </div>
         <div class="content-right">
-            <img src="http://localhost/TuntasIN/public/images/CHECKLIST_REGIS.png" alt="Checklist Illustration" class="illustration">
+            <img src="{{ asset('images/CHECKLIST_REGIS.png') }}" alt="Checklist Illustration" class="illustration" style="width: 1000px; ">
         </div>
     </div>
 
