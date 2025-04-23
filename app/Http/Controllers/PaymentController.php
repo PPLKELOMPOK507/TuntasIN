@@ -23,22 +23,32 @@ class PaymentController extends Controller
             'payment_method' => 'required|string',
         ]);
 
-        // Simulasi respons sukses dari payment gateway
-        $paymentReference = uniqid('pay_');
+        // Simulasi status payment: sukses atau gagal (dummy)
+        $paymentSuccess = true; // ubah ke false untuk test gagal
 
-        $payment = new Payment([
-            'user_id' => $validated['user_id'],
-            'amount' => $validated['amount'],
-            'payment_method' => $validated['payment_method'],
-            'status' => 'paid', // asumsi langsung sukses
-            'payment_reference' => $paymentReference
-        ]);
+        if ($paymentSuccess) {
+            $paymentReference = uniqid('pay_');
 
-        // Tidak disimpan ke database karena belum ada migration
+            $payment = new Payment([
+                'user_id' => $validated['user_id'],
+                'amount' => $validated['amount'],
+                'payment_method' => $validated['payment_method'],
+                'status' => 'paid',
+                'payment_reference' => $paymentReference
+            ]);
 
-        return response()->json([
-            'message' => 'Pembayaran berhasil diproses.',
-            'payment' => $payment
-        ]);
+            // Kirim notifikasi sukses (via response JSON)
+            return response()->json([
+                'message' => 'Pembayaran berhasil diproses.',
+                'notification' => 'Terima kasih, pembayaran Anda berhasil.',
+                'payment' => $payment
+            ], 200);
+        } else {
+            // Kirim notifikasi gagal (via response JSON)
+            return response()->json([
+                'message' => 'Pembayaran gagal diproses.',
+                'notification' => 'Maaf, pembayaran Anda gagal. Silakan coba lagi.',
+            ], 400);
+        }
     }
 }
