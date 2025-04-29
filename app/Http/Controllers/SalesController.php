@@ -8,7 +8,6 @@ class SalesController extends Controller
 {
     public function history()
     {
-        $sales = auth()->user()->sales()->latest()->get();
-        return view('sales.history', compact('sales'));
+        return view('sales.history');
     }
 }

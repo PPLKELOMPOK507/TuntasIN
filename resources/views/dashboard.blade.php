@@ -5,7 +5,11 @@
     <!-- Navigation -->
     <nav class="nav-container">
         <div class="logo">
-            <a href="/">TUNTAS<span class="logo-in">IN</span></a>
+            @auth
+                <a href="{{ route('dashboard') }}">TUNTAS<span class="logo-in">IN</span></a>
+            @else
+                <a href="/">TUNTAS<span class="logo-in">IN</span></a>
+            @endauth
         </div>
         
         <!-- Search Section -->
@@ -31,6 +35,10 @@
                 <span class="user-name">{{ Auth::user()->full_name }}</span>
             </div>
             <div class="dropdown-menu">
+                <a href="{{ route('profile') }}" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
                 @if(Auth::user()->role === 'Penyedia Jasa')
                     <a href="{{ route('sales.history') }}" class="menu-item">
                         <i class="fas fa-history"></i>

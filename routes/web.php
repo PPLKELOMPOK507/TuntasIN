@@ -26,6 +26,11 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 // Sales History Routes (Protected + Penyedia Jasa Only)
-Route::get('/sales-history', [SalesController::class, 'history'])
-    ->middleware(['auth', 'provider'])
+Route::get('/riwayat-penjualan', [SalesController::class, 'history'])
+    ->middleware(['auth'])
     ->name('sales.history');
+
+// Profile Route
+Route::get('/profile', function () {
+    return view('profile');
+})->middleware(['auth'])->name('profile');
