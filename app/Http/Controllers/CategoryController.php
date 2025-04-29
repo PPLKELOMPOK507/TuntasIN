@@ -8,7 +8,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        return view('home');
+        return view('dashboard');
     }
     
     public function graphicsDesign()
@@ -44,5 +44,9 @@ class CategoryController extends Controller
     public function business()
     {
         return view('categories.business');
+    }
+    public function show()
+    {
+        return view('categories.show');
     }
 }

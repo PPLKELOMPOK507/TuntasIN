@@ -75,6 +75,7 @@
             <h2>Popular Services</h2>
             <div class="service-grid">
                 @for ($i = 1; $i <= 8; $i++)
+                <a href="{{ route('show') }}" class="category-link {{ request()->routeIs('show') ? 'active' : '' }}">
                 <div class="service-card">
                     <div class="service-image">
                         <img src="{{ asset('images/Dashboard (2).png') }}" alt="Service Image" class="illustration">

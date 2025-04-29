@@ -46,3 +46,4 @@ Route::get('/video-animation', [CategoryController::class, 'videoAnimation'])->n
 Route::get('/writing-translation', [CategoryController::class, 'writingTranslation'])->name('writing-translation');
 Route::get('/music-audio', [CategoryController::class, 'musicAudio'])->name('music-audio');
 Route::get('/business', [CategoryController::class, 'business'])->name('business');
+Route::get('show', [CategoryController::class, 'show'])->name('show');
