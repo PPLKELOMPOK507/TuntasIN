@@ -2,7 +2,6 @@
 
 @section('content')
 <div class="login-container">
-    @include('partials._nav')
     <nav class="nav-container">
         <div class="logo">
             <a href="/">TUNTAS<span class="logo-in">IN</span></a>
