@@ -65,9 +65,8 @@ class WishlistController extends Controller
             ]);
         }
     }
-    
     /**
-     * Menghapus layanan dari wishlist
+     * Menghapusan dari wishlist
      */
     public function remove(Request $request)
     {
