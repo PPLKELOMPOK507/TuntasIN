@@ -12,16 +12,6 @@
             @endauth
         </div>
         
-        <!-- Search Section -->
-        <div class="search-section">
-            <div class="search-container">
-                <input type="search" class="search-input" placeholder="Find services...">
-                <button class="filter-btn">
-                    <i class="fas fa-sliders-h"></i>
-                </button>
-            </div>
-        </div>
-
         <!-- User Menu -->
         <div class="user-profile">
             <div class="user-info">
