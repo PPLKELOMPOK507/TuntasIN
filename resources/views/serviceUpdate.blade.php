@@ -39,6 +39,7 @@
         </div>
     </nav>
 
+    
 <div class="dashboard-container">
     <nav class="nav-container">
         <!-- Navigation code here -->
@@ -80,7 +81,7 @@
                     <option value="Lainnya">Lainnya</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="gambar">Gambar (Opsional)</label>
                 <input type="file" id="gambar" name="gambar" class="form-control">
