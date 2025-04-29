@@ -2,6 +2,21 @@
 
 @section('content')
 <div class="dashboard-container">
+    <!-- SweetAlert2 -->
+    @if (session('status'))
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: '{{ session('status') === 'success' ? 'success' : 'error' }}',
+                    title: '{{ session('status') === 'success' ? 'Berhasil!' : 'Gagal!' }}',
+                    text: '{{ session('message') }}',
+                    confirmButtonText: 'OK'
+                });
+            });
+        </script>
+    @endif
+
     <!-- Navigation -->
     <nav class="nav-container">
         <div class="logo">
@@ -45,6 +60,10 @@
                         <span>Riwayat Penjualan</span>
                     </a>
                 @endif
+                <a href="{{ route('payment.form') }}" class="menu-item">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Payment</span>
+                </a>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="logout-btn">

@@ -18,7 +18,7 @@ class PaymentController extends Controller
     {
         // Validasi input dari form atau frontend
         $validated = $request->validate([
-            'user_id' => 'required|integer',
+            'user_x id' => 'required|integer',
             'amount' => 'required|numeric|min:1',
             'payment_method' => 'required|string',
         ]);
@@ -49,6 +49,18 @@ class PaymentController extends Controller
                 'message' => 'Pembayaran gagal diproses.',
                 'notification' => 'Maaf, pembayaran Anda gagal. Silakan coba lagi.',
             ], 400);
+        }
+    }
+
+    public function submitPayment(Request $request)
+    {
+        // Simulasi status pembayaran (berhasil/gagal)
+        $paymentSuccess = rand(0, 1) === 1; // Random untuk simulasi
+
+        if ($paymentSuccess) {
+            return redirect()->route('dashboard')->with('status', 'success')->with('message', 'Pembayaran berhasil diproses.');
+        } else {
+            return redirect()->route('dashboard')->with('status', 'error')->with('message', 'Pembayaran gagal. Silakan coba lagi.');
         }
     }
 }
