@@ -40,6 +40,10 @@
                     <span>Profile</span>
                 </a>
                 @if(Auth::user()->role === 'Penyedia Jasa')
+                    <a href="{{ route('services') }}" class="menu-item">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Jasa Saya</span>
+                    </a>
                     <a href="{{ route('sales.history') }}" class="menu-item">
                         <i class="fas fa-history"></i>
                         <span>Riwayat Penjualan</span>

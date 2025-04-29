@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\JasaController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -30,7 +31,19 @@ Route::get('/riwayat-penjualan', [SalesController::class, 'history'])
     ->middleware(['auth'])
     ->name('sales.history');
 
+// Jasa saya Routes (Protected + Penyedia Jasa Only)
+Route::get('/jasa-saya', [JasaController::class, 'service'])->name('services');
+Route::get('/tambah-jasa', [JasaController::class, 'create'])->name('jasa.tambah');
+Route::post('/tambah-jasa', [JasaController::class, 'store'])->name('jasa.store');
+
 // Profile Route
 Route::get('/profile', function () {
     return view('profile');
 })->middleware(['auth'])->name('profile');
+
+// Route untuk menampilkan form edit jasa
+Route::get('/jasa/{id}/edit', [JasaController::class, 'edit'])->name('jasa.edit');
+Route::put('/jasa/{id}', [JasaController::class, 'update'])->name('jasa.update');
+
+//delete
+Route::delete('/jasa/{id}', [JasaController::class, 'destroy'])->name('jasa.destroy');
