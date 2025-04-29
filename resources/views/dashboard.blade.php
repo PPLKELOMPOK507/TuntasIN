@@ -2,37 +2,109 @@
 
 @section('content')
 <div class="dashboard-container">
-    <nav class="dashboard-nav">
+    <!-- Navigation -->
+    <nav class="nav-container">
         <div class="logo">
-            <a href="/">TUNTAS<span class="logo-in">IN</span></a>
+            @auth
+                <a href="{{ route('dashboard') }}">TUNTAS<span class="logo-in">IN</span></a>
+            @else
+                <a href="/">TUNTAS<span class="logo-in">IN</span></a>
+            @endauth
         </div>
         
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-container">
+                <input type="search" class="search-input" placeholder="Find services...">
+                <button class="filter-btn">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- User Menu -->
         <div class="user-profile">
             <div class="user-info">
-                <span class="user-name">{{ auth()->user()->full_name }}</span>
                 <div class="profile-image">
-                    @if(auth()->user()->photo)
-                        <img src="{{ asset('storage/' . auth()->user()->photo) }}" 
-                             alt="Profile Photo">
+                    @if(Auth::user()->photo)
+                        <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Profile">
                     @else
-                        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23999' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>" 
-                             alt="Default Profile">
+                        <div class="profile-placeholder"></div>
                     @endif
                 </div>
+                <span class="user-name">{{ Auth::user()->full_name }}</span>
             </div>
             <div class="dropdown-menu">
+                <a href="{{ route('profile') }}" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                @if(Auth::user()->role === 'Penyedia Jasa')
+                    <a href="{{ route('sales.history') }}" class="menu-item">
+                        <i class="fas fa-history"></i>
+                        <span>Riwayat Penjualan</span>
+                    </a>
+                @endif
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="logout-btn">Logout</button>
+                    <button type="submit" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
                 </form>
             </div>
         </div>
     </nav>
 
-    <div class="dashboard-content">
-        <h1>Welcome, {{ auth()->user()->first_name }}!</h1>
-        <p>This is your dashboard. More features coming soon.</p>
+    <!-- Category Navigation -->
+    <div class="category-nav">
+        <div class="category-scroll">
+            <a href="#" class="category-link active">Graphics & Design</a>
+            <a href="#" class="category-link">Programming & Tech</a>
+            <a href="#" class="category-link">Digital Marketing</a>
+            <a href="#" class="category-link">Video & Animation</a>
+            <a href="#" class="category-link">Writing & Translation</a>
+            <a href="#" class="category-link">Music & Audio</a>
+            <a href="#" class="category-link">Business</a>
+        </div>
+    </div>
+
+    <div class="dashboard-main">
+        <!-- Featured Section -->
+        <section class="featured-section">
+            <h2>Popular Services</h2>
+            <div class="service-grid">
+                @for ($i = 1; $i <= 8; $i++)
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="{{ asset('images/Dashboard (2).png') }}" alt="Checklist Illustration" class="illustration" style="width: 1000px; ">
+                        <button class="favorite-btn">❤</button>
+                    </div>
+                    <div class="service-info">
+                        <div class="service-provider">
+                            <img src="https://via.placeholder.com/30x30" alt="Provider" class="provider-image">
+                            <span class="provider-name">Service Provider {{$i}}</span>
+                            <span class="provider-level">Level 2</span>
+                        </div>
+                        <h3 class="service-title">I will do something amazing for your business</h3>
+                        <div class="service-rating">
+                            <span class="stars">⭐ 4.9</span>
+                            <span class="rating-count">(153)</span>
+                        </div>
+                        <div class="service-price">
+                            <span>Starting at</span>
+                            <strong>Rp 250.000</strong>
+                        </div>
+                    </div>
+                </div>
+                @endfor
+            </div>
+        </section>
     </div>
 </div>
-
 @endsection
+
+@push('styles')
+    <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+@endpush

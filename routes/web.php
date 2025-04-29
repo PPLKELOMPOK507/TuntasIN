@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SalesController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -25,6 +25,12 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-//Payment Routes
-Route::get('/payment', [PaymentController::class, 'showPaymentForm']);
-Route::post('/payment/process', [PaymentController::class, 'processPayment']);
+// Sales History Routes (Protected + Penyedia Jasa Only)
+Route::get('/riwayat-penjualan', [SalesController::class, 'history'])
+    ->middleware(['auth'])
+    ->name('sales.history');
+
+// Profile Route
+Route::get('/profile', function () {
+    return view('profile');
+})->middleware(['auth'])->name('profile');
