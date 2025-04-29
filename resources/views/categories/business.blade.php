@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="dashboard-container">
-    <!-- Main Navigation -->
+    <!-- Navigation -->
     <nav class="nav-container">
         <div class="logo">
             @auth
@@ -10,16 +10,6 @@
             @else
                 <a href="/">TUNTAS<span class="logo-in">IN</span></a>
             @endauth
-        </div>
-        
-        <!-- Search Section -->
-        <div class="search-section">
-            <div class="search-container">
-                <input type="search" class="search-input" placeholder="Find services...">
-                <button class="filter-btn">
-                    <i class="fas fa-sliders-h"></i>
-                </button>
-            </div>
         </div>
 
         <!-- User Menu -->
@@ -40,6 +30,10 @@
                     <span>Profile</span>
                 </a>
                 @if(Auth::user()->role === 'Penyedia Jasa')
+                    <a href="{{ route('services') }}" class="menu-item">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Jasa Saya</span>
+                    </a>
                     <a href="{{ route('sales.history') }}" class="menu-item">
                         <i class="fas fa-history"></i>
                         <span>Riwayat Penjualan</span>
@@ -77,7 +71,7 @@
                 @for ($i = 1; $i <= 8; $i++)
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="{{ asset('images/Dashboard (2).png') }}" alt="Service Image" class="illustration">
+                        <img src="{{ asset('images/Dashboard (2).png') }}" alt="Checklist Illustration" class="illustration" style="width: 1000px; ">
                         <button class="favorite-btn">❤</button>
                     </div>
                     <div class="service-info">
@@ -107,4 +101,12 @@
 @push('styles')
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+    .dashboard-container {
+        background-color: #FF90BB;
+    }
+    .category-nav {
+        background-color:#FF90BB;
+    }
+    </style>
 @endpush

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="dashboard-container">
-    <!-- Main Navigation -->
+    <!-- Navigation -->
     <nav class="nav-container">
         <div class="logo">
             @auth
@@ -13,14 +13,6 @@
         </div>
         
         <!-- Search Section -->
-        <div class="search-section">
-            <div class="search-container">
-                <input type="search" class="search-input" placeholder="Find services...">
-                <button class="filter-btn">
-                    <i class="fas fa-sliders-h"></i>
-                </button>
-            </div>
-        </div>
 
         <!-- User Menu -->
         <div class="user-profile">
@@ -40,6 +32,10 @@
                     <span>Profile</span>
                 </a>
                 @if(Auth::user()->role === 'Penyedia Jasa')
+                    <a href="{{ route('services') }}" class="menu-item">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Jasa Saya</span>
+                    </a>
                     <a href="{{ route('sales.history') }}" class="menu-item">
                         <i class="fas fa-history"></i>
                         <span>Riwayat Penjualan</span>
@@ -77,7 +73,7 @@
                 @for ($i = 1; $i <= 8; $i++)
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="{{ asset('images/Dashboard (2).png') }}" alt="Service Image" class="illustration">
+                        <img src="{{ asset('images/Dashboard (2).png') }}" alt="Checklist Illustration" class="illustration" style="width: 1000px; ">
                         <button class="favorite-btn">❤</button>
                     </div>
                     <div class="service-info">
