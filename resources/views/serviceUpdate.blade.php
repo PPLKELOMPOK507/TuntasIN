@@ -39,8 +39,6 @@
         </div>
     </nav>
 
-
-    
 <div class="dashboard-container">
     <nav class="nav-container">
         <!-- Navigation code here -->
