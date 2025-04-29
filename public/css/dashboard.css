@@ -130,6 +130,34 @@
     justify-content: center;
     cursor: pointer;
     color: #b5b6ba;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.favorite-btn:hover {
+    background: #fff;
+    color: #ff3e66;
+    transform: scale(1.1);
+}
+
+.favorite-btn.active {
+    color: #ff3e66;
+    background: #fff;
+}
+
+.favorite-btn i {
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.favorite-btn.active i {
+    animation: heartBeat 0.3s ease;
+}
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
 }
 
 .service-info {
