@@ -69,7 +69,7 @@
                     const wishlistContainer = document.querySelector('.wishlist-container');
                     wishlistContainer.innerHTML = `
                         <div class="wishlist-header">
-                            <h1>Wishlist Layanan Anda</h1>
+                            <h1>Wishlist Layanan Anda Sekarang</h1>
                         </div>
                         <div class="empty-wishlist">
                             <div class="empty-icon">
