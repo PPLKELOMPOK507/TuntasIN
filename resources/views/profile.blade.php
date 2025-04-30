@@ -52,28 +52,98 @@
                 @if(Auth::user()->photo)
                     <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Profile Photo">
                 @else
-                    <div class="photo-placeholder"></div>
+                    <div class="photo-placeholder">
+                        <i class="fas fa-user fa-3x" style="color: #0077cc;"></i>
+                    </div>
                 @endif
-                <button class="change-photo-btn">Change Photo</button>
+                <input type="file" 
+                       id="photo" 
+                       name="photo" 
+                       accept="image/*" 
+                       hidden>
+                <button type="button" class="change-photo-btn" onclick="document.getElementById('photo').click()">
+                    <i class="fas fa-camera"></i>
+                    Change Photo
+                </button>
             </div>
 
             <div class="profile-info">
-                <div class="info-group">
-                    <label>Full Name</label>
-                    <p>{{ Auth::user()->full_name }}</p>
-                </div>
-                <div class="info-group">
-                    <label>Email</label>
-                    <p>{{ Auth::user()->email }}</p>
-                </div>
-                <div class="info-group">
-                    <label>Role</label>
-                    <p>{{ Auth::user()->role }}</p>
-                </div>
-                <div class="info-group">
-                    <label>Mobile Number</label>
-                    <p>{{ Auth::user()->mobile_number }}</p>
-                </div>
+                <form action="{{ route('profile.update') }}" method="POST" class="profile-form" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    
+                    <div class="info-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ Auth::user()->first_name }}" class="profile-input">
+                    </div>
+                    
+                    <div class="info-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" value="{{ Auth::user()->last_name }}" class="profile-input">
+                    </div>
+
+                    <div class="info-group">
+                        <label>Email</label>
+                        <p class="static-info">{{ Auth::user()->email }}</p>
+                    </div>
+
+                    <div class="info-group">
+                        <label>Role</label>
+                        <p class="static-info">{{ Auth::user()->role }}</p>
+                    </div>
+
+                    <div class="info-group">
+                        <label>Mobile Number</label>
+                        <p class="static-info">{{ Auth::user()->mobile_number }}</p>
+                    </div>
+
+                    <div class="password-section">
+                        <h3>
+                            <i class="fas fa-lock"></i>
+                            Change Password
+                        </h3>
+                        <div class="info-group">
+                            <label for="current_password">Current Password</label>
+                            <input type="password" 
+                                   id="current_password" 
+                                   name="current_password" 
+                                   class="profile-input"
+                                   placeholder="Enter your current password">
+                        </div>
+
+                        <div class="info-group">
+                            <label for="new_password">New Password</label>
+                            <input type="password" 
+                                   id="new_password" 
+                                   name="new_password" 
+                                   class="profile-input"
+                                   placeholder="Enter new password">
+                        </div>
+
+                        <div class="info-group">
+                            <label for="new_password_confirmation">Confirm New Password</label>
+                            <input type="password" 
+                                   id="new_password_confirmation" 
+                                   name="new_password_confirmation" 
+                                   class="profile-input"
+                                   placeholder="Confirm your new password">
+                        </div>
+                    </div>
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <div class="button-group">
+                        <button type="submit" class="save-btn">Save Changes</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

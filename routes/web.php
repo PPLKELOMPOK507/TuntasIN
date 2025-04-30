@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\LoginController;
@@ -34,3 +34,7 @@ Route::get('/riwayat-penjualan', [SalesController::class, 'history'])
 Route::get('/profile', function () {
     return view('profile');
 })->middleware(['auth'])->name('profile');
+
+Route::put('/profile', [ProfileController::class, 'update'])
+    ->middleware(['auth'])
+    ->name('profile.update');

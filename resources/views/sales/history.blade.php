@@ -24,13 +24,20 @@
                 <span class="user-name">{{ Auth::user()->full_name }}</span>
             </div>
             <div class="dropdown-menu">
+                <a href="{{ route('profile') }}" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
                 <a href="{{ route('sales.history') }}" class="menu-item active">
                     <i class="fas fa-history"></i>
                     <span>Riwayat Penjualan</span>
                 </a>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="logout-btn">Logout</button>
+                    <button type="submit" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
                 </form>
             </div>
         </div>

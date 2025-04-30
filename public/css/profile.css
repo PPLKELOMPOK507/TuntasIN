@@ -11,16 +11,17 @@
 .profile-header h1 {
     color: #333;
     font-size: 1.8rem;
+    font-weight: 600;
 }
 
 .profile-content {
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 2.5rem;
     display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 2rem;
+    grid-template-columns: 220px 1fr;
+    gap: 3rem;
 }
 
 .profile-photo {
@@ -28,41 +29,48 @@
 }
 
 .profile-photo img {
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    border: 4px solid #f0f7ff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .photo-placeholder {
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
-    background: #f0f0f0;
-    margin-bottom: 1rem;
+    background: #f0f7ff;
+    margin-bottom: 1.5rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    border: 4px solid #e1f0ff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .change-photo-btn {
     background: #f0f7ff;
     color: #0077cc;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    border: 1px solid #e1f0ff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
 .change-photo-btn:hover {
     background: #e1f0ff;
+    transform: translateY(-1px);
 }
 
 .profile-info {
     display: grid;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .info-group {
@@ -71,24 +79,115 @@
 }
 
 .info-group label {
-    color: #666;
-    font-size: 0.9rem;
+    color: #444;
+    font-size: 0.95rem;
+    font-weight: 500;
 }
 
-.info-group p {
-    color: #333;
-    font-size: 1rem;
-    padding: 0.5rem;
+.profile-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e1e5ea;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.profile-input:focus {
+    border-color: #0077cc;
+    box-shadow: 0 0 0 3px rgba(0,119,204,0.1);
+    outline: none;
+}
+
+.static-info {
+    color: #666;
+    font-size: 0.95rem;
+    padding: 0.75rem;
     background: #f8f9fa;
-    border-radius: 4px;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+/* Password Section Styling */
+.password-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.password-section h3 {
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.password-section h3 i {
+    color: #0077cc;
+    font-size: 1.1rem;
+}
+
+/* Button Styling */
+.button-group {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.save-btn {
+    background-color: #0077cc;
+    color: white;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.save-btn:hover {
+    background-color: #0066b2;
+    transform: translateY(-1px);
+}
+
+.save-btn:active {
+    transform: translateY(0);
+}
+
+/* Alert Styling */
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+}
+
+.alert-danger {
+    background-color: #fff5f5;
+    border: 1px solid #fee2e2;
+    color: #dc2626;
+}
+
+.alert-success {
+    background-color: #f0fdf4;
+    border: 1px solid #dcfce7;
+    color: #16a34a;
 }
 
 @media (max-width: 768px) {
     .profile-content {
         grid-template-columns: 1fr;
+        padding: 1.5rem;
     }
 
     .profile-photo {
         margin-bottom: 2rem;
+    }
+
+    .button-group {
+        justify-content: center;
     }
 }
