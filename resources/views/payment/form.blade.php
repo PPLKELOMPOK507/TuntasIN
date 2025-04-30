@@ -16,23 +16,47 @@
 
       // Placeholder harga jasa (akan diambil dari database di masa mendatang)
       const servicePrice = parseInt(servicePriceElement.dataset.price) || 0;
-      const adminFee = parseInt(adminFeeElement.dataset.fee) || 5000;
+
+      // Hitung biaya admin berdasarkan metode pembayaran
+      const calculateAdminFee = (method) => {
+        switch (method) {
+          case 'credit_card':
+            return 10000; // Biaya admin untuk kartu kredit
+          case 'bank_transfer':
+            return 5000; // Biaya admin untuk transfer bank
+          case 'e_wallet':
+            return 3000; // Biaya admin untuk e-wallet
+          case 'paypal':
+            return 15000; // Biaya admin untuk PayPal
+          case 'qris':
+            return 2000; // Biaya admin untuk QRIS
+          default:
+            return 5000; // Default biaya admin
+        }
+      };
 
       // Hitung total tagihan
-      const calculateTotalTagihan = () => {
+      const calculateTotalTagihan = (adminFee) => {
         const totalTagihan = servicePrice + adminFee;
         totalTagihanElement.textContent = `Rp${totalTagihan.toLocaleString('id-ID')}`;
       };
 
       // Inisialisasi total tagihan
-      calculateTotalTagihan();
+      let initialAdminFee = calculateAdminFee(document.querySelector('input[name="payment_method"]:checked')?.value || '');
+      adminFeeElement.textContent = `Rp${initialAdminFee.toLocaleString('id-ID')}`;
+      calculateTotalTagihan(initialAdminFee);
 
       paymentMethods.forEach(method => {
         method.addEventListener('change', function () {
-          if (this.value === 'bank_transfer') {
+          const selectedMethod = this.value;
+          const adminFee = calculateAdminFee(selectedMethod);
+          adminFeeElement.textContent = `Rp${adminFee.toLocaleString('id-ID')}`;
+          calculateTotalTagihan(adminFee);
+
+          if (selectedMethod === 'bank_transfer') {
             bankOptions.style.display = 'block';
             cardDetails.style.display = 'none';
-          } else if (this.value === 'credit_card') {
+          } else if (selectedMethod === 'credit_card') {
             cardDetails.style.display = 'block';
             bankOptions.style.display = 'none';
           } else {
@@ -40,6 +64,15 @@
             cardDetails.style.display = 'none';
           }
         });
+      });
+
+      // Validasi form sebelum submit
+      document.querySelector('form').addEventListener('submit', function (e) {
+        const selectedMethod = document.querySelector('input[name="payment_method"]:checked');
+        if (!selectedMethod) {
+          e.preventDefault();
+          alert('Silakan pilih metode pembayaran.');
+        }
       });
     });
   </script>
@@ -65,6 +98,7 @@
 
     <form action="{{ route('payment.submit') }}" method="POST">
       @csrf
+      <input type="hidden" name="status" value="pending" />
       <div class="flex flex-col lg:flex-row gap-8 px-6 md:px-12">
         <!-- Informasi Pembayaran -->
         <div class="flex-1">
