@@ -10,33 +10,6 @@
                 <a href="/">TUNTAS<span class="logo-in">IN</span></a>
             @endauth
         </div>
-
-        <div class="user-profile">
-            <div class="user-info">
-                <div class="profile-image">
-                    @if(Auth::user()->photo)
-                        <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Profile">
-                    @else
-                        <div class="profile-placeholder"></div>
-                    @endif
-                </div>
-                <span class="user-name">{{ Auth::user()->full_name }}</span>
-            </div>
-            <div class="dropdown-menu">
-                <a href="{{ route('services') }}" class="menu-item active">
-                    <i class="fas fa-briefcase"></i>
-                    <span>Jasa Saya</span>
-                </a>
-                <a href="{{ route('sales.history') }}" class="menu-item">
-                    <i class="fas fa-history"></i>
-                    <span>Riwayat Penjualan</span>
-                </a>
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="logout-btn">Logout</button>
-                </form>
-            </div>
-        </div>
     </nav>
 
     {{-- Form Tambah Jasa --}}
