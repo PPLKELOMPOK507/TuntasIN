@@ -84,10 +84,28 @@
                     <div class="service-card">
                         <div class="service-image">
                             <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->nama_jasa }}">
-                            <!-- Tambahkan tombol wishlist -->
-                            <a href="{{ route('wishlist') }}" class="wishlist-heart">
-                                <i class="fas fa-heart"></i>
-                            </a>
+                            @if(Auth::user()->role === 'Pengguna Jasa')
+                                @php
+                                    $isWishlisted = in_array($item->id, Auth::user()->wishlists->pluck('service_id')->toArray());
+                                @endphp
+                                
+                                @if($isWishlisted)
+                                    <form action="{{ route('wishlist.remove', $item->id) }}" method="POST" class="wishlist-form">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="wishlist-btn active">
+                                            <i class="fas fa-heart"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('wishlist.add', $item->id) }}" method="POST" class="wishlist-form">
+                                        @csrf
+                                        <button type="submit" class="wishlist-btn">
+                                            <i class="fas fa-heart"></i>
+                                        </button>
+                                    </form>
+                                @endif
+                            @endif
                         </div>
                         <div class="service-info">
                             <!-- Info Penyedia Jasa -->                            

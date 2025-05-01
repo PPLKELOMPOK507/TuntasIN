@@ -65,3 +65,10 @@ Route::get('/provider/{id}', [ProviderController::class, 'show'])->name('provide
 // Route untuk melihat detail jasa
 Route::get('/jasa/{id}', [JasaController::class, 'show'])->name('jasa.detail');
 
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+    Route::post('/wishlist/add/{id}', [WishlistController::class, 'add'])->name('wishlist.add');
+    Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
+});
+
