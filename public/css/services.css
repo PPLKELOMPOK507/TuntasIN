@@ -234,3 +234,32 @@ button.add-service-button:hover {
     outline: none;
     border-color: #4CAF50;
 }
+
+.wishlist-btn-card {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.wishlist-btn-card:hover {
+    transform: scale(1.1);
+}
+
+.wishlist-btn-card.active {
+    color: #ff4f4f;
+}
+
+.service-image {
+    position: relative;
+}

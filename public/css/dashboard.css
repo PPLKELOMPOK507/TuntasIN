@@ -115,6 +115,41 @@
     object-fit: cover;
 }
 
+.wishlist-heart {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.wishlist-heart i {
+    color: #666;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.wishlist-heart:hover {
+    transform: scale(1.1);
+}
+
+.wishlist-heart:hover i {
+    color: #ff4f4f;
+}
+
+.wishlist-heart.active i {
+    color: #ff4f4f;
+}
+
 .favorite-btn {
     position: absolute;
     top: 1rem;

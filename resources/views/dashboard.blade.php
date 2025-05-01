@@ -84,6 +84,10 @@
                     <div class="service-card">
                         <div class="service-image">
                             <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->nama_jasa }}">
+                            <!-- Tambahkan tombol wishlist -->
+                            <a href="{{ route('wishlist') }}" class="wishlist-heart">
+                                <i class="fas fa-heart"></i>
+                            </a>
                         </div>
                         <div class="service-info">
                             <!-- Info Penyedia Jasa -->                            
