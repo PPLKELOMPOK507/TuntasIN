@@ -4,36 +4,44 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Jasa;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 class JasaController extends Controller
 {
-    public function Service()
+    // Menampilkan Dashboard berdasarkan role pengguna
+    public function dashboard()
     {
-        $jasa = Jasa::where('user_id', auth()->id())->get();
-        return view('services', compact('jasa'));
+        if (auth()->user()->role === 'Pengguna Jasa') {
+            // Ambil semua jasa dengan data penyedia jasanya
+            $jasa = Jasa::with('user')->get();
+            return view('dashboard', compact('jasa'));
+        } else {
+            // Untuk penyedia jasa, tampilkan hanya jasanya sendiri
+            $jasa = Jasa::where('user_id', auth()->id())->get();
+            return view('dashboard', compact('jasa'));
+        }
     }
 
+    // Halaman tambah jasa
     public function create()
     {
         return view('addServices');
     }
 
+    // Menyimpan jasa baru
     public function store(Request $request)
     {
-        // Validasi input termasuk gambar
         $validated = $request->validate([
             'nama_jasa' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'minimal_harga' => 'required|integer|min:0',
             'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
-    
+
         // Simpan gambar ke folder public/storage/jasa
         $gambarPath = $request->file('gambar')->store('jasa', 'public');
-    
-        // Simpan ke database dengan menambahkan user_id
+
+        // Simpan data jasa ke database
         Jasa::create([
             'user_id' => Auth::id(),
             'nama_jasa' => $validated['nama_jasa'],
@@ -41,21 +49,22 @@ class JasaController extends Controller
             'minimal_harga' => $validated['minimal_harga'],
             'gambar' => $gambarPath,
         ]);
-    
-        return redirect()->route('services')->with('success', 'Jasa berhasil ditambahkan!');
+
+        return redirect()->route('dashboard')->with('success', 'Jasa berhasil ditambahkan!');
     }
 
+    // Halaman edit jasa
     public function edit($id)
     {
         $jasa = Jasa::findOrFail($id);
         return view('serviceUpdate', compact('jasa'));
     }
 
+    // Update jasa
     public function update(Request $request, $id)
     {
         $jasa = Jasa::findOrFail($id);
 
-        // Validasi input
         $validated = $request->validate([
             'nama_jasa' => 'required|string|max:255',
             'deskripsi' => 'required|string',
@@ -63,7 +72,6 @@ class JasaController extends Controller
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // Update gambar jika ada
         if ($request->hasFile('gambar')) {
             // Hapus gambar lama
             Storage::disk('public')->delete($jasa->gambar);
@@ -73,19 +81,18 @@ class JasaController extends Controller
             $jasa->gambar = $gambarPath;
         }
 
-        // Update data jasa
         $jasa->update([
             'nama_jasa' => $validated['nama_jasa'],
             'deskripsi' => $validated['deskripsi'],
             'minimal_harga' => $validated['minimal_harga'],
         ]);
 
-        return redirect()->route('services')->with('success', 'Jasa berhasil diperbarui!');
+        return redirect()->route('dashboard')->with('success', 'Jasa berhasil diperbarui!');
     }
 
+    // Menghapus jasa
     public function destroy($id)
     {
-        // Ambil data jasa berdasarkan ID
         $jasa = Jasa::findOrFail($id);
 
         // Hapus gambar dari storage
@@ -94,6 +101,6 @@ class JasaController extends Controller
         // Hapus data jasa dari database
         $jasa->delete();
 
-        return redirect()->route('services')->with('success', 'Jasa berhasil dihapus!');
+        return redirect()->route('dashboard')->with('success', 'Jasa berhasil dihapus!');
     }
 }

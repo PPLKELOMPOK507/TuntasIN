@@ -11,7 +11,33 @@
                 <a href="/">TUNTAS<span class="logo-in">IN</span></a>
             @endauth
         </div>
-        
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-container">
+                <input type="search" class="search-input" placeholder="Find services...">
+                <button class="filter-btn">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
+            </div>
+        </div>
+
+        @if(Auth::user()->role === 'Pengguna Jasa')
+            <div class="tooltip-container" style="margin-right: 12px;">
+                <a href="{{ route('forum') }}" class="forum-btn">
+                    <i class="fas fa-users"></i>
+                </a>
+                <span class="tooltip-text">Forum</span>
+            </div>
+        @endif
+
+        @if(Auth::user()->role === 'Pengguna Jasa')
+            <div class="tooltip-container">
+                <a href="{{ route('wishlist') }}" class="wishlist-btn">❤</a>
+                <span class="tooltip-text">Wishlist</span>
+            </div>
+        @endif
+
         <!-- User Menu -->
         <div class="user-profile">
             <div class="user-info">
@@ -22,23 +48,21 @@
                         <div class="profile-placeholder"></div>
                     @endif
                 </div>
-                <span class="user-name">{{ Auth::user()->full_name }}</span>
+                <button class="dropdown-toggle"> ⌵ </button>
             </div>
             <div class="dropdown-menu">
                 <a href="{{ route('profile') }}" class="menu-item">
                     <i class="fas fa-user"></i>
                     <span>Profile</span>
                 </a>
+
                 @if(Auth::user()->role === 'Penyedia Jasa')
-                    <a href="{{ route('services') }}" class="menu-item">
-                        <i class="fas fa-briefcase"></i>
-                        <span>Jasa Saya</span>
-                    </a>
                     <a href="{{ route('sales.history') }}" class="menu-item">
                         <i class="fas fa-history"></i>
                         <span>Riwayat Penjualan</span>
                     </a>
                 @endif
+
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="logout-btn">
@@ -50,55 +74,79 @@
         </div>
     </nav>
 
-    <!-- Category Navigation -->
-    <div class="category-nav">
-        <div class="category-scroll">
-            <a href="#" class="category-link active">Graphics & Design</a>
-            <a href="#" class="category-link">Programming & Tech</a>
-            <a href="#" class="category-link">Digital Marketing</a>
-            <a href="#" class="category-link">Video & Animation</a>
-            <a href="#" class="category-link">Writing & Translation</a>
-            <a href="#" class="category-link">Music & Audio</a>
-            <a href="#" class="category-link">Business</a>
-        </div>
-    </div>
-
     <div class="dashboard-main">
-        <!-- Featured Section -->
-        <section class="featured-section">
-            <h2>Popular Services</h2>
-            <div class="service-grid">
-                @for ($i = 1; $i <= 8; $i++)
-                <div class="service-card">
-                    <div class="service-image">
-                        <img src="{{ asset('images/Dashboard (2).png') }}" alt="Checklist Illustration" class="illustration" style="width: 1000px; ">
-                        <button class="favorite-btn">❤</button>
-                    </div>
-                    <div class="service-info">
-                        <div class="service-provider">
-                            <img src="https://via.placeholder.com/30x30" alt="Provider" class="provider-image">
-                            <span class="provider-name">Service Provider {{$i}}</span>
-                            <span class="provider-level">Level 2</span>
+        @if(Auth::user()->role === 'Pengguna Jasa')
+            <!-- Featured Section for Pengguna Jasa -->
+            <section class="featured-section">
+                <h2>Available Services</h2>
+                <div class="service-grid">
+                    @foreach($jasa as $item)
+                    <div class="service-card">
+                        <div class="service-image">
+                            <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->nama_jasa }}">
                         </div>
-                        <h3 class="service-title">I will do something amazing for your business</h3>
-                        <div class="service-rating">
-                            <span class="stars">⭐ 4.9</span>
-                            <span class="rating-count">(153)</span>
-                        </div>
-                        <div class="service-price">
-                            <span>Starting at</span>
-                            <strong>Rp 250.000</strong>
+                        <div class="service-info">
+                            <!-- Info Penyedia Jasa -->                            
+                            <h3 class="service-title">{{ $item->nama_jasa }}</h3>
+                            <p>{{ $item->deskripsi }}</p>
+                            <span class="service-price">Rp {{ number_format($item->minimal_harga, 0, ',', '.') }}</span>
+                            
+                            <div class="service-actions">
+                                <a href="{{ route('jasa.detail', $item->id) }}" class="view-service-btn">
+                                    Lihat Detail Jasa
+                                </a>
+                            </div>
                         </div>
                     </div>
+                    @endforeach
                 </div>
-                @endfor
+            </section>
+        @elseif(Auth::user()->role === 'Penyedia Jasa')
+            <!-- Dashboard for Penyedia Jasa -->
+            <div class="service-container">
+                <div class="service-header">
+                    <h1>Jasa Saya</h1>
+                    <a href="{{ route('jasa.tambah') }}" class="add-service-button">+ Tambah Jasa</a>
+                </div>
+
+                @if($jasa->isEmpty())
+                    <div class="empty-state">
+                        <h2>Belum ada Jasa yang ditawarkan</h2>
+                        <p>Jasa yang anda tawarkan akan muncul disini</p>
+                    </div>
+                @else
+                    <div class="service-grid">
+                        @foreach($jasa as $item)
+                            <div class="service-card">
+                                <div class="service-image">
+                                    <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->nama_jasa }}">
+                                </div>
+                                <div class="service-info">
+                                    <h3 class="service-title">{{ $item->nama_jasa }}</h3>
+                                    <p>{{ $item->deskripsi }}</p>
+                                    <span class="service-price">Rp {{ number_format($item->minimal_harga, 0, ',', '.') }}</span>
+                                </div>
+
+                                <div class="service-actions">
+                                    <a href="{{ route('jasa.edit', $item->id) }}" class="edit-btn">Edit</a>
+                                    <form action="{{ route('jasa.destroy', $item->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="delete-btn" onclick="return confirm('Apakah Anda yakin ingin menghapus jasa ini?')">Hapus</button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
-        </section>
+        @endif
     </div>
 </div>
 @endsection
 
 @push('styles')
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/services.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 @endpush

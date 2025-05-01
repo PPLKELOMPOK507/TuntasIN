@@ -15,4 +15,9 @@ class Jasa extends Model
         'minimal_harga',
         'gambar',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
