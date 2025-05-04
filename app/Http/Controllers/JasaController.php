@@ -22,10 +22,10 @@ class JasaController extends Controller
         }
     }
     public function show($id)
-    {
-        $jasa = Jasa::with('penyedia')->findOrFail($id);
-        return view('jasa.show', compact('jasa'));
-    }
+{
+    $jasa = Jasa::findOrFail($id);
+    return view('jasa.show', compact('jasa'));
+}
 
     // Halaman tambah jasa
     public function create()
