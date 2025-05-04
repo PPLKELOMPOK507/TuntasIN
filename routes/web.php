@@ -85,5 +85,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [JasaController::class, 'dashboard'])->middleware(['auth'])->name('dashboard');
     Route::get('/forum/category/{category}', [PostController::class, 'filterByCategory'])->name('forum.category');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('post.edit');
+    Route::put('/posts/{post}', [PostController::class, 'update'])->name('post.update');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('post.destroy');
+    Route::get('/my-posts', [PostController::class, 'myPosts'])->name('user.posts');
+    Route::get('/comments/{comment}/edit', [CommentController::class, 'edit'])->name('comment.edit');
+    Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comment.update');
+    Route::get('/my-comments', [CommentController::class, 'myComments'])->name('user.comments');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
 });
 

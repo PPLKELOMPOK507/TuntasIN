@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'user_id',
-        'category_id',
         'title',
-        'body',
+        'category_id',
+        'body', // Gunakan 'body' jika tabel memiliki kolom 'body'
+        'user_id', // Tambahkan user_id di sini
     ];
 
     public function user()

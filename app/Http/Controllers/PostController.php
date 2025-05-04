@@ -24,20 +24,23 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        // Validasi data
+        $validatedData = $request->validate([
             'title' => 'required|string|max:255',
-            'body' => 'required|string',
             'category_id' => 'required|exists:categories,id',
+            'body' => 'required|string', // Gunakan 'body' jika tabel memiliki kolom 'body'
         ]);
 
+        // Simpan data ke database
         Post::create([
-            'user_id' => Auth::id(),
-            'category_id' => $request->category_id,
-            'title' => $request->title,
-            'body' => $request->body,
+            'title' => $validatedData['title'],
+            'category_id' => $validatedData['category_id'],
+            'body' => $validatedData['body'], // Gunakan 'body' jika tabel memiliki kolom 'body'
+            'user_id' => Auth::id(), // Tambahkan user_id dari pengguna yang sedang login
         ]);
 
-        return redirect()->route('forum')->with('success', 'Post created successfully.');
+        // Redirect ke halaman lain dengan pesan sukses
+        return redirect()->route('forum')->with('success', 'Postingan berhasil dibuat!');
     }
 
     public function show(Post $post)
@@ -73,7 +76,37 @@ class PostController extends Controller
             ->with('user', 'category', 'likes', 'comments')
             ->latest()
             ->get();
-        $categories = Category::all(); // Untuk menampilkan daftar kategori
-        return view('main.posts.forum', compact('posts', 'categories', 'category'));
+    $categories = Category::all(); // Untuk menampilkan daftar kategori
+    return view('main.posts.forum', compact('posts', 'categories', 'category'));
+    }
+
+    public function edit(Post $post)
+    {
+        // Pastikan hanya pemilik postingan yang dapat mengedit
+        if (auth()->id() !== $post->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('main.posts.edit-post', compact('post'));
+    }
+
+    public function update(Request $request, Post $post)
+    {
+        // Pastikan hanya pemilik postingan yang dapat mengedit
+        if (auth()->id() !== $post->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Validasi data
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'body' => 'required|string',
+        ]);
+
+        // Perbarui postingan
+        $post->update($validatedData);
+
+        // Redirect ke halaman "My Posts"
+        return redirect()->route('user.posts')->with('success', 'Post updated successfully!');
     }
 }

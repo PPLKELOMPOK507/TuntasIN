@@ -1,48 +1,59 @@
 @extends('main.layouts.app')
 
 @section('content')
-    <div class="mb-4">
-        <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-md hover:bg-gray-700 transition duration-150 ease-in-out">
-            <i class="bi bi-arrow-left mr-2"></i> Back to Dashboard
-        </a>
-    </div>
+    {{-- Tombol Back --}}
+    <nav class="bg-white shadow-md py-4 px-6 flex justify-between items-center">
+        <div class="text-2xl font-bold text-blue-500">
+            Community
+        </div>
+        <div class="mb-4">
+            <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-600 text-sm font-medium rounded-full hover:bg-gray-100 transition duration-150 ease-in-out">
+                <i class="bi bi-arrow-left mr-2"></i> Back
+            </a>
+        </div>
+    </nav>
 
-    <div class="grid grid-cols-4 gap-10">
-        <div class="col-span-3 flex flex-col">
-            {{-- category --}}
-            <div class="flex flex-col bg-white rounded-md p-4 mb-4">
-                <div class="col-span-1">
-                    <h1 class="font-bold text-2xl">Category</h1>
-                </div>
+    {{-- Grid Layout --}}
+    <div class="grid grid-cols-4 gap-10 mt-6">
+        {{-- Bagian Kiri --}}
+        <div class="col-span-3 flex flex-col space-y-6">
+            {{-- Kategori --}}
+            <div class="flex flex-col bg-white rounded-md p-4 shadow-md">
+                <h1 class="font-bold text-xl mb-4">Category</h1>
                 @if($categories->isEmpty())
                     <h1 class="font-semibold text-xl">No Category yet!</h1>
                 @else
-                    <div class="grid grid-cols-6 items-center justify-center gap-2 mt-4">
+                    <div class="grid grid-cols-6 gap-4">
                         @foreach($categories as $category)
-                            <a href="{{ route('forum.category', $category->id) }}" class="flex items-center border-2 rounded-lg px-4 hover:bg-black hover:text-white transition duration-200 ease-in-out cursor-pointer py-2">
+                            <a href="{{ route('forum.category', $category->id) }}" 
+                               class="flex items-center border-2 rounded-full px-4 py-2 
+                               {{ isset($currentCategory) && $currentCategory->id === $category->id ? 'bg-[#4285F4] text-white border-[#4285F4]' : 'bg-blue-50 text-gray-600 border-gray-300 hover:bg-blue-100 hover:text-gray-800' }} 
+                               transition duration-200 ease-in-out cursor-pointer">
                                 {{ $category->name }}
                             </a>
                         @endforeach
                     </div>
                 @endif
-                
             </div>
 
-            {{-- post --}}
-            <div class="flex flex-col bg-white rounded-md p-4 gap-4">
-                <h1 class="font-bold text-2xl">
-                    Posts @if(isset($category)) in {{ $category->name }} @endif
+            {{-- Postingan --}}
+            <div class="flex flex-col bg-white rounded-md p-4 shadow-md">
+                <h1 class="font-bold text-xl mb-4">
+                    Thread
                 </h1>
                 @if($posts->isEmpty())
-                    <h1 class="font-semibold text-xl">No Post yet!</h1>
+                    <div class="flex flex-col items-center justify-center gap-4">
+                        <img src="{{ asset('images/no-posts.png') }}" alt="No Posts" class="w-32 h-32">
+                        <h1 class="font-semibold text-xl">No Post yet!</h1>
+                        <p class="text-gray-500">Be the first to create a post in this category</p>
+                    </div>
                 @else
                     @foreach ($posts as $post)
-                        <div class="w-full py-2 px-4 border-t-2 border-b-2 flex items-center justify-between">
-                            <div class="flex items-center gap-2">
+                        <div class="w-full py-4 px-4 border-t border-b flex items-center justify-between">
+                            <div class="flex items-center gap-4">
                                 <img src="{{ asset('storage/'.$post->user->photo) }}" alt="author-image" class="w-10 h-10 rounded-full object-cover">
                                 <div class="flex flex-col">
                                     <a class="font-semibold text-md hover:underline cursor-pointer" href="{{ route('post.show', $post->id) }}">
-                                        {{-- post title --}}
                                         {{ $post->title }}
                                     </a>
                                     <span class="text-gray-400 text-sm">
@@ -54,17 +65,13 @@
                                 <form action="{{ route('post.like', $post->id) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="flex items-center gap-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 {{ $post->isLikedBy(auth()->user()) ? 'text-blue-500' : 'hover:text-blue-500' }} transition duration-200 ease-in-out cursor-pointer">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z" />
-                                        </svg>
+                                        <i class="bi bi-hand-thumbs-up {{ $post->isLikedBy(auth()->user()) ? 'text-blue-500' : 'hover:text-blue-500' }}"></i>
                                         {{ $post->likes->count() }} Likes
                                     </button>
                                 </form>
                                 <span class="flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
-                                    </svg>
-                                    {{ $post->comments->count() }} comments  
+                                    <i class="bi bi-chat"></i>
+                                    {{ $post->comments->count() }} comments
                                 </span>
                                 @if(auth()->id() === $post->user_id)
                                     <form action="{{ route('post.destroy', $post->id) }}" method="POST">
@@ -75,47 +82,119 @@
                                         </button>
                                     </form>
                                 @endif
-                                @if(session('success'))
-                                    <div class="bg-green-500 text-white p-4 rounded-md mb-4">
-                                        {{ session('success') }}
-                                    </div>
-                                @endif
                             </div>
                         </div>
                     @endforeach
                 @endif
             </div>
         </div>
-        <div class="col-start-4 flex flex-col gap-4">
-            <a href="{{ route('forum.create') }}" class="w-full ">
-                {{-- create post --}}
-                <button class="w-full flex items-center justify-center gap-2 py-2 bg-black rounded-lg text-white font-semibold hover:bg-black/80 transition duration-200 ease-in-out cursor-pointer">
+
+        {{-- Bagian Kanan --}}
+        <div class="col-span-1 flex flex-col space-y-6">
+            {{-- Tombol Buat Post --}}
+            <a href="{{ route('forum.create') }}" class="w-full">
+                <button class="w-full flex items-center justify-center gap-2 py-2 bg-blue-500 rounded-lg text-white font-semibold hover:bg-blue-600 transition duration-200 ease-in-out cursor-pointer">
                     <i class="bi bi-plus-lg text-2xl"></i>
                     Create a post
                 </button>
             </a>
-            <div class="flex flex-col bg-white shadow-lg rounded-md p-4 gap-4">
-                <span class="text-gray-400">Me</span>
-                <div class="flex items-center gap-2">
-                    <img src="{{ asset('storage/' . auth()->user()->photo) }}" class="w-10 h-10 rounded-full object-cover" alt="">
+
+            {{-- Informasi Pengguna --}}
+            <div class="flex flex-col bg-white shadow-lg rounded-md p-4">
+                <div class="flex items-center gap-4 mt-4">
+                    <img src="{{ asset('storage/' . auth()->user()->photo) }}" class="w-12 h-12 rounded-full object-cover" alt="">
                     <div class="flex flex-col">
                         <span class="font-semibold text-md">{{ auth()->user()->full_name }}</span>
                         <span class="text-gray-400 text-sm">{{ auth()->user()->email }}</span>
                     </div>
                 </div>
-                <div class="flex items-center p-2 justify-between gap-2">
-                    <a href="{{ route('user.posts') }}" class="flex items-center gap-2">
-                        <span class="font-semibold">My Posts</span>
-                        <i class="bi bi-chevron-right font-bold cursor-pointer"></i>
+
+                {{-- Garis Pemisah --}}
+                <hr class="my-4 border-gray-300">
+
+                <div class="flex flex-col space-y-2">
+                    <a href="{{ route('user.posts') }}" class="flex items-center justify-between text-gray-600 hover:text-gray-800">
+                        <span class="font-medium">My Posts</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                    <a href="{{ route('user.comments') }}" class="flex items-center justify-between text-gray-600 hover:text-gray-800">
+                        <span class="font-medium">My Comments</span>
+                        <i class="bi bi-chevron-right"></i>
                     </a>
                 </div>
-                <div class="flex items-center p-2 justify-between gap-2">
-                    <a href="{{ route('user.comments') }}" class="flex items-center gap-2">
-                        <span class="font-semibold">My Comments</span>
-                        <i class="bi bi-chevron-right font-bold cursor-pointer"></i>
-                    </a>
+            </div>
+
+            {{-- Community Rules --}}
+            <div class="flex flex-col bg-white shadow-lg rounded-md p-4 space-y-4">
+                <h2 class="font-bold text-lg">Community rules</h2>
+
+                {{-- Rule 1 --}}
+                <div>
+                    <button class="w-full text-left font-medium text-gray-600 hover:text-gray-800 flex justify-between items-center" onclick="toggleRule('rule1')">
+                        No Offensive Content
+                        <i id="arrow-rule1" class="bi bi-chevron-down transition-transform"></i>
+                    </button>
+                    <p id="rule1" class="hidden text-sm text-gray-500 mt-2">
+                        Do not post "offensive" posts or links. Any material which constitutes defamation, harassment, or abuse is strictly prohibited. Material that is sexually or otherwise obscene, racist, or overly discriminatory is not permitted. Any violations will lead to an immediate ban.
+                    </p>
+                    <hr class="my-2 border-gray-300">
+                </div>
+
+                {{-- Rule 2 --}}
+                <div>
+                    <button class="w-full text-left font-medium text-gray-600 hover:text-gray-800 flex justify-between items-center" onclick="toggleRule('rule2')">
+                        No Spam or Advertising
+                        <i id="arrow-rule2" class="bi bi-chevron-down transition-transform"></i>
+                    </button>
+                    <p id="rule2" class="hidden text-sm text-gray-500 mt-2">
+                        We define spam as unsolicited advertisement for goods, services and/or other websites, or posts with little, or completely unrelated content. Do not spam the forum with links to your site or product, or try to self-promote your website, business or forum etc.
+                    </p>
+                    <hr class="my-2 border-gray-300">
+                </div>
+
+                {{-- Rule 3 --}}
+                <div>
+                    <button class="w-full text-left font-medium text-gray-600 hover:text-gray-800 flex justify-between items-center" onclick="toggleRule('rule3')">
+                        No Illegal Activity
+                        <i id="arrow-rule3" class="bi bi-chevron-down transition-transform"></i>
+                    </button>
+                    <p id="rule3" class="hidden text-sm text-gray-500 mt-2">
+                        Posts suggesting, seeking advice about, or otherwise promoting illegal activity are not permitted. This includes posts containing or seeking copyright infringing material.
+                    </p>
+                    <hr class="my-2 border-gray-300">
+                </div>
+
+                {{-- Rule 4 --}}
+                <div>
+                    <button class="w-full text-left font-medium text-gray-600 hover:text-gray-800 flex justify-between items-center" onclick="toggleRule('rule4')">
+                        Be Respectful
+                        <i id="arrow-rule4" class="bi bi-chevron-down transition-transform"></i>
+                    </button>
+                    <p id="rule4" class="hidden text-sm text-gray-500 mt-2">
+                        All posts should be professional and courteous. You have every right to disagree with your fellow community members and explain your perspective. However, you are not free to attack, degrade, insult, or otherwise belittle others.
+                    </p>
+                </div>
+
+                {{-- Footer Links --}}
+                <div class="text-sm text-gray-500 mt-4 flex justify-between">
+                    <a href="#" class="hover:underline">Terms of Policy</a>
+                    <a href="#" class="hover:underline">Code of Conduct</a>
+                    <a href="#" class="hover:underline">Privacy Policy</a>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+    function toggleRule(id) {
+        const rule = document.getElementById(id);
+        const arrow = document.getElementById(`arrow-${id}`);
+        if (rule.classList.contains('hidden')) {
+            rule.classList.remove('hidden');
+            arrow.classList.add('rotate-180'); // Memutar panah ke atas
+        } else {
+            rule.classList.add('hidden');
+            arrow.classList.remove('rotate-180'); // Memutar panah ke bawah
+        }
+    }
+    </script>
 @endsection
