@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\LoginController;
@@ -7,6 +8,8 @@ use App\Http\Controllers\SalesController;
 use App\Http\Controllers\JasaController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\ForumController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProviderController;
 
 // Registration routes
@@ -64,4 +67,14 @@ Route::get('/provider/{id}', [ProviderController::class, 'show'])->name('provide
 
 // Route untuk melihat detail jasa
 Route::get('/jasa/{id}', [JasaController::class, 'show'])->name('jasa.detail');
+
+// Route untuk forum page
+Route::middleware(['auth'])->group(function () {
+    Route::get('/forum', [PostController::class, 'index'])->name('forum');
+    Route::post('/forum/{post}/like', [LikeController::class, 'toggle'])->name('post.like');
+    Route::post('posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/forum/create', [PostController::class, 'create'])->name('forum.create');
+    Route::post('/forum/create-post', [PostController::class, 'store'])->name('posts.store');
+    Route::get('/forum/{post}', [PostController::class, 'show'])->name('post.show');
+});
 
