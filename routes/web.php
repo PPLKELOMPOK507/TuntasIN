@@ -73,8 +73,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/forum', [PostController::class, 'index'])->name('forum');
     Route::post('/forum/{post}/like', [LikeController::class, 'toggle'])->name('post.like');
     Route::post('posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::get('/forum/create', [PostController::class, 'create'])->name('forum.create');
     Route::post('/forum/create', [PostController::class, 'create'])->name('forum.create');
     Route::post('/forum/create-post', [PostController::class, 'store'])->name('posts.store');
     Route::get('/forum/{post}', [PostController::class, 'show'])->name('post.show');
+    Route::get('/my-posts', [PostController::class, 'myPosts'])->name('user.posts');
+    Route::get('/my-comments', [PostController::class, 'myComments'])->name('user.comments');
+    Route::post('/my-posts', [PostController::class, 'myPosts'])->name('user.posts');
+    Route::post('/my-comments', [PostController::class, 'myComments'])->name('user.comments');
+    Route::delete('/forum/{post}', [PostController::class, 'destroy'])->name('post.destroy');
+    Route::get('/dashboard', [JasaController::class, 'dashboard'])->middleware(['auth'])->name('dashboard');
+    Route::get('/forum/category/{category}', [PostController::class, 'filterByCategory'])->name('forum.category');
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 });
 

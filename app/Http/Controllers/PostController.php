@@ -45,4 +45,35 @@ class PostController extends Controller
         $post->load('user', 'category', 'likes', 'comments');
         return view('main.posts.post-detail', compact('post'));
     }
+
+    public function destroy(Post $post)
+    {
+        if (auth()->id() !== $post->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+        $post->delete();
+        return redirect()->route('forum')->with('success', 'Post deleted successfully.');
+    }
+    
+    public function myComments()
+    {
+        $comments = Auth::user()->comments()->with('post')->latest()->get();
+        return view('main.posts.my-comments', compact('comments')); 
+    }
+
+    public function myPosts()
+    {
+        $posts = Auth::user()->posts()->with('category', 'likes', 'comments')->latest()->get();
+        return view('main.posts.my-posts', compact('posts'));
+    }
+
+    public function filterByCategory(Category $category)
+    {
+        $posts = Post::where('category_id', $category->id)
+            ->with('user', 'category', 'likes', 'comments')
+            ->latest()
+            ->get();
+        $categories = Category::all(); // Untuk menampilkan daftar kategori
+        return view('main.posts.forum', compact('posts', 'categories', 'category'));
+    }
 }

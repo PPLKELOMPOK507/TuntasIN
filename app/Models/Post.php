@@ -37,4 +37,9 @@ class Post extends Model
     {
         return $this->likes->contains('id', $user->id);
     }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 }

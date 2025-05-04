@@ -1,6 +1,12 @@
 @extends('main.layouts.app')
 
 @section('content')
+    <div class="mb-4">
+        <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-md hover:bg-gray-700 transition duration-150 ease-in-out">
+            <i class="bi bi-arrow-left mr-2"></i> Back to Dashboard
+        </a>
+    </div>
+
     <div class="grid grid-cols-4 gap-10">
         <div class="col-span-3 flex flex-col">
             {{-- category --}}
@@ -13,17 +19,20 @@
                 @else
                     <div class="grid grid-cols-6 items-center justify-center gap-2 mt-4">
                         @foreach($categories as $category)
-                            <div class="flex items-center border-2 rounded-lg px-4 hover:bg-black hover:text-white transition duration-200 ease-in-out cursor-pointer py-2">
+                            <a href="{{ route('forum.category', $category->id) }}" class="flex items-center border-2 rounded-lg px-4 hover:bg-black hover:text-white transition duration-200 ease-in-out cursor-pointer py-2">
                                 {{ $category->name }}
-                            </div>
+                            </a>
                         @endforeach
                     </div>
                 @endif
+                
             </div>
 
             {{-- post --}}
             <div class="flex flex-col bg-white rounded-md p-4 gap-4">
-                <h1 class="font-bold text-2xl">Posts</h1>
+                <h1 class="font-bold text-2xl">
+                    Posts @if(isset($category)) in {{ $category->name }} @endif
+                </h1>
                 @if($posts->isEmpty())
                     <h1 class="font-semibold text-xl">No Post yet!</h1>
                 @else
@@ -57,6 +66,20 @@
                                     </svg>
                                     {{ $post->comments->count() }} comments  
                                 </span>
+                                @if(auth()->id() === $post->user_id)
+                                    <form action="{{ route('post.destroy', $post->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-500 hover:text-red-700 transition duration-200 ease-in-out">
+                                            Delete
+                                        </button>
+                                    </form>
+                                @endif
+                                @if(session('success'))
+                                    <div class="bg-green-500 text-white p-4 rounded-md mb-4">
+                                        {{ session('success') }}
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     @endforeach
@@ -81,12 +104,16 @@
                     </div>
                 </div>
                 <div class="flex items-center p-2 justify-between gap-2">
-                    <span class="font-semibold">My Posts</span>
-                    <i class="bi bi-chevron-right font-bold cursor-pointer"></i>
+                    <a href="{{ route('user.posts') }}" class="flex items-center gap-2">
+                        <span class="font-semibold">My Posts</span>
+                        <i class="bi bi-chevron-right font-bold cursor-pointer"></i>
+                    </a>
                 </div>
                 <div class="flex items-center p-2 justify-between gap-2">
-                    <span class="font-semibold">My Comments</span>
-                    <i class="bi bi-chevron-right font-bold cursor-pointer"></i>
+                    <a href="{{ route('user.comments') }}" class="flex items-center gap-2">
+                        <span class="font-semibold">My Comments</span>
+                        <i class="bi bi-chevron-right font-bold cursor-pointer"></i>
+                    </a>
                 </div>
             </div>
         </div>
