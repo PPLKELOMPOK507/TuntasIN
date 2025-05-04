@@ -17,10 +17,11 @@ class ProfileController extends Controller
             'last_name' => 'required|string|max:255',
             'current_password' => 'required_with:new_password',
             'new_password' => 'nullable|min:8|confirmed',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'cv_file' => 'nullable|mimes:pdf,doc,docx|max:5120' // 5MB max
         ]);
 
-        // Update name
+        // Update basic info
         $user->update([
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
@@ -35,6 +36,17 @@ class ProfileController extends Controller
             
             $photo = $request->file('photo')->store('profile-photos', 'public');
             $user->update(['photo' => $photo]);
+        }
+
+        // Update CV if provided
+        if ($request->hasFile('cv_file')) {
+            // Delete old CV if exists
+            if ($user->cv_file) {
+                Storage::disk('public')->delete($user->cv_file);
+            }
+            
+            $cv = $request->file('cv_file')->store('cv-files', 'public');
+            $user->update(['cv_file' => $cv]);
         }
 
         // Update password if provided

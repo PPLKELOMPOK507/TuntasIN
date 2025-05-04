@@ -24,6 +24,7 @@ class User extends Authenticatable
         'email',
         'mobile_number',
         'photo',
+        'cv_file', // Add this
         'password',
     ];
 

@@ -130,6 +130,126 @@
     font-size: 1.1rem;
 }
 
+.password-field-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 4px;
+    color: #6c757d;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle:hover {
+    color: #0077cc;
+}
+
+.password-input {
+    padding-right: 40px !important;
+}
+
+/* CV Section Styling */
+.cv-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.cv-section h3 {
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cv-section h3 i {
+    color: #0077cc;
+}
+
+.cv-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.current-cv {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.current-cv i {
+    color: #dc3545;
+    font-size: 1.5rem;
+}
+
+.cv-filename {
+    color: #495057;
+    font-size: 0.95rem;
+    flex: 1;
+}
+
+.view-cv-btn {
+    color: #0077cc;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background: #e1f0ff;
+}
+
+.view-cv-btn:hover {
+    background: #d0e7ff;
+}
+
+.upload-cv-btn {
+    background: #f0f7ff;
+    color: #0077cc;
+    border: 1px solid #e1f0ff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.upload-cv-btn:hover {
+    background: #e1f0ff;
+    transform: translateY(-1px);
+}
+
+.cv-help-text {
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
 /* Button Styling */
 .button-group {
     margin-top: 2rem;
