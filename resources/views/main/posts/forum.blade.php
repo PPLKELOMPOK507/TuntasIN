@@ -8,13 +8,17 @@
                 <div class="col-span-1">
                     <h1 class="font-bold text-2xl">Category</h1>
                 </div>
-                <div class="grid grid-cols-6 items-center justify-center gap-2 mt-4">
-                    @foreach($categories as $category)
-                        <div class="flex items-center border-2 rounded-lg px-4 hover:bg-black hover:text-white transition duration-200 ease-in-out cursor-pointer py-2">
-                            {{ $category->name }}
-                        </div>
-                    @endforeach
-                </div>
+                @if($categories->isEmpty())
+                    <h1 class="font-semibold text-xl">No Category yet!</h1>
+                @else
+                    <div class="grid grid-cols-6 items-center justify-center gap-2 mt-4">
+                        @foreach($categories as $category)
+                            <div class="flex items-center border-2 rounded-lg px-4 hover:bg-black hover:text-white transition duration-200 ease-in-out cursor-pointer py-2">
+                                {{ $category->name }}
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
 
             {{-- post --}}
