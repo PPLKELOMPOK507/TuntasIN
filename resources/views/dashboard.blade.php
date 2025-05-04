@@ -14,12 +14,16 @@
 
         <!-- Search Section -->
         <div class="search-section">
-            <div class="search-container">
-                <input type="search" class="search-input" placeholder="Find services...">
-                <button class="filter-btn">
-                    <i class="fas fa-sliders-h"></i>
-                </button>
-            </div>
+            <form action="{{ route('dashboard') }}" method="GET" >
+                <select name="category" class="category-select" onchange="this.form.submit()">
+                <option value="">-- Semua Kategori --</option>
+                <option value="Kebersihan" {{ request('category') == 'Kebersihan' ? 'selected' : '' }}>Kebersihan</option>
+                <option value="Perbaikan" {{ request('category') == 'Perbaikan' ? 'selected' : '' }}>Perbaikan</option>
+                <option value="Rumah Tangga" {{ request('category') == 'Rumah Tangga' ? 'selected' : '' }}>Rumah Tangga</option>
+                <option value="Teknologi" {{ request('category') == 'Teknologi' ? 'selected' : '' }}>Teknologi</option>
+                <option value="Transformasi" {{ request('category') == 'Transformasi' ? 'selected' : '' }}>Transformasi</option>
+                </select>
+            </form>
         </div>
 
         @if(Auth::user()->role === 'Pengguna Jasa')
@@ -80,15 +84,13 @@
             <section class="featured-section">
                 <h2>Available Services</h2>
                 <div class="service-grid">
-                    @foreach($jasa as $item)
-                    <div class="service-card">
-                        <div class="service-image">
-                            <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->nama_jasa }}">
-                            @if(Auth::user()->role === 'Pengguna Jasa')
+                    @forelse($jasa as $item)
+                        <div class="service-card">
+                            <div class="service-image">
+                                <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->nama_jasa }}">
                                 @php
                                     $isWishlisted = in_array($item->id, Auth::user()->wishlists->pluck('service_id')->toArray());
                                 @endphp
-                                
                                 @if($isWishlisted)
                                     <form action="{{ route('wishlist.remove', $item->id) }}" method="POST" class="wishlist-form">
                                         @csrf
@@ -105,22 +107,21 @@
                                         </button>
                                     </form>
                                 @endif
-                            @endif
-                        </div>
-                        <div class="service-info">
-                            <!-- Info Penyedia Jasa -->                            
-                            <h3 class="service-title">{{ $item->nama_jasa }}</h3>
-                            <p>{{ $item->deskripsi }}</p>
-                            <span class="service-price">Rp {{ number_format($item->minimal_harga, 0, ',', '.') }}</span>
-                            
-                            <div class="service-actions">
-                                <a href="{{ route('jasa.detail', $item->id) }}" class="view-service-btn">
-                                    Lihat Detail Jasa
-                                </a>
+                            </div>
+                            <div class="service-info">
+                                <h3 class="service-title">{{ $item->nama_jasa }}</h3>
+                                <p>{{ $item->deskripsi }}</p>
+                                <span class="service-price">Rp {{ number_format($item->minimal_harga, 0, ',', '.') }}</span>
+                                <div class="service-actions">
+                                    <a href="{{ route('jasa.detail', $item->id) }}" class="view-service-btn">
+                                        Lihat Detail Jasa
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    @endforeach
+                    @empty
+                        <p>Tidak ada jasa ditemukan.</p>
+                    @endforelse
                 </div>
             </section>
         @elseif(Auth::user()->role === 'Penyedia Jasa')

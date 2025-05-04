@@ -8,6 +8,7 @@ use App\Http\Controllers\JasaController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\DashboardController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -64,6 +65,9 @@ Route::get('/provider/{id}', [ProviderController::class, 'show'])->name('provide
 
 // Route untuk melihat detail jasa
 Route::get('/jasa/{id}', [JasaController::class, 'show'])->name('jasa.detail');
+
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 
 Route::middleware(['auth'])->group(function () {
