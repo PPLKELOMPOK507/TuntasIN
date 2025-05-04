@@ -69,6 +69,7 @@
         
         VITE_APP_NAME="${APP_NAME}" - Satu Tempat, Semua Beres</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     @stack('styles')
 </head>
 <body>

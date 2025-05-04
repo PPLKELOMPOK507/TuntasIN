@@ -67,6 +67,7 @@ Route::get('/provider/{id}', [ProviderController::class, 'show'])->name('provide
 Route::get('/jasa/{id}', [JasaController::class, 'show'])->name('jasa.detail');
 
 
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 
