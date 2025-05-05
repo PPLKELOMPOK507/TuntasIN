@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('jasa', function (Blueprint $table) {
+        Schema::table('jasas', function (Blueprint $table) { // Corrected table name
             $table->foreignId('category_id')->nullable()->constrained('kategoris')->onDelete('set null');
         });
     }
@@ -21,8 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('jasa', function (Blueprint $table) {
-            //
+        Schema::table('jasas', function (Blueprint $table) { // Corrected table name
+            $table->dropForeign(['category_id']);
+            $table->dropColumn('category_id');
         });
     }
 };
