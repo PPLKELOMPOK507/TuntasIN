@@ -13,7 +13,22 @@
     </div>
 
     @if($comments->isEmpty())
-        <p>No comments yet!</p>
+        <div class="flex justify-center mt-10">
+            {{-- Kotak Putih --}}
+            <div class="bg-white p-10 rounded-md shadow-md w-full max-w-4xl">
+                {{-- Icon --}}
+                <div class="flex justify-center mb-6">
+                    <div class="bg-blue-100 p-4 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-12 h-12 text-teal-500">
+                            <path d="M12 3C7.031 3 3 5.238 3 8v8c0 2.762 4.031 5 9 5s9-2.238 9-5V8c0-2.762-4.031-5-9-5zm0 16c-4.411 0-8-1.794-8-4V8c0-2.206 3.589-4 8-4s8 1.794 8 4v7c0 2.206-3.589 4-8 4zm-3-7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 1 1 0 3zm3 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 1 1 0 3zm3 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 1 1 0 3z"/>
+                        </svg>
+                    </div>
+                </div>
+                {{-- Message --}}
+                <p class="text-gray-500 font-semibold text-lg text-center">No comments yet!</p>
+                <p class="text-gray-400 text-center">You haven't made any comments yet. Engage with posts to start conversations and see your comments here.</p>
+            </div>
+        </div>
     @else
         @foreach($comments as $comment)
             <div class="bg-white p-4 rounded-md shadow mb-4">

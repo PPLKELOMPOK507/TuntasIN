@@ -13,7 +13,22 @@
     </div>
 
     @if($posts->isEmpty())
-        <p class="text-gray-500">No posts yet!</p>
+        <div class="text-center mt-10">
+            {{-- Kotak Putih --}}
+            <div class="bg-white p-6 rounded-md shadow-md inline-block">
+                {{-- Icon --}}
+                <div class="flex justify-center mb-4">
+                    <div class="bg-blue-100 p-4 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-blue-500">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.75h-9a3 3 0 00-3 3v10.5a3 3 0 003 3h9a3 3 0 003-3V6.75a3 3 0 00-3-3zM9 7.5h6M9 12h6m-6 4.5h3" />
+                        </svg>
+                    </div>
+                </div>
+                {{-- Message --}}
+                <p class="text-gray-500 font-semibold text-lg">No posts yet!</p>
+                <p class="text-gray-400">Looks like you haven't created any posts. Start writing your first post to get started.</p>
+            </div>
+        </div>
     @else
         @foreach($posts as $post)
             <div class="bg-white p-4 rounded-md shadow mb-4">
