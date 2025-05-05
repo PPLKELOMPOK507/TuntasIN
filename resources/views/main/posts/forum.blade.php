@@ -87,6 +87,19 @@
                     @endforeach
                 @endif
             </div>
+
+            {{-- Placeholder Discussion Forum --}}
+            <div class="flex flex-col bg-white rounded-md p-6 shadow-md mt-6">
+                <h1 class="font-bold text-xl mb-4">Discussion Forum</h1>
+                <div class="flex flex-col items-center justify-center gap-4">
+                    <img src="{{ asset('images/discussion-forum-logo.jpg') }}" alt="Discussion Forum Logo" class="w-32 h-32 object-contain">
+                    <h1 class="font-semibold text-xl">No Discussions yet!</h1>
+                    <p class="text-gray-500">Be the first to start a discussion in this forum</p>
+                    <a href="{{ route('forum.create') }}" class="px-6 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 transition duration-150 ease-in-out">
+                        Start a Discussion
+                    </a>
+                </div>
+            </div>
         </div>
 
         {{-- Bagian Kanan --}}
@@ -108,17 +121,13 @@
                         <span class="text-gray-400 text-sm">{{ auth()->user()->email }}</span>
                     </div>
                 </div>
-
-                {{-- Garis Pemisah --}}
-                <hr class="my-4 border-gray-300">
-
-                <div class="flex flex-col space-y-2">
-                    <a href="{{ route('user.posts') }}" class="flex items-center justify-between text-gray-600 hover:text-gray-800">
-                        <span class="font-medium">My Posts</span>
+                <div class="mt-4">
+                    <a href="{{ route('user.posts') }}" class="flex items-center justify-between text-gray-600 hover:text-gray-800 transition duration-150 ease-in-out">
+                        <span>My Posts</span>
                         <i class="bi bi-chevron-right"></i>
                     </a>
-                    <a href="{{ route('user.comments') }}" class="flex items-center justify-between text-gray-600 hover:text-gray-800">
-                        <span class="font-medium">My Comments</span>
+                    <a href="{{ route('user.comments') }}" class="flex items-center justify-between text-gray-600 hover:text-gray-800 transition duration-150 ease-in-out mt-2">
+                        <span>My Comments</span>
                         <i class="bi bi-chevron-right"></i>
                     </a>
                 </div>
@@ -127,9 +136,8 @@
             {{-- Community Rules --}}
             <div class="flex flex-col bg-white shadow-lg rounded-md p-4 space-y-4">
                 <h2 class="font-bold text-lg">Community rules</h2>
-
-                {{-- Rule 1 --}}
-                <div>
+                <div class="flex flex-col space-y-2">
+                    {{-- Rule 1 --}}
                     <button class="w-full text-left font-medium text-gray-600 hover:text-gray-800 flex justify-between items-center" onclick="toggleRule('rule1')">
                         No Offensive Content
                         <i id="arrow-rule1" class="bi bi-chevron-down transition-transform"></i>
@@ -138,10 +146,8 @@
                         Do not post "offensive" posts or links. Any material which constitutes defamation, harassment, or abuse is strictly prohibited. Material that is sexually or otherwise obscene, racist, or overly discriminatory is not permitted. Any violations will lead to an immediate ban.
                     </p>
                     <hr class="my-2 border-gray-300">
-                </div>
 
-                {{-- Rule 2 --}}
-                <div>
+                    {{-- Rule 2 --}}
                     <button class="w-full text-left font-medium text-gray-600 hover:text-gray-800 flex justify-between items-center" onclick="toggleRule('rule2')">
                         No Spam or Advertising
                         <i id="arrow-rule2" class="bi bi-chevron-down transition-transform"></i>
@@ -150,10 +156,8 @@
                         We define spam as unsolicited advertisement for goods, services and/or other websites, or posts with little, or completely unrelated content. Do not spam the forum with links to your site or product, or try to self-promote your website, business or forum etc.
                     </p>
                     <hr class="my-2 border-gray-300">
-                </div>
 
-                {{-- Rule 3 --}}
-                <div>
+                    {{-- Rule 3 --}}
                     <button class="w-full text-left font-medium text-gray-600 hover:text-gray-800 flex justify-between items-center" onclick="toggleRule('rule3')">
                         No Illegal Activity
                         <i id="arrow-rule3" class="bi bi-chevron-down transition-transform"></i>
@@ -162,10 +166,8 @@
                         Posts suggesting, seeking advice about, or otherwise promoting illegal activity are not permitted. This includes posts containing or seeking copyright infringing material.
                     </p>
                     <hr class="my-2 border-gray-300">
-                </div>
 
-                {{-- Rule 4 --}}
-                <div>
+                    {{-- Rule 4 --}}
                     <button class="w-full text-left font-medium text-gray-600 hover:text-gray-800 flex justify-between items-center" onclick="toggleRule('rule4')">
                         Be Respectful
                         <i id="arrow-rule4" class="bi bi-chevron-down transition-transform"></i>
