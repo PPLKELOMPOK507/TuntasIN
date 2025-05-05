@@ -27,6 +27,10 @@ class Jasa extends Model
     }
     public function penyedia()
     {
-    return $this->belongsTo(User::class, 'penyedia_id');
+        return $this->belongsTo(User::class, 'penyedia_id');
+    }
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
     }
 }
