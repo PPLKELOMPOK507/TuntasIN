@@ -8,6 +8,8 @@ use App\Http\Controllers\JasaController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CategoryController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -64,4 +66,27 @@ Route::get('/provider/{id}', [ProviderController::class, 'show'])->name('provide
 
 // Route untuk melihat detail jasa
 Route::get('/jasa/{id}', [JasaController::class, 'show'])->name('jasa.detail');
+
+// Admin Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin', function () {
+        if (auth()->user()->role !== 'Admin') {
+            return redirect()->route('dashboard');
+        }
+        $jasa = \App\Models\Jasa::with('user')->get();
+        $totalUsers = \App\Models\User::count();
+        $users = \App\Models\User::all(); // Add this line
+        $categories = \App\Models\Category::withCount('services')->get();
+        
+        return view('admin', compact('jasa', 'totalUsers', 'categories', 'users'));
+    })->name('admin.dashboard');
+    
+    Route::delete('/admin/jasa/{id}', [AdminController::class, 'destroyJasa'])->name('admin.jasa.destroy');
+    Route::delete('/admin/users/{id}', [AdminController::class, 'destroyUser'])
+        ->name('admin.users.destroy');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
+});
 
