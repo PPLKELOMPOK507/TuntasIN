@@ -123,7 +123,7 @@
                                     <p>{{ $item->deskripsi }}</p>
                                     <span class="service-price">Rp {{ number_format($item->minimal_harga, 0, ',', '.') }}</span>
                                     <div class="service-actions">
-                                        <a href="{{ route('jasa.detail', $item->id) }}" class="view-service-btn">
+                                        <a href="{{ route('jasa.detail', $item->id) }}" class="view-service-btn" >
                                             Lihat Detail Jasa
                                         </a>
                                     </div>

@@ -156,19 +156,19 @@
         }
 
         .btn-primary-custom {
-            background: #4e73df;
+            background: #75C5F0;
             color: white;
         }
 
         .btn-primary-custom:hover {
-            background: #3a5ec2;
+            background: #75C5F0;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(78, 115, 223, 0.3);
         }
 
         .btn-secondary-custom {
             background: #fff;
-            color: #4e73df;
+            color: #75C5F0;
             border: 1px solid #4e73df;
         }
 
@@ -222,7 +222,7 @@
         .package-price {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #4e73df;
+            color: #75C5F0;
             margin-bottom: 10px;
         }
 
@@ -318,7 +318,7 @@
                         <li><i class="bi bi-shield-check"></i> Garansi Kepuasan</li>
                     </ul>
 
-                    <a href="#" class="btn-custom btn-primary-custom">Pesan Sekarang</a>
+                    <a href="{{ route('pesanan.create', $jasa->id) }}" class="btn-custom btn-primary-custom">Pesan Sekarang</a>
                     <a href="#" class="btn-custom btn-secondary-custom">Hubungi Penjual</a>
                 </div>
             </div>
