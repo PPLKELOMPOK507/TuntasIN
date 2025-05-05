@@ -11,6 +11,7 @@ use App\Http\Controllers\ForumController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\DiscussionController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -93,5 +94,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comment.update');
     Route::get('/my-comments', [CommentController::class, 'myComments'])->name('user.comments');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
+    Route::get('/forum/discussion/create', [DiscussionController::class, 'create'])->name('discussion.create');
+    Route::get('/forum/discussions', [DiscussionController::class, 'index'])->name('forum.index');
+    Route::post('/forum/discussions', [DiscussionController::class, 'store'])->name('discussion.store');
+    Route::get('/forum/discussions/{id}', [DiscussionController::class, 'show'])->name('discussion.show');
+    Route::delete('/forum/discussions/{id}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
 });
 

@@ -95,7 +95,7 @@
                     <img src="{{ asset('images/discussion-forum-logo.jpg') }}" alt="Discussion Forum Logo" class="w-32 h-32 object-contain">
                     <h1 class="font-semibold text-xl">No Discussions yet!</h1>
                     <p class="text-gray-500">Be the first to start a discussion in this forum</p>
-                    <a href="{{ route('forum.create') }}" class="px-6 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 transition duration-150 ease-in-out">
+                    <a href="{{ route('discussion.create') }}" class="px-6 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 transition duration-150 ease-in-out">
                         Start a Discussion
                     </a>
                 </div>
