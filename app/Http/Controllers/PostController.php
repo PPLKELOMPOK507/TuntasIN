@@ -6,6 +6,8 @@ use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Discussion;
+
 
 class PostController extends Controller
 {
@@ -13,8 +15,10 @@ class PostController extends Controller
     {
         $categories = Category::all();
         $posts = Post::with('user', 'category', 'likes', 'comments')->latest()->get();
-        return view('main.posts.forum', compact('posts', 'categories'));
+        $discussions = Discussion::with('user')->latest()->get(); // Tambahkan ini
+        return view('main.posts.forum', compact('posts', 'categories', 'discussions'));
     }
+    
 
     public function create()
     {

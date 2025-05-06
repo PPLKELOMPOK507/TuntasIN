@@ -4,18 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Discussion;
 use Illuminate\Http\Request;
+use App\Models\Post;
+use App\Models\Category;
+
 
 class DiscussionController extends Controller
 {
     // Menampilkan daftar diskusi
-    public function index()
-    {
-        // Ambil semua diskusi dengan pagination
-        $discussions = Discussion::latest()->paginate(10);
 
-        // Kirim data ke view
-        return view('main.posts.forum', compact('discussions'));
-    }
+public function index()
+{
+    $discussions = Discussion::latest()->paginate(10);
+    $categories = Category::all();
+    $posts = Post::latest()->take(5)->get(); // Contoh pengambilan post terbaru
+
+    return view('main.posts.forum', compact('discussions', 'categories', 'posts'));
+}
+
 
     // Menampilkan halaman untuk membuat diskusi baru
     public function create()
@@ -59,14 +64,5 @@ class DiscussionController extends Controller
         $discussion->delete();
 
         return redirect()->route('forum.index')->with('success', 'Discussion deleted successfully!');
-    }
-}
-
-class ForumController extends Controller
-{
-    public function index()
-    {
-        // Ambil data yang diperlukan untuk halaman forum
-        return view('main.posts.forum'); // Pastikan view ini ada
     }
 }

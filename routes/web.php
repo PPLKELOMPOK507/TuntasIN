@@ -7,7 +7,6 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\JasaController;
 use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\ForumController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProviderController;
@@ -58,7 +57,7 @@ Route::delete('/jasa/{id}', [JasaController::class, 'destroy'])->name('jasa.dest
 Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
 
 // Forum Routes
-Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
+Route::get('/forum/discussions', [DiscussionController::class, 'index'])->name('forum.index');
 
 // Menampilkan semua jasa dari semua penyedia jasa
 Route::get('/semua-jasa', [JasaController::class, 'allServices'])->name('jasa.semua');
@@ -72,6 +71,7 @@ Route::get('/jasa/{id}', [JasaController::class, 'show'])->name('jasa.detail');
 // Route untuk forum page
 Route::middleware(['auth'])->group(function () {
     Route::get('/forum', [PostController::class, 'index'])->name('forum');
+
     Route::post('/forum/{post}/like', [LikeController::class, 'toggle'])->name('post.like');
     Route::post('posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::get('/forum/create', [PostController::class, 'create'])->name('forum.create');

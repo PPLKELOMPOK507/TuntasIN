@@ -14,18 +14,10 @@ class Discussion extends Model
         'content',
         'user_id',
     ];
-}
-
-namespace App\Http\Controllers;
-
-use App\Models\Discussion;
-use Illuminate\Http\Request;
-
-class DiscussionController extends Controller
+    public function user()
 {
-    public function index()
-    {
-        $discussions = Discussion::latest()->paginate(10); // Ambil semua diskusi dengan pagination
-        return view('main.posts.forum', compact('discussions')); // Pastikan view ini ada
-    }
+    return $this->belongsTo(User::class);
 }
+
+}
+
