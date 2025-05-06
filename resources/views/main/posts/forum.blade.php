@@ -70,29 +70,6 @@
                     </div>
                 @endforelse
             </div>
-
-            {{-- Discussions --}}
-            <div class="bg-white rounded-md p-6 shadow-md">
-                <h1 class="font-bold text-xl mb-4">Discussion Forum</h1>
-                @if (isset($discussions) && $discussions->count())
-                    @foreach ($discussions as $discussion)
-                        <div class="border-b py-4">
-                            <h3 class="text-md font-semibold">{{ $discussion->title }}</h3>
-                            <p class="text-sm text-gray-500">Posted by {{ $discussion->user->name ?? 'Unknown' }} on {{ $discussion->created_at->format('d M Y') }}</p>
-                            <a href="{{ route('discussion.show', $discussion->id) }}" class="text-blue-600 text-sm hover:underline">Read More</a>
-                        </div>
-                    @endforeach
-                @else
-                    <div class="flex flex-col items-center justify-center gap-4">
-                        <img src="{{ asset('images/discussion-forum-logo.jpg') }}" alt="Discussion Forum Logo" class="w-32 h-32 object-contain">
-                        <h1 class="font-semibold text-xl">No Discussions yet!</h1>
-                        <p class="text-gray-500">Be the first to start a discussion in this forum</p>
-                        <a href="{{ route('discussion.create') }}" class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
-                            Start a Discussion
-                        </a>
-                    </div>
-                @endif
-            </div>
         </div>
 
         {{-- Sidebar --}}
