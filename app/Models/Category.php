@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Category;
 
 class Category extends Model
 {
@@ -15,4 +16,12 @@ class Category extends Model
     {
         return $this->hasMany(Post::class);
     }
+
+
+    public function index()
+    {
+    $categories = Category::all(); // Ambil semua kategori
+    return view('main.posts.forum', compact('categories'));
+    }   
 }
+

@@ -12,8 +12,8 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->string('title');
-            $table->text('content')->nullable()->after('title');
-            $table->text('body')->nullable()->after('title'); // Tambahkan kolom body
+            $table->text('content')->nullable();
+            $table->text('body')->nullable(); // Tambahkan kolom body
             $table->timestamps();
         });
     }
