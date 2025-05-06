@@ -58,7 +58,7 @@ Route::delete('/jasa/{id}', [JasaController::class, 'destroy'])->name('jasa.dest
 Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
 
 // Forum Routes
-Route::get('/forum', [ForumController::class, 'index'])->name('forum');
+Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
 
 // Menampilkan semua jasa dari semua penyedia jasa
 Route::get('/semua-jasa', [JasaController::class, 'allServices'])->name('jasa.semua');

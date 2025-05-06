@@ -10,8 +10,11 @@ class DiscussionController extends Controller
     // Menampilkan daftar diskusi
     public function index()
     {
-        $discussions = Discussion::latest()->paginate(10); // Pagination untuk daftar diskusi
-        return view('main.posts.discussions', compact('discussions'));
+        // Ambil semua diskusi dengan pagination
+        $discussions = Discussion::latest()->paginate(10);
+
+        // Kirim data ke view
+        return view('main.posts.forum', compact('discussions'));
     }
 
     // Menampilkan halaman untuk membuat diskusi baru
@@ -56,5 +59,14 @@ class DiscussionController extends Controller
         $discussion->delete();
 
         return redirect()->route('forum.index')->with('success', 'Discussion deleted successfully!');
+    }
+}
+
+class ForumController extends Controller
+{
+    public function index()
+    {
+        // Ambil data yang diperlukan untuk halaman forum
+        return view('main.posts.forum'); // Pastikan view ini ada
     }
 }
