@@ -13,8 +13,8 @@ class ProfileController extends Controller
         $user = auth()->user();
         
         $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
+            'last_name' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
             'current_password' => 'required_with:new_password',
             'new_password' => 'nullable|min:8|confirmed',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',

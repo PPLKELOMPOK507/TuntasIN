@@ -1,7 +1,7 @@
 .profile-container {
-    max-width: 800px;
+    max-width: 1000px; /* Increased from 800px */
     margin: 2rem auto;
-    padding: 0 1rem;
+    padding: 0 2rem; /* Increased padding */
 }
 
 .profile-header {
@@ -20,8 +20,9 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     padding: 2.5rem;
     display: grid;
-    grid-template-columns: 220px 1fr;
+    grid-template-columns: 250px 1fr; /* Adjusted column width */
     gap: 3rem;
+    width: 100%; /* Ensure full width */
 }
 
 .profile-photo {
@@ -71,11 +72,13 @@
 .profile-info {
     display: grid;
     gap: 2rem;
+    width: 100%; /* Ensure full width */
 }
 
 .info-group {
     display: grid;
     gap: 0.5rem;
+    width: 100%; /* Ensure full width */
 }
 
 .info-group label {
@@ -91,6 +94,7 @@
     border-radius: 6px;
     font-size: 0.95rem;
     transition: all 0.2s;
+    box-sizing: border-box;
 }
 
 .profile-input:focus {
@@ -106,6 +110,7 @@
     background: #f8f9fa;
     border-radius: 6px;
     border: 1px solid #e9ecef;
+    box-sizing: border-box;
 }
 
 /* Password Section Styling */
@@ -136,27 +141,10 @@
     align-items: center;
 }
 
-.password-toggle {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    padding: 4px;
-    color: #6c757d;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.password-toggle:hover {
-    color: #0077cc;
-}
 
 .password-input {
     padding-right: 40px !important;
+    box-sizing: border-box;
 }
 
 /* CV Section Styling */
@@ -295,6 +283,13 @@
     background-color: #f0fdf4;
     border: 1px solid #dcfce7;
     color: #16a34a;
+}
+
+@media (max-width: 1024px) {
+    .profile-container {
+        max-width: 95%;
+        padding: 0 1rem;
+    }
 }
 
 @media (max-width: 768px) {

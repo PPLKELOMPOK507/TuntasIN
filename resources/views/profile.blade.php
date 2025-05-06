@@ -105,44 +105,29 @@
                         </h3>
                         <div class="info-group">
                             <label for="current_password">Current Password</label>
-                            <div class="password-field-group">
-                                <input type="password" 
-                                       id="current_password" 
-                                       name="current_password" 
-                                       class="profile-input password-input"
-                                       placeholder="Enter your current password">
-                                <button type="button" class="password-toggle" onclick="togglePassword('current_password')">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
+                            <input type="password" 
+                                   id="current_password" 
+                                   name="current_password" 
+                                   class="profile-input"
+                                   placeholder="Enter your current password">
                         </div>
 
                         <div class="info-group">
                             <label for="new_password">New Password</label>
-                            <div class="password-field-group">
-                                <input type="password" 
-                                       id="new_password" 
-                                       name="new_password" 
-                                       class="profile-input password-input"
-                                       placeholder="Enter new password">
-                                <button type="button" class="password-toggle" onclick="togglePassword('new_password')">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
+                            <input type="password" 
+                                   id="new_password" 
+                                   name="new_password" 
+                                   class="profile-input"
+                                   placeholder="Enter new password">
                         </div>
 
                         <div class="info-group">
                             <label for="new_password_confirmation">Confirm New Password</label>
-                            <div class="password-field-group">
-                                <input type="password" 
-                                       id="new_password_confirmation" 
-                                       name="new_password_confirmation" 
-                                       class="profile-input password-input"
-                                       placeholder="Confirm your new password">
-                                <button type="button" class="password-toggle" onclick="togglePassword('new_password_confirmation')">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
+                            <input type="password" 
+                                   id="new_password_confirmation" 
+                                   name="new_password_confirmation" 
+                                   class="profile-input"
+                                   placeholder="Confirm your new password">
                         </div>
                     </div>
 
