@@ -128,10 +128,10 @@
             <div class="bg-white rounded-md p-4 shadow-md">
                 <h2 class="font-bold text-lg mb-4">Community Rules</h2>
                 @foreach ([
-                    'No Offensive Content' => 'Do not post offensive, obscene, or discriminatory content...',
-                    'No Spam or Advertising' => 'Avoid unsolicited ads or irrelevant links...',
-                    'No Illegal Activity' => 'No promotion or discussion of illegal activities...',
-                    'Be Respectful' => 'Maintain professionalism and courtesy at all times...'
+                    'No Offensive Content' => 'Do not post “offensive” posts or links. Any material which constitutes defamation, harassment, or abuse is strictly prohibited. Material that is sexually or otherwise obscene, racist, or otherwise overly discriminatory is not permitted. Any violations will lead to an immediate ban.',
+                    'No Spam or Advertising' => 'We define spam as unsolicited advertisement for goods, services and/or other web sites, or posts with little, or completely unrelated content. Do not spam the forum with links to your site or product, or try to self-promote your website, business or forum etc.',
+                    'No Illegal Activity' => 'Posts suggesting, seeking advice about, or otherwise promoting illegal activity are not permitted. This includes posts containing or seeking copyright infringing material.',
+                    'Be Respectful' => 'All posts should be professional and courteous. You have every right to disagree with your fellow community members and explain your perspective. However, you are not free to attack, degrade, insult, or otherwise belittle others.'
                 ] as $title => $description)
                     <div>
                         <button class="w-full text-left text-gray-600 font-medium hover:text-gray-800 flex justify-between items-center" onclick="toggleRule('{{ Str::slug($title) }}')">

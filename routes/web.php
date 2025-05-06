@@ -89,6 +89,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('post.edit');
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('post.update');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('post.destroy');
+    Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+
     Route::get('/my-posts', [PostController::class, 'myPosts'])->name('user.posts');
     Route::get('/comments/{comment}/edit', [CommentController::class, 'edit'])->name('comment.edit');
     Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comment.update');
