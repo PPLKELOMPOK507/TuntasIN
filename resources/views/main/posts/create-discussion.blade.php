@@ -5,8 +5,8 @@
     <div class="bg-white rounded-md shadow-md p-6">
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold">Create New Discussion</h1>
-            <a href="{{ route('forum.index') }}" class="text-blue-500 hover:underline flex items-center">
-                ← Back to Forum
+            <a href="{{ route('forum') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-600 text-sm font-medium rounded-full hover:bg-gray-100 transition duration-150 ease-in-out">
+                <i class="bi bi-arrow-left mr-2"></i> Back to Forum
             </a>
         </div>
         <div class="bg-green-100 text-green-800 p-4 rounded-md mb-6">
