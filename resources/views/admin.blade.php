@@ -266,6 +266,8 @@
 
 @push('scripts')
 <script>
+
+    
 document.addEventListener('DOMContentLoaded', function() {
     // Search functionality
     const searchInput = document.querySelector('.search-bar input');
