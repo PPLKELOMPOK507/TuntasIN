@@ -127,6 +127,66 @@
   </script>
   
   <link rel="stylesheet" href="{{ asset('css/payment.css') }}">
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Validasi nama saat submit (bukan saat input)
+        const nameInputs = document.querySelectorAll('input[name="full_name"], input[name="seller_name"]');
+        
+        // Validasi nomor telepon saat input (hanya angka tapi bisa dihapus)
+        const phoneInput = document.querySelector('input[name="phone"]');
+        phoneInput.addEventListener('input', function(e) {
+            // Izinkan delete dan backspace
+            if (e.inputType === 'deleteContentBackward') return;
+            
+            // Filter hanya angka
+            const numbersOnly = this.value.replace(/[^\d]/g, '');
+            this.value = numbersOnly;
+            
+            // Batasi panjang max 13 digit
+            if (this.value.length > 13) {
+                this.value = this.value.slice(0, 13);
+            }
+        });
+
+        // Validasi form saat submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            // Validasi format nama
+            nameInputs.forEach(input => {
+                const nameRegex = /^[a-zA-Z\s]+$/;
+                if (!nameRegex.test(input.value)) {
+                    e.preventDefault();
+                    alert('Nama hanya boleh berisi huruf');
+                    input.focus();
+                    return false;
+                }
+            });
+
+            // Validasi format nomor telepon
+            const phone = phoneInput.value;
+            if (phone.length < 10) {
+                e.preventDefault();
+                alert('Nomor telepon minimal 10 digit');
+                phoneInput.focus();
+                return false;
+            }
+            
+            if (phone.length > 13) {
+                e.preventDefault();
+                alert('Nomor telepon maksimal 13 digit');
+                phoneInput.focus();
+                return false;
+            }
+            
+            if (!/^\d+$/.test(phone)) {
+                e.preventDefault();
+                alert('Nomor telepon hanya boleh berisi angka');
+                phoneInput.focus();
+                return false;
+            }
+        });
+    });
+  </script>
 </head>
 <body class="bg-gray-100 min-h-screen">
   <nav class="nav-container">
@@ -156,14 +216,30 @@
           <h2 class="text-2xl font-semibold mb-6">Informasi Pembayaran</h2>
           <div class="mb-5">
             <label class="block font-medium mb-2">Nama Lengkap</label>
-            <input type="text" name="full_name" class="w-full border p-4 rounded text-lg" placeholder="Nama Anda" value="{{ old('full_name') }}" required />
+            <input 
+                type="text" 
+                name="full_name" 
+                class="w-full border p-4 rounded text-lg"
+                placeholder="Nama Anda"
+                value="{{ old('full_name') }}"
+                required
+            />
+            <span class="error-message" id="full_name_error">Nama hanya boleh berisi huruf</span>
             @error('full_name')
               <span class="text-red-500 text-sm">{{ $message }}</span>
             @enderror
           </div>
           <div class="mb-5">
             <label class="block font-medium mb-2">Nomor HP</label>
-            <input type="text" name="phone" class="w-full border p-4 rounded text-lg" placeholder="08xxxxxxxxxx" value="{{ old('phone') }}" required />
+            <input 
+                type="tel" 
+                name="phone" 
+                class="w-full border p-4 rounded text-lg"
+                placeholder="08xxxxxxxxxx"
+                value="{{ old('phone') }}"
+                required
+            />
+            <span class="error-message" id="phone_error">Nomor telepon harus 10-13 digit angka</span>
             @error('phone')
               <span class="text-red-500 text-sm">{{ $message }}</span>
             @enderror

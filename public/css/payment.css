@@ -67,17 +67,55 @@ input, textarea, button {
   font-size: 1rem;
 }
 
+/* Style untuk input saat normal */
+input {
+    border: 1px solid #d1d5db;
+    transition: all 0.3s ease;
+}
+
+/* Style untuk input saat focus */
+input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* Style untuk input tidak valid hanya setelah submit */
+input.error {
+    border-color: #dc3545;
+}
+
+input.error:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Style untuk pesan error */
+.error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+}
+
 input, textarea {
-  border: 1px solid #d1d5db;
   padding: 0.75rem;
   border-radius: 0.375rem;
   width: 100%;
 }
 
-input:focus, textarea:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+/* Tambahkan style untuk input tidak valid */
+input:invalid {
+    border-color: #dc3545;
+}
+
+input:invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
 button {

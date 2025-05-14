@@ -54,13 +54,46 @@ class PaymentController extends Controller
 
     public function submitPayment(Request $request)
     {
-        // Simulasi status pembayaran (berhasil/gagal)
-        $paymentSuccess = rand(0, 1) === 1; // Random untuk simulasi
+        // Validasi input
+        $validated = $request->validate([
+            'full_name' => 'required|regex:/^[a-zA-Z\s]+$/|max:255', // Hanya huruf dan spasi
+            'phone' => 'required|regex:/^[0-9]+$/|min:10|max:13', // Hanya angka, 10-13 digit
+            'address' => 'required|string',
+            'seller_name' => 'required|regex:/^[a-zA-Z\s]+$/', // Hanya huruf dan spasi
+            'service_description' => 'required|string',
+            'payment_method' => 'required|in:credit_card,bank_transfer,e_wallet,qris'
+        ], [
+            'full_name.regex' => 'Nama lengkap hanya boleh berisi huruf',
+            'phone.regex' => 'Nomor telepon hanya boleh berisi angka',
+            'phone.min' => 'Nomor telepon minimal 10 digit',
+            'phone.max' => 'Nomor telepon maksimal 13 digit',
+            'seller_name.regex' => 'Nama penjual hanya boleh berisi huruf'
+        ]);
 
-        if ($paymentSuccess) {
-            return redirect()->route('dashboard')->with('status', 'success')->with('message', 'Pembayaran berhasil diproses.');
-        } else {
-            return redirect()->route('dashboard')->with('status', 'error')->with('message', 'Pembayaran gagal. Silakan coba lagi.');
+        try {
+            // Generate payment reference
+            $paymentReference = 'PAY-' . uniqid();
+
+            // Simulasi pembayaran (70% berhasil, 30% gagal)
+            $isSuccessful = (rand(1, 100) <= 70);
+
+            if ($isSuccessful) {
+                return redirect()
+                    ->route('dashboard')
+                    ->with('status', 'success')
+                    ->with('message', "Pembayaran berhasil! Reference: {$paymentReference}");
+            } else {
+                return redirect()
+                    ->route('dashboard')
+                    ->with('status', 'error')
+                    ->with('message', 'Pembayaran gagal. Silakan coba lagi.');
+            }
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('status', 'error')
+                ->with('message', 'Terjadi kesalahan sistem. Silakan coba lagi.');
         }
     }
 }
