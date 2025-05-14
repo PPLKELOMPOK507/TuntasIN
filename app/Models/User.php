@@ -26,6 +26,7 @@ class User extends Authenticatable
         'photo',
         'cv_file', // Add this
         'password',
+        'address'
     ];
 
     /**

@@ -98,6 +98,18 @@
                         <p class="static-info">{{ Auth::user()->mobile_number }}</p>
                     </div>
 
+                    @if(Auth::user()->role === 'Pengguna Jasa')
+                        <div class="info-group">
+                            <label for="address">Address</label>
+                            <textarea 
+                                id="address" 
+                                name="address" 
+                                class="profile-input" 
+                                rows="3" 
+                                placeholder="Enter your address">{{ Auth::user()->address }}</textarea>
+                        </div>
+                    @endif
+
                     <div class="password-section">
                         <h3>
                             <i class="fas fa-lock"></i>
