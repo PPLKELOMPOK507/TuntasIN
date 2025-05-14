@@ -235,7 +235,7 @@
 </style>
 @endpush
 
-@push('scripts')
+@push('scripts') 
 <script>
     // Update price when custom price changes
     function updatePrice(value) {
