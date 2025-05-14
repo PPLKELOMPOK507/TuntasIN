@@ -10,14 +10,20 @@ class AdminPaymentController extends Controller
     // Menampilkan daftar pembayaran
     public function index()
     {
-        $payments = Payment::all(); // Ambil semua data pembayaran
+        $payments = Payment::orderBy('created_at', 'desc')->get(); // Urutkan berdasarkan tanggal terbaru
         return view('admin.payments.index', compact('payments'));
     }
 
     // Menampilkan detail pembayaran
     public function show($id)
     {
-        $payment = Payment::findOrFail($id); // Ambil data pembayaran berdasarkan ID
+        $payment = Payment::find($id);
+
+        if (!$payment) {
+            return redirect()->route('admin.payments.index')
+                ->with('error', 'Pembayaran tidak ditemukan.');
+        }
+
         return view('admin.payments.show', compact('payment'));
     }
 
@@ -28,7 +34,13 @@ class AdminPaymentController extends Controller
             'status' => 'required|in:pending,completed,failed',
         ]);
 
-        $payment = Payment::findOrFail($id);
+        $payment = Payment::find($id);
+
+        if (!$payment) {
+            return redirect()->route('admin.payments.index')
+                ->with('error', 'Pembayaran tidak ditemukan.');
+        }
+
         $payment->status = $request->status;
         $payment->save();
 
