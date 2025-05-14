@@ -108,6 +108,17 @@
                                 rows="3" 
                                 placeholder="Enter your address">{{ Auth::user()->address }}</textarea>
                         </div>
+
+                        <div class="info-group">
+                            <label for="description">Description</label>
+                            <textarea 
+                                id="description" 
+                                name="description" 
+                                class="profile-input" 
+                                rows="4" 
+                                placeholder="Tell us about yourself">{{ Auth::user()->description }}</textarea>
+                            <small class="form-text text-muted">Share some information about yourself, your interests, or what kind of services you're looking for.</small>
+                        </div>
                     @endif
 
                     <div class="password-section">
