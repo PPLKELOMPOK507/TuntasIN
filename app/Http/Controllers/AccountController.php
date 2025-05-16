@@ -32,25 +32,36 @@ class AccountController extends Controller
         ]);
     }
     
-    /**
-     * Process a withdrawal request
-     */
     public function withdraw(Request $request)
     {
-        // Validate the request
-        $validated = $request->validate([
-            'amount' => 'required|numeric|min:1',
-            'bank_account' => 'required|string',
-        ]);
-        
-        $user = Auth::user();
-        
-        // Check if user has sufficient balance
-        if ($validated['amount'] > ($user->balance ?? 0)) {
-            return back()->with('error', 'Insufficient balance for withdrawal');
-        }
-        
-        
-        return redirect()->route('account.balance')->with('success', 'Withdrawal request submitted successfully');
+    // Validasi dasar amount dan withdraw_method
+    $validated = $request->validate([
+        'amount' => 'required|numeric|min:1',
+        'withdraw_method' => 'required|in:bank,ewallet',
+        // Kondisional validasi sesuai metode:
+        'bank_account' => 'required_if:withdraw_method,bank|string',
+        'ewallet_phone' => 'required_if:withdraw_method,ewallet|string',
+    ]);
+
+    $user = Auth::user();
+
+    if ($validated['amount'] > ($user->balance ?? 0)) {
+        return back()->with('error', 'Saldo tidak cukup untuk penarikan');
     }
+
+    if ($validated['withdraw_method'] === 'bank') {
+        $account = $validated['bank_account'];
+        // Proses penarikan via bank dengan nomor rekening $account
+    } elseif ($validated['withdraw_method'] === 'ewallet') {
+        $phone = $validated['ewallet_phone'];
+        // Proses penarikan via e-wallet dengan nomor telepon $phone
+    } else {
+        return back()->with('error', 'Metode penarikan tidak valid');
+    }
+
+    // Contoh: buat record penarikan atau proses lain di sini
+
+    return redirect()->route('account.balance')->with('success', 'Permintaan penarikan berhasil diajukan');
+    }
+
 }

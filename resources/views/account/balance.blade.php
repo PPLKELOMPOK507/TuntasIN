@@ -39,6 +39,7 @@
             <div class="modal-body">
                 <form id="withdrawForm" action="{{ route('account.withdraw') }}" method="POST">
                     @csrf
+
                     <div class="form-group mb-3">
                         <label for="withdrawAmount">Masukkan jumlah untuk ditarik</label>
                         <input type="text" class="form-control" id="withdrawAmount" name="amount" placeholder="0">
@@ -46,26 +47,37 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="bankAccount">Penarikan ke</label>
-                        <div class="bank-select">
-                            <div>
-                                ID_BCA<br>
-                                <span class="account-number">3491266986</span><br>
-                                Gabriel
+                    <label class="form-label mb-2">Pilih Metode Penarikan</label>
+
+                    <div class="flex flex-col gap-2">
+                        <label class="payment-card">
+                            <input type="radio" name="withdraw_method" value="bank" class="peer me-2" checked>
+                            <div class="card-content">
+                                <span>🏦</span>
+                                <span>Transfer Bank</span>
                             </div>
-                            <span class="chevron-down">▼</span>
-                        </div>
+                        </label>
+
+                        <label class="payment-card">
+                            <input type="radio" name="withdraw_method" value="ewallet" class="peer me-2">
+                            <div class="card-content">
+                                <span>📱</span>
+                                <span>E-Wallet</span>
+                            </div>
+                        </label>
                     </div>
 
-                    <button type="button" class="add-bank-btn">
-                        <span class="plus-icon">+</span> Tambahkan rekening bank Anda
-                    </button>
-
-                    <div class="withdraw-settings">
-                        <input type="checkbox" id="withdrawSettings" name="withdraw_settings">
-                        <label for="withdrawSettings">Pengaturan Tarik Dana</label>
+                    <div id="bankField" class="mt-3">
+                        <label for="bankAccount" class="form-label">Nomor Rekening</label>
+                        <input type="text" id="bankAccount" name="bank_account" class="form-control" placeholder="Masukkan nomor rekening">
                     </div>
 
+                    <div id="ewalletField" class="mt-3" style="display:none;">
+                        <label for="ewalletPhone" class="form-label">Nomor Telepon</label>
+                        <input type="text" id="ewalletPhone" name="ewallet_phone" class="form-control" placeholder="Masukkan nomor telepon">
+                    </div>
+                </div>
+            
                     <div class="action-buttons">
                         <button type="button" class="btn-cancel" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn-submit" id="submitWithdraw" disabled>Kirim</button>
@@ -326,11 +338,6 @@
         color: #6c757d;
     }
 
-    .chevron-down {
-        color: #6c757d;
-        font-size: 0.7rem;
-    }
-
     .add-bank-btn {
         width: 100%;
         text-align: center;
@@ -396,6 +403,41 @@
         cursor: pointer;
     }
 
+    .payment-option {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    }
+
+    .payment-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .payment-card .card-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .payment-card input:checked ~ .card-content {
+        font-weight: bold;
+    }
+
+    .payment-card input:checked ~ .card-content span {
+        color: #0d6efd;
+    }
+
+    .hidden {
+        display: none;
+    }
+
     @media (max-width: 576px) {
         .modal-dialog.modal-sm {
             margin: 10px;
@@ -407,23 +449,27 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const withdrawAmount = document.getElementById('withdrawAmount');
-        const submitButton = document.getElementById('submitWithdraw');
+document.addEventListener('DOMContentLoaded', function () {
+    const ewalletField = document.getElementById('ewalletField');
+    const ewalletPhoneInput = document.getElementById('ewalletPhone');
+    const radios = document.querySelectorAll('input[name="withdraw_method"]');
 
-        withdrawAmount.addEventListener('input', function () {
-            // Hanya angka
-            const amount = parseFloat(this.value.replace(/[^0-9]/g, ''));
-            const balance = {{ Auth::user()->balance ?? 0 }};
+    function toggleFields() {
+        const selected = document.querySelector('input[name="withdraw_method"]:checked');
+        if (!selected) return;
 
-            if (amount > 0 && amount <= balance) {
-                submitButton.classList.add('active');
-                submitButton.disabled = false;
-            } else {
-                submitButton.classList.remove('active');
-                submitButton.disabled = true;
-            }
-        });
-    });
+        if (selected.value === 'ewallet') {
+            ewalletField.style.display = 'block';
+        } else {
+            ewalletField.style.display = 'none';
+            ewalletPhoneInput.value = '';
+        }
+    }
+
+    radios.forEach(radio => radio.addEventListener('change', toggleFields));
+
+    toggleFields(); // Jalankan awal saat load
+});
+
 </script>
 @endpush
