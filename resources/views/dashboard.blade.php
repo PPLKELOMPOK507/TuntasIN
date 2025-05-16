@@ -57,6 +57,13 @@
                 </a>
 
                 @if(Auth::user()->role === 'Penyedia Jasa')
+                    <a href="#" class="menu-item account-balance">
+                        <i class="fas fa-wallet wallet-icon"></i>
+                        <span>My Account Balance</span>
+                    </a>
+                @endif
+
+                @if(Auth::user()->role === 'Penyedia Jasa')
                     <a href="{{ route('sales.history') }}" class="menu-item">
                         <i class="fas fa-history"></i>
                         <span>Riwayat Penjualan</span>
@@ -149,4 +156,20 @@
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
     <link href="{{ asset('css/services.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .account-balance {
+            border-top: 1px solid #eaeaea;
+            border-bottom: 1px solid #eaeaea;
+            padding: 12px 15px;
+        }
+        
+        .account-balance i {
+            color: #808080;
+        }
+        
+        .account-balance span {
+            font-weight: 500;
+        }
+    </style>
+
 @endpush
