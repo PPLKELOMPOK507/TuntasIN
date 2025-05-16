@@ -7,7 +7,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <p class="mb-1">Saldo Tersedia</p>
-                    <h2 class="balance-amount">IDR {{ number_format(Auth::user()->balance ?? 0, 0, ',', '.') }}</h2>
+                    <h2 class="balance-amount">IDR {{ number_format (100000, 0, ',', '.') }}</h2>
                 </div>
                 <div class="col-md-6 text-md-end mt-3 mt-md-0">
                     <div class="balance-actions">
@@ -43,7 +43,7 @@
                     <div class="form-group mb-3">
                         <label for="withdrawAmount">Masukkan jumlah untuk ditarik</label>
                         <input type="text" class="form-control" id="withdrawAmount" name="amount" placeholder="0">
-                        <small class="form-text text-muted">IDR {{ number_format(Auth::user()->balance ?? 0, 0, ',', '.') }} tersedia</small>
+                        <small class="form-text text-muted">IDR {{ number_format(100000, 0, ',', '.') }} tersedia</small>
                     </div>
 
                     <div class="form-group mb-3">
@@ -81,6 +81,7 @@
                     <div class="action-buttons">
                         <button type="button" class="btn-cancel" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn-submit" id="submitWithdraw" disabled>Kirim</button>
+
                     </div>
                 </form>
             </div>
