@@ -11,6 +11,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\DiscussionController;
+use App\Http\Controllers\AccountController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -68,6 +69,16 @@ Route::get('/provider/{id}', [ProviderController::class, 'show'])->name('provide
 // Route untuk melihat detail jasa
 Route::get('/jasa/{id}', [JasaController::class, 'show'])->name('jasa.detail');
 
+Route::middleware(['auth'])->group(function () {
+    // ... your existing routes
+    
+    // Account balance route (for Penyedia Jasa only)
+    Route::get('/account/balance', [AccountController::class, 'balance'])
+        ->middleware('auth')
+        ->name('account.balance');
+    Route::post('/account/withdraw', [AccountController::class, 'withdraw'])->name('account.withdraw');
+});
+
 // Route untuk forum page
 Route::middleware(['auth'])->group(function () {
     Route::get('/forum', [PostController::class, 'index'])->name('forum');
@@ -90,7 +101,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('post.update');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('post.destroy');
     Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
-
     Route::get('/my-posts', [PostController::class, 'myPosts'])->name('user.posts');
     Route::get('/comments/{comment}/edit', [CommentController::class, 'edit'])->name('comment.edit');
     Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comment.update');
@@ -102,4 +112,3 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/forum/discussions/{id}', [DiscussionController::class, 'show'])->name('discussion.show');
     Route::delete('/forum/discussions/{id}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
 });
-

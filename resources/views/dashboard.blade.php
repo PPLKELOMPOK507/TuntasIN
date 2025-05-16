@@ -57,7 +57,7 @@
                 </a>
 
                 @if(Auth::user()->role === 'Penyedia Jasa')
-                    <a href="#" class="menu-item account-balance">
+                    <a href="{{ route('account.balance') }}" class="menu-item account-balance">
                         <i class="fas fa-wallet wallet-icon"></i>
                         <span>My Account Balance</span>
                     </a>
