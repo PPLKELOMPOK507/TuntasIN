@@ -386,16 +386,18 @@
     }
 
     .btn-submit {
-        flex: 1;
-        margin-left: 10px;
-        padding: 10px;
-        border: none;
-        border-radius: 6px;
-        background: #f0f0f0;
-        color: #999;
-        cursor: not-allowed;
-        font-weight: 500;
+    flex: 1;
+    margin-left: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    background-color: #2563eb;
+    color: white;
+    cursor: pointer;
+    opacity: 1;
     }
+
 
     .btn-submit.active {
         background-color: #0d6efd;
@@ -450,26 +452,51 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const ewalletField = document.getElementById('ewalletField');
-    const ewalletPhoneInput = document.getElementById('ewalletPhone');
     const radios = document.querySelectorAll('input[name="withdraw_method"]');
+    const bankField = document.getElementById('bankField');
+    const ewalletField = document.getElementById('ewalletField');
+    const bankAccountInput = document.getElementById('bankAccount');
+    const ewalletPhoneInput = document.getElementById('ewalletPhone');
+    const submitBtn = document.getElementById('submitWithdraw');
+    const amountInput = document.getElementById('withdrawAmount');
 
     function toggleFields() {
-        const selected = document.querySelector('input[name="withdraw_method"]:checked');
-        if (!selected) return;
-
-        if (selected.value === 'ewallet') {
+        const selected = document.querySelector('input[name="withdraw_method"]:checked').value;
+        if (selected === 'ewallet') {
+            bankField.style.display = 'none';
             ewalletField.style.display = 'block';
+            bankAccountInput.value = '';
         } else {
+            bankField.style.display = 'block';
             ewalletField.style.display = 'none';
             ewalletPhoneInput.value = '';
         }
+        validateForm();
+    }
+
+    function validateForm() {
+        const amount = amountInput.value.trim();
+        const selected = document.querySelector('input[name="withdraw_method"]:checked').value;
+        let valid = amount !== '';
+
+        if (selected === 'ewallet') {
+            valid = valid && ewalletPhoneInput.value.trim() !== '';
+        } else {
+            valid = valid && bankAccountInput.value.trim() !== '';
+        }
+
+        submitBtn.disabled = !valid;
     }
 
     radios.forEach(radio => radio.addEventListener('change', toggleFields));
+    amountInput.addEventListener('input', validateForm);
+    bankAccountInput.addEventListener('input', validateForm);
+    ewalletPhoneInput.addEventListener('input', validateForm);
 
-    toggleFields(); // Jalankan awal saat load
-});
-
+    // Jalankan saat modal dibuka
+    const modal = document.getElementById('withdrawModal');
+    modal.addEventListener('shown.bs.modal', toggleFields);
+    });
 </script>
 @endpush
+
