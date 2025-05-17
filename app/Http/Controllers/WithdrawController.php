@@ -11,7 +11,7 @@ class WithdrawalController extends Controller
     public function withdraw(Request $request)
     {
         $request->validate([
-            'amount' => 'required|numeric|min:10000',
+            'amount' => 'required|numeric|min:100000',
             'withdraw_method' => 'required|in:bank,ewallet',
             'bank_account' => 'required_if:withdraw_method,bank',
             'ewallet_phone' => 'required_if:withdraw_method,ewallet',

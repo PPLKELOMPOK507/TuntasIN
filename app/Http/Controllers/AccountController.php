@@ -22,5 +22,15 @@ class AccountController extends Controller
         // Kirim data ke view
         return view('account.balance', compact('withdrawals'));
     }
+
+    public function withdrawals()
+    {
+        $user = auth()->user();
+        $withdrawals = Withdrawal::where('user_id', $user->id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
+        return view('account.withdrawals', compact('withdrawals'));
+    }
     
 }

@@ -13,13 +13,4 @@ class Withdrawal extends Model
         'user_id', 'amount', 'method', 'destination', // contoh field
     ];
 
-    public function balance()
-    {
-        $userId = auth()->id();
-        $withdrawals = Withdrawal::where('user_id', $userId)->orderBy('created_at', 'desc')->get();
-        // Sesuaikan ambil saldo user juga jika ada
-
-        return view('account.balance', compact('withdrawals'));
-    }
-
 }

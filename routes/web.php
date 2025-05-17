@@ -78,11 +78,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('account.balance');
     
     Route::get('/account/balance', [AccountController::class, 'balance'])->name('account.balance');
-
-    // Tampilkan riwayat withdrawal (opsional, jika beda halaman)
     Route::get('/account/withdrawals', [AccountController::class, 'withdrawals'])->name('account.withdrawals');
-
-    // Proses submit withdrawal
     Route::post('/account/withdraw', [WithdrawalController::class, 'withdraw'])->name('account.withdraw');
 });
 

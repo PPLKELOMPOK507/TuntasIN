@@ -44,9 +44,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <form id="withdrawForm" action="{{ route('account.withdraw') }}" method="POST">
                     @csrf
-
                     <div class="form-group mb-3">
                         <label for="withdrawAmount">Masukkan jumlah untuk ditarik</label>
                         <input type="text" class="form-control" id="withdrawAmount" name="amount" placeholder="0">
@@ -88,7 +96,6 @@
                     <div class="action-buttons">
                         <button type="button" class="btn-cancel" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn-submit" id="submitWithdraw" disabled>Kirim</button>
-
                     </div>
                 </form>
             </div>
@@ -467,10 +474,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const ewalletField = document.getElementById('ewalletField');
 
     function toggleSubmit() {
-        submitBtn.disabled = !withdrawAmount.value || parseFloat(withdrawAmount.value) < 10000;
+        submitBtn.disabled = !withdrawAmount.value || parseFloat(withdrawAmount.value) < 100000;
     }
-
     withdrawAmount.addEventListener('input', toggleSubmit);
+
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var myModal = new bootstrap.Modal(document.getElementById('withdrawModal'));
+                myModal.show();
+            });
+        </script>
+    @endif
+
 
     document.querySelectorAll('input[name="withdraw_method"]').forEach(radio => {
         radio.addEventListener('change', function () {

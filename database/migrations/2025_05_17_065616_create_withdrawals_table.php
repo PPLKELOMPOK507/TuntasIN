@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->decimal('amount', 12, 2);
             $table->enum('method', ['bank', 'ewallet']);
-            $table->string('destination')->comment('Rekening bank atau nomor HP e-wallet');
+            $table->integer('destination')->comment('Rekening bank atau nomor HP e-wallet');
             $table->timestamps();
         });
     }
