@@ -76,7 +76,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/account/balance', [AccountController::class, 'balance'])
         ->middleware('auth')
         ->name('account.balance');
-    Route::post('/account/withdraw', [AccountController::class, 'withdraw'])->name('account.withdraw');
+    
+    Route::get('/account/balance', [AccountController::class, 'balance'])->name('account.balance');
+
+    // Tampilkan riwayat withdrawal (opsional, jika beda halaman)
+    Route::get('/account/withdrawals', [AccountController::class, 'withdrawals'])->name('account.withdrawals');
+
+    // Proses submit withdrawal
+    Route::post('/account/withdraw', [WithdrawalController::class, 'withdraw'])->name('account.withdraw');
 });
 
 // Route untuk forum page

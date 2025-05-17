@@ -21,9 +21,16 @@
             <div class="balance-tab active">Riwayat Saldo</div>
         </div>
         <div class="transaction-body">
-            <div class="empty-state">
-                <p>Belum ada riwayat transaksi</p>
-            </div>
+            @forelse ($withdrawals as $withdrawal)
+                <div class="transaction-item">
+                    <p>{{ strtoupper($withdrawal->method) }} ke {{ $withdrawal->destination }}</p>
+                    <p>IDR {{ number_format($withdrawal->amount, 0, ',', '.') }} - {{ $withdrawal->created_at->format('d M Y') }}</p>
+                </div>
+            @empty
+                <div class="empty-state">
+                    <p>Belum ada riwayat transaksi</p>
+                </div>
+            @endforelse
         </div>
     </div>
 </div>
@@ -441,6 +448,7 @@
         display: none;
     }
 
+
     @media (max-width: 576px) {
         .modal-dialog.modal-sm {
             margin: 10px;
@@ -453,51 +461,31 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const radios = document.querySelectorAll('input[name="withdraw_method"]');
+    const withdrawAmount = document.getElementById('withdrawAmount');
+    const submitBtn = document.getElementById('submitWithdraw');
     const bankField = document.getElementById('bankField');
     const ewalletField = document.getElementById('ewalletField');
-    const bankAccountInput = document.getElementById('bankAccount');
-    const ewalletPhoneInput = document.getElementById('ewalletPhone');
-    const submitBtn = document.getElementById('submitWithdraw');
-    const amountInput = document.getElementById('withdrawAmount');
 
-    function toggleFields() {
-        const selected = document.querySelector('input[name="withdraw_method"]:checked').value;
-        if (selected === 'ewallet') {
-            bankField.style.display = 'none';
-            ewalletField.style.display = 'block';
-            bankAccountInput.value = '';
-        } else {
-            bankField.style.display = 'block';
-            ewalletField.style.display = 'none';
-            ewalletPhoneInput.value = '';
-        }
-        validateForm();
+    function toggleSubmit() {
+        submitBtn.disabled = !withdrawAmount.value || parseFloat(withdrawAmount.value) < 10000;
     }
 
-    function validateForm() {
-        const amount = amountInput.value.trim();
-        const selected = document.querySelector('input[name="withdraw_method"]:checked').value;
-        let valid = amount !== '';
+    withdrawAmount.addEventListener('input', toggleSubmit);
 
-        if (selected === 'ewallet') {
-            valid = valid && ewalletPhoneInput.value.trim() !== '';
-        } else {
-            valid = valid && bankAccountInput.value.trim() !== '';
-        }
-
-        submitBtn.disabled = !valid;
-    }
-
-    radios.forEach(radio => radio.addEventListener('change', toggleFields));
-    amountInput.addEventListener('input', validateForm);
-    bankAccountInput.addEventListener('input', validateForm);
-    ewalletPhoneInput.addEventListener('input', validateForm);
-
-    // Jalankan saat modal dibuka
-    const modal = document.getElementById('withdrawModal');
-    modal.addEventListener('shown.bs.modal', toggleFields);
+    document.querySelectorAll('input[name="withdraw_method"]').forEach(radio => {
+        radio.addEventListener('change', function () {
+            if (this.value === 'bank') {
+                bankField.style.display = 'block';
+                ewalletField.style.display = 'none';
+            } else {
+                bankField.style.display = 'none';
+                ewalletField.style.display = 'block';
+            }
+        });
     });
+
+    toggleSubmit();
+});
 </script>
 @endpush
 
