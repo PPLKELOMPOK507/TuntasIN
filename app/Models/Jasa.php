@@ -33,4 +33,18 @@ class Jasa extends Model
     {
         return $this->hasMany(Message::class);
     }
+    public function reviewratings()
+    {
+        return $this->hasMany(ReviewRating::class);
+    }
+    // Method untuk mendapatkan rata-rata rating
+    public function getAverageRatingAttribute()
+    {
+        return $this->reviewratings()->avg('rating') ?? 0;
+    }
+    // Method untuk mendapatkan jumlah review
+    public function getReviewsCountAttribute()
+    {
+        return $this->reviewratings()->count();
+    }
 }

@@ -7,23 +7,20 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Menjalankan migrasi
      */
     public function up(): void
     {
-        Schema::table('messages', function (Blueprint $table) {
-            $table->foreignId('jasa_id')->constrained('jasas');
-        });
+        // Kosongkan karena kolom jasa_id sudah ada di tabel messages
+        // Ini mencegah duplikasi kolom yang sama
     }
 
     /**
-     * Reverse the migrations.
+     * Membatalkan migrasi
      */
     public function down(): void
     {
-        Schema::table('messages', function (Blueprint $table) {
-            $table->dropForeign(['jasa_id']);
-            $table->dropColumn('jasa_id');
-        });
+        // Kosongkan karena tidak perlu mengembalikan perubahan
+        // Kolom jasa_id akan tetap ada karena dibuat di migrasi lain
     }
 };
