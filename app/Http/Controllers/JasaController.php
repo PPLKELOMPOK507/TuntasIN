@@ -21,6 +21,11 @@ class JasaController extends Controller
             return view('dashboard', compact('jasa'));
         }
     }
+    public function show($id)
+{
+    $jasa = Jasa::findOrFail($id);
+    return view('jasa.show', compact('jasa'));
+}
 
     // Halaman tambah jasa
     public function create()
