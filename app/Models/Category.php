@@ -4,10 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Category;
 
 class Category extends Model
-{
+{ 
     use HasFactory;
 
     protected $fillable = ['name'];
@@ -23,5 +22,13 @@ class Category extends Model
     $categories = Category::all(); // Ambil semua kategori
     return view('main.posts.forum', compact('categories'));
     }   
-}
 
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+}

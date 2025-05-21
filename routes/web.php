@@ -16,6 +16,9 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\WithdrawalsController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\Admin\UserController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -119,3 +122,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/forum/discussions/{id}', [DiscussionController::class, 'show'])->name('discussion.show');
     Route::delete('/forum/discussions/{id}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
 });
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+Route::get('/pesan/{jasa}', [App\Http\Controllers\PemesananController::class, 'create'])->name('pesanan.create');
+Route::post('/pesan/{jasa}', [App\Http\Controllers\PemesananController::class, 'store'])->name('pesanan.store');
+
+Route::post('/messages', [ChatController::class, 'store'])->name('messages.store');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+    Route::post('/wishlist/add/{id}', [WishlistController::class, 'add'])->name('wishlist.add');
+    Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
+    Route::get('/chat/{jasa_id}', [ChatController::class, 'show'])->name('chat.show');
+    Route::get('/chat/{jasa_id}/messages', [ChatController::class, 'getMessages'])->name('chat.messages');
+    Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.store');
+});
+
+Route::prefix('admin')->name('admin.')->middleware('auth', 'admin')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+});
+

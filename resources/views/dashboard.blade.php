@@ -14,12 +14,16 @@
 
         <!-- Search Section -->
         <div class="search-section">
-            <div class="search-container">
-                <input type="search" class="search-input" placeholder="Find services...">
-                <button class="filter-btn">
-                    <i class="fas fa-sliders-h"></i>
-                </button>
-            </div>
+            <form action="{{ route('dashboard') }}" method="GET">
+                <select name="category" class="category-select" onchange="this.form.submit()">
+                    <option value="">-- Semua Kategori --</option>
+                    <option value="Kebersihan" {{ request('category') == 'Kebersihan' ? 'selected' : '' }}>Kebersihan</option>
+                    <option value="Perbaikan" {{ request('category') == 'Perbaikan' ? 'selected' : '' }}>Perbaikan</option>
+                    <option value="Rumah Tangga" {{ request('category') == 'Rumah Tangga' ? 'selected' : '' }}>Rumah Tangga</option>
+                    <option value="Teknologi" {{ request('category') == 'Teknologi' ? 'selected' : '' }}>Teknologi</option>
+                    <option value="Transformasi" {{ request('category') == 'Transformasi' ? 'selected' : '' }}>Transformasi</option>
+                </select>
+            </form>
         </div>
 
         @if(Auth::user()->role === 'Pengguna Jasa')
@@ -29,9 +33,6 @@
                 </a>
                 <span class="tooltip-text">Forum</span>
             </div>
-        @endif
-
-        @if(Auth::user()->role === 'Pengguna Jasa')
             <div class="tooltip-container">
                 <a href="{{ route('wishlist') }}" class="wishlist-btn">❤</a>
                 <span class="tooltip-text">Wishlist</span>
@@ -83,35 +84,65 @@
 
     <div class="dashboard-main">
         @if(Auth::user()->role === 'Pengguna Jasa')
-            <!-- Featured Section for Pengguna Jasa -->
-            <section class="featured-section">
-                <h2>Available Services</h2>
-                <div class="service-grid">
-                    @foreach($jasa as $item)
-                    <div class="service-card">
-                        <div class="service-image">
-                            <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->nama_jasa }}">
-                            <!-- Tambahkan tombol wishlist -->
-                            <a href="{{ route('wishlist') }}" class="wishlist-heart">
-                                <i class="fas fa-heart"></i>
-                            </a>
-                        </div>
-                        <div class="service-info">
-                            <!-- Info Penyedia Jasa -->                            
-                            <h3 class="service-title">{{ $item->nama_jasa }}</h3>
-                            <p>{{ $item->deskripsi }}</p>
-                            <span class="service-price">Rp {{ number_format($item->minimal_harga, 0, ',', '.') }}</span>
-                            
-                            <div class="service-actions">
-                                <a href="{{ route('jasa.detail', $item->id) }}" class="view-service-btn">
-                                    Lihat Detail Jasa
-                                </a>
-                            </div>
-                        </div>
+
+            @isset($detailJasa)
+                <!-- DETAIL JASA SECTION -->
+                <section class="jasa-detail-section">
+                    <div class="jasa-detail-card">
+                        <h2>{{ $detailJasa->nama_jasa }}</h2>
+                        <img src="{{ asset('storage/' . $detailJasa->gambar) }}" alt="{{ $detailJasa->nama_jasa }}" style="width: 100%; max-width: 500px;">
+                        <p>{{ $detailJasa->deskripsi }}</p>
+                        <p><strong>Harga Mulai:</strong> Rp {{ number_format($detailJasa->minimal_harga, 0, ',', '.') }}</p>
+                        <a href="{{ route('dashboard') }}" class="back-button">← Kembali ke Dashboard</a>
                     </div>
-                    @endforeach
-                </div>
-            </section>
+                </section>
+            @else
+                <!-- Featured Section for Pengguna Jasa -->
+                <section class="featured-section">
+                    <h2>Available Services</h2>
+                    <div class="service-grid">
+                        @forelse($jasa as $item)
+                            <div class="service-card">
+                                <div class="service-image">
+                                    <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->nama_jasa }}">
+                                    @php
+                                        $isWishlisted = in_array($item->id, Auth::user()->wishlists->pluck('service_id')->toArray());
+                                    @endphp
+                                    @if($isWishlisted)
+                                        <form action="{{ route('wishlist.remove', $item->id) }}" method="POST" class="wishlist-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="wishlist-btn active">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <form action="{{ route('wishlist.add', $item->id) }}" method="POST" class="wishlist-form">
+                                            @csrf
+                                            <button type="submit" class="wishlist-btn">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                                <div class="service-info">
+                                    <h3 class="service-title">{{ $item->nama_jasa }}</h3>
+                                    <p>{{ $item->deskripsi }}</p>
+                                    <span class="service-price">Rp {{ number_format($item->minimal_harga, 0, ',', '.') }}</span>
+                                    <div class="service-actions">
+                                        <a href="{{ route('jasa.detail', $item->id) }}" class="view-service-btn" >
+                                            Lihat Detail Jasa
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <p>Tidak ada jasa ditemukan.</p>
+                        @endforelse
+                    </div>
+                </section>
+            @endisset
+
         @elseif(Auth::user()->role === 'Penyedia Jasa')
             <!-- Dashboard for Penyedia Jasa -->
             <div class="service-container">
