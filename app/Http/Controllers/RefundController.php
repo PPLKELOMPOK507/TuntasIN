@@ -19,7 +19,7 @@ class RefundController extends Controller
     {
         $request->validate([
             'order_ids' => 'required|array',
-            'reason' => 'required|string|max:500',
+            'reason' => 'required|string|max:1000',
         ]);
 
         foreach ($request->order_ids as $orderId) {
