@@ -31,4 +31,14 @@ class WithdrawalController extends Controller
         // Redirect ke halaman riwayat withdrawal
         return redirect()->route('account.withdrawals')->with('success', 'Withdrawal request submitted.');
     }
+
+    public function showBalance()
+    {
+        $withdrawals = Withdrawal::where('user_id', auth()->id())
+                                ->orderBy('created_at', 'desc')
+                                ->get();
+
+        return view('account.balance', compact('withdrawals'));
+    }
+
 }

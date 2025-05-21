@@ -10,7 +10,9 @@ class Withdrawal extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'amount', 'method', 'destination', // contoh field
+        'user_id',
+        'amount',
+        'method',
+        'destination',
     ];
-
 }

@@ -33,4 +33,18 @@ class AccountController extends Controller
         return view('account.withdrawals', compact('withdrawals'));
     }
     
+ public function deposit(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:10000',
+        ]);
+
+        $user = auth()->user();
+        $user->balance += $request->amount;
+        $user->save();
+
+        return redirect()->back()->with('success', 'Saldo berhasil ditambahkan.');
+    }
+
+
 }

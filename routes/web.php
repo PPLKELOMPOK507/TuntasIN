@@ -80,6 +80,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/account/balance', [AccountController::class, 'balance'])->name('account.balance');
     Route::get('/account/withdrawals', [AccountController::class, 'withdrawals'])->name('account.withdrawals');
     Route::post('/account/withdraw', [WithdrawalController::class, 'withdraw'])->name('account.withdraw');
+    Route::post('/account/deposit', [AccountController::class, 'deposit'])->name('account.deposit');
+
 });
 
 // Route untuk forum page
