@@ -178,6 +178,8 @@
                 </div>
             </div>
 
+            
+
             <!-- Categories Section -->
             <div id="categories-section" class="admin-section">
                 <div class="section-header">
@@ -307,8 +309,6 @@ document.addEventListener('DOMContentLoaded', function() {
         categoryModal.style.display = 'none';
     });
 });
-
-
 </script>
 @endpush
 @endsection
