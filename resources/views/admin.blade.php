@@ -178,7 +178,7 @@
                 </div>
             </div>
 
-            
+
 
             <!-- Categories Section -->
             <div id="categories-section" class="admin-section">
@@ -297,6 +297,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Modal functionality
+
+    
     const addCategoryBtn = document.querySelector('.add-category-btn');
     const categoryModal = document.getElementById('categoryModal');
     const cancelBtn = categoryModal.querySelector('.cancel-btn');
