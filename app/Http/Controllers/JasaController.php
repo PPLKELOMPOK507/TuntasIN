@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Jasa;
+use App\Models\Category;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,12 +14,11 @@ class JasaController extends Controller
     public function dashboard()
     {
         if (auth()->user()->role === 'Pengguna Jasa') {
-            // Ambil semua jasa dengan data penyedia jasanya
-            $jasa = Jasa::with('user')->get();
-            return view('dashboard', compact('jasa'));
+            $jasa = Jasa::with(['user', 'category'])->get();
+            $categories = Category::all();
+            return view('dashboard', compact('jasa', 'categories'));
         } else {
-            // Untuk penyedia jasa, tampilkan hanya jasanya sendiri
-            $jasa = Jasa::where('user_id', auth()->id())->get();
+            $jasa = Jasa::where('user_id', auth()->id())->with('category')->get();
             return view('dashboard', compact('jasa'));
         }
     }
@@ -31,7 +31,8 @@ class JasaController extends Controller
     // Halaman tambah jasa
     public function create()
     {
-        return view('addServices');
+        $categories = Category::all();
+        return view('addServices', compact('categories'));
     }
 
     // Menyimpan jasa baru
@@ -42,6 +43,7 @@ class JasaController extends Controller
             'deskripsi' => 'required|string',
             'minimal_harga' => 'required|integer|min:0',
             'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'category_id' => 'required|exists:categories,id'
         ]);
 
         // Simpan gambar ke folder public/storage/jasa

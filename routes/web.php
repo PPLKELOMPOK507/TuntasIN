@@ -19,6 +19,7 @@ use App\Http\Controllers\WithdrawalsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\PurchaseController; 
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -142,4 +143,9 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'admin')->group(funct
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 });
+
+// Purchase History Routes (Protected + Pengguna Jasa Only)
+Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
+    ->middleware(['auth'])
+    ->name('purchases.history');
 

@@ -21,7 +21,7 @@ class RegistrationController extends Controller
             'last_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'user_as' => 'required|in:Penyedia Jasa,Pengguna Jasa',
             'email' => 'required|string|email|max:255|unique:users',
-            'mobile_number' => 'required|integer|max:15',
+            'mobile_number' => 'required|numeric|digits_between:10,15', // Changed this line
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Change from required to nullable
             'password' => 'required|string|min:8'
         ]);

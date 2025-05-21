@@ -17,11 +17,11 @@
             <form action="{{ route('dashboard') }}" method="GET">
                 <select name="category" class="category-select" onchange="this.form.submit()">
                     <option value="">-- Semua Kategori --</option>
-                    <option value="Kebersihan" {{ request('category') == 'Kebersihan' ? 'selected' : '' }}>Kebersihan</option>
-                    <option value="Perbaikan" {{ request('category') == 'Perbaikan' ? 'selected' : '' }}>Perbaikan</option>
-                    <option value="Rumah Tangga" {{ request('category') == 'Rumah Tangga' ? 'selected' : '' }}>Rumah Tangga</option>
-                    <option value="Teknologi" {{ request('category') == 'Teknologi' ? 'selected' : '' }}>Teknologi</option>
-                    <option value="Transformasi" {{ request('category') == 'Transformasi' ? 'selected' : '' }}>Transformasi</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
                 </select>
             </form>
         </div>
@@ -61,6 +61,13 @@
                     <a href="{{ route('account.balance') }}" class="menu-item account-balance">
                         <i class="fas fa-wallet wallet-icon"></i>
                         <span>My Account Balance</span>
+                    </a>
+                @endif
+
+                 @if(Auth::user()->role === 'Pengguna Jasa')
+                    <a href="{{ route('purchases.history') }}" class="menu-item">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Riwayat Pembelian</span>
                     </a>
                 @endif
 
