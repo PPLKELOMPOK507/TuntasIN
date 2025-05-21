@@ -307,6 +307,8 @@ document.addEventListener('DOMContentLoaded', function() {
         categoryModal.style.display = 'none';
     });
 });
+
+
 </script>
 @endpush
 @endsection
