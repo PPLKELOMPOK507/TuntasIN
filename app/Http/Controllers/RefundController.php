@@ -36,4 +36,32 @@ class RefundController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Permohonan refund berhasil diajukan.');
     }
+
+    public function listRefundRequests()
+    {
+        $refunds = \DB::table('refunds')
+            ->join('orders', 'refunds.order_id', '=', 'orders.id')
+            ->where('orders.seller_id', auth()->id()) // Hanya refund untuk jasa milik penyedia
+            ->select('refunds.*', 'orders.service_name', 'orders.created_at as order_date')
+            ->orderBy('refunds.created_at', 'desc')
+            ->get();
+
+        return view('refund.list', compact('refunds'));
+    }
+
+    public function showRefundDetail($id)
+    {
+        $refund = \DB::table('refunds')
+            ->join('orders', 'refunds.order_id', '=', 'orders.id')
+            ->where('refunds.id', $id)
+            ->where('orders.seller_id', auth()->id()) // Pastikan refund milik penyedia
+            ->select('refunds.*', 'orders.service_name', 'orders.created_at as order_date', 'orders.buyer_name')
+            ->first();
+
+        if (!$refund) {
+            return redirect()->route('refund.list')->with('error', 'Detail refund tidak ditemukan.');
+        }
+
+        return view('refund.detail', compact('refund'));
+    }
 }
