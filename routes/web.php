@@ -10,6 +10,7 @@ use App\Http\Controllers\ForumController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\Admin\UserController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -81,5 +82,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat/{jasa_id}', [ChatController::class, 'show'])->name('chat.show');
     Route::get('/chat/{jasa_id}/messages', [ChatController::class, 'getMessages'])->name('chat.messages');
     Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.store');
+});
+
+Route::prefix('admin')->name('admin.')->middleware('auth', 'admin')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
