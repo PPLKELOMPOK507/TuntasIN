@@ -28,6 +28,7 @@ class AccountController extends Controller
                                 ->get();
 
         return view('account.withdrawals', compact('withdrawals'));
+        
     }
 
     

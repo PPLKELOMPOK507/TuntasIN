@@ -21,18 +21,29 @@
         <div class="balance-tabs">
             <div class="balance-tab active">Riwayat Saldo</div>
         </div>
-        <div class="transaction-body">
-            @forelse ($withdrawals as $withdrawal)
-                <div class="transaction-item">
-                    <p>{{ strtoupper($withdrawal->method) }} ke {{ $withdrawal->destination }}</p>
-                    <p>IDR {{ number_format($withdrawal->amount, 0, ',', '.') }} - {{ $withdrawal->created_at->format('d M Y') }}</p>
+    <div class="transaction-body">
+        @forelse ($withdrawals as $withdrawal)
+            <div class="transaction-item shadow-sm p-3 mb-3 bg-white rounded d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <div class="icon bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+                    <div>
+                        <p class="mb-1 fw-semibold">{{ strtoupper($withdrawal->method) }} ke {{ $withdrawal->destination }}</p>
+                        <small class="text-muted">IDR {{ number_format($withdrawal->amount, 0, ',', '.') }}</small>
+                    </div>
                 </div>
-            @empty
-                <div class="empty-state">
-                    <p>Belum ada riwayat transaksi</p>
+                <div class="text-end">
+                    <p class="mb-1 text-danger fw-bold">-IDR {{ number_format($withdrawal->amount, 0, ',', '.') }}</p>
+                    <small class="text-muted"><i class="bi bi-clock me-1"></i>{{ $withdrawal->created_at->format('d M Y') }}</small>
                 </div>
-            @endforelse
-        </div>
+            </div>
+        @empty
+            <div class="empty-state">
+                <p>Belum ada riwayat transaksi</p>
+            </div>
+        @endforelse
+    </div>
     </div>
 </div>
 
@@ -67,7 +78,7 @@
 
                     <div class="flex flex-col gap-2">
                         <label class="payment-card">
-                            <input type="radio" name="withdraw_method" value="bank" class="peer me-2" checked>
+                            <input type="radio" name="withdraw_method" value="bank" checked onclick="showBankField()">
                             <div class="card-content">
                                 <span>🏦</span>
                                 <span>Transfer Bank</span>
@@ -75,7 +86,7 @@
                         </label>
 
                         <label class="payment-card">
-                            <input type="radio" name="withdraw_method" value="ewallet" class="peer me-2">
+                            <input type="radio" name="withdraw_method" value="ewallet" onclick="showEwalletField()">
                             <div class="card-content">
                                 <span>📱</span>
                                 <span>E-Wallet</span>
@@ -85,11 +96,11 @@
 
                     <div id="bankField" class="mt-3">
                         <label for="bankAccount" class="form-label">Nomor Rekening</label>
-                        <input type="text" id="bankAccount" name="bank_account" class="form-control" placeholder="Masukkan nomor rekening">
+                        <input type="number" id="bankAccount" name="bank_account" class="form-control" placeholder="Masukkan nomor rekening">
                     </div>
                     <div id="ewalletField" class="mt-3" style="display:none">
                         <label for="ewalletPhone" class="form-label">Nomor Telepon</label>
-                        <input type="text" id="ewalletPhone" name="ewallet_phone" class="form-control" placeholder="Masukkan nomor telepon">
+                        <input type="number" id="ewalletPhone" name="ewallet_phone" class="form-control" placeholder="Masukkan nomor telepon">
                     </div>
                 </div>
             
@@ -139,27 +150,39 @@
 document.addEventListener('DOMContentLoaded', function () {
     const withdrawModal = document.getElementById('withdrawModal');
     const bankField = document.getElementById('bankField');
-    const ewalletField = document.getElementById('ewalletField')
-    function toggleFields() {
-        const selected = withdrawModal.querySelector('input[name="withdraw_method"]:checked');
-        if (!selected) return;
+    const ewalletField = document.getElementById('ewalletField');
+    const bankInput = document.getElementById('bankAccount');
+    const ewalletInput = document.getElementById('ewalletPhone');
 
-        if (selected.value === 'bank') {
-            bankField.style.display = 'block';
-            ewalletField.style.display = 'none';
+    function showBankField() {
+        bankField.style.display = 'block';
+        ewalletField.style.display = 'none';
+        bankInput.readOnly = false;
+        ewalletInput.readOnly = true;
+    }
+
+    function showEwalletField() {
+        bankField.style.display = 'none';
+        ewalletField.style.display = 'block';
+        bankInput.readOnly = true;
+        ewalletInput.readOnly = false;
+    }
+
+    function toggleFields() {
+        const selectedMethod = document.querySelector('input[name="withdraw_method"]:checked').value;
+        if (selectedMethod === 'bank') {
+            showBankField();
         } else {
-            bankField.style.display = 'none';
-            ewalletField.style.display = 'block';
+            showEwalletField();
         }
     }
 
     withdrawModal.addEventListener('shown.bs.modal', function () {
-        // Ketika modal dibuka, pasang listener + jalankan toggleFields
         const radios = withdrawModal.querySelectorAll('input[name="withdraw_method"]');
         radios.forEach(radio => {
             radio.addEventListener('change', toggleFields);
         });
-        toggleFields();
+        toggleFields(); // initial call
     });
 });
 </script>

@@ -42,4 +42,28 @@ class WithdrawalsController extends Controller
 
         return redirect()->route('account.balance')->with('success', 'Withdrawal request submitted.');
     }
+
+    public function store(Request $request)
+    {
+        // Validasi input (tambahkan aturan validasi sesuai kebutuhan)
+        $request->validate([
+            'withdraw_method' => 'required|in:bank,ewallet',
+            'bank_account' => 'required_if:withdraw_method,bank',
+            'ewallet_phone' => 'required_if:withdraw_method,ewallet',
+        ]);
+
+        // Ambil nilai metode withdraw
+        $method = $request->input('withdraw_method'); // 'bank' atau 'ewallet'
+
+        if ($method == 'bank') {
+            $rekening = $request->input('bank_account');
+            // Proses rekening bank sesuai logika aplikasi
+        } else if ($method == 'ewallet') {
+            $phone = $request->input('ewallet_phone');
+            // Proses nomor telepon ewallet sesuai logika aplikasi
+        }
+
+        return redirect()->back()->with('success', 'Withdrawal request submitted!');
+    }
+
 }
