@@ -93,7 +93,7 @@ class PaymentController extends Controller
             return redirect()
                 ->back()
                 ->with('status', 'error')
-                ->with('message', 'Terjadi kesalahan sistem. Silakan coba lagi.');
+                ->with('message', 'Terjadi kesalahan sistem. Silakan coba lagi!');
         }
     }
 }

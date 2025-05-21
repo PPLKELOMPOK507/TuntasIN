@@ -5,6 +5,7 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\RefundController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -40,3 +41,8 @@ Route::get('/profile', function () {
 Route::get('/payment/form', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
 Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
 Route::post('/payment/submit', [PaymentController::class, 'submitPayment'])->name('payment.submit');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/refund', [RefundController::class, 'showRefundForm'])->name('refund.form');
+    Route::post('/refund', [RefundController::class, 'submitRefund'])->name('refund.submit');
+});
