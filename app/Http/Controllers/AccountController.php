@@ -11,29 +11,27 @@ class AccountController extends Controller
 
     public function balance()
     {
-    // Misal, ambil data withdrawals dari user yang sedang login
         $user = auth()->user();
 
-        // Ambil riwayat withdrawal user (sesuaikan relasi/kolom)
         $withdrawals = Withdrawal::where('user_id', $user->id)
                         ->orderBy('created_at', 'desc')
                         ->get();
 
-        // Kirim data ke view
         return view('account.balance', compact('withdrawals'));
     }
 
+
     public function withdrawals()
     {
-        $user = auth()->user();
-        $withdrawals = Withdrawal::where('user_id', $user->id)
-                        ->orderBy('created_at', 'desc')
-                        ->get();
+        $withdrawals = Withdrawal::where('user_id', auth()->id())
+                                ->orderBy('created_at', 'desc')
+                                ->get();
 
         return view('account.withdrawals', compact('withdrawals'));
     }
+
     
- public function deposit(Request $request)
+    public function deposit(Request $request)
     {
         $request->validate([
             'amount' => 'required|numeric|min:10000',

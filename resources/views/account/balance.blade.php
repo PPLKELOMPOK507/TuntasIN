@@ -87,17 +87,15 @@
                         <label for="bankAccount" class="form-label">Nomor Rekening</label>
                         <input type="text" id="bankAccount" name="bank_account" class="form-control" placeholder="Masukkan nomor rekening">
                     </div>
-
                     <div id="ewalletField" class="mt-3" style="display:none">
                         <label for="ewalletPhone" class="form-label">Nomor Telepon</label>
                         <input type="text" id="ewalletPhone" name="ewallet_phone" class="form-control" placeholder="Masukkan nomor telepon">
                     </div>
-
                 </div>
             
                     <div class="action-buttons">
                         <button type="button" class="btn-cancel" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn-submit" id="submitWithdraw" disabled>Kirim</button>
+                        <button type="submit" class="btn-submit" id="submitWithdraw">Kirim</button>
                     </div>
                 </form>
             </div>
@@ -138,43 +136,31 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const withdrawAmount = document.getElementById('withdrawAmount');
-    const submitBtn = document.getElementById('submitWithdraw');
+document.addEventListener('DOMContentLoaded', function () {
+    const withdrawModal = document.getElementById('withdrawModal');
     const bankField = document.getElementById('bankField');
-    const ewalletField = document.getElementById('ewalletField');
-    const methodRadios = document.querySelectorAll('input[name="withdraw_method"]');
-
+    const ewalletField = document.getElementById('ewalletField')
     function toggleFields() {
-        const selected = document.querySelector('input[name="withdraw_method"]:checked');
-        console.log('Selected withdraw method:', selected.value);
+        const selected = withdrawModal.querySelector('input[name="withdraw_method"]:checked');
+        if (!selected) return;
+
         if (selected.value === 'bank') {
             bankField.style.display = 'block';
             ewalletField.style.display = 'none';
-        } else if (selected.value === 'ewallet') {
+        } else {
             bankField.style.display = 'none';
             ewalletField.style.display = 'block';
         }
     }
 
-
-    function toggleSubmit() {
-        const value = parseInt(withdrawAmount.value.replace(/\D/g, ''));
-        submitBtn.disabled = isNaN(value) || value < 100000;
-    }
-
-    // Pasang event listener pada radio buttons
-    methodRadios.forEach(radio => {
-        radio.addEventListener('change', toggleFields);
+    withdrawModal.addEventListener('shown.bs.modal', function () {
+        // Ketika modal dibuka, pasang listener + jalankan toggleFields
+        const radios = withdrawModal.querySelectorAll('input[name="withdraw_method"]');
+        radios.forEach(radio => {
+            radio.addEventListener('change', toggleFields);
+        });
+        toggleFields();
     });
-
-    // Event listener untuk input jumlah tarik dana
-    withdrawAmount.addEventListener('input', toggleSubmit);
-
-    // Inisialisasi tampilan saat pertama kali load modal
-    toggleFields();
-    toggleSubmit();
 });
 </script>
-
 @endpush

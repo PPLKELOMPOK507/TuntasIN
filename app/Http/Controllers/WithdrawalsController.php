@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Withdrawal;
 
-class WithdrawalController extends Controller
+class WithdrawalsController extends Controller
 {
     public function withdraw(Request $request)
     {
@@ -17,28 +17,29 @@ class WithdrawalController extends Controller
             'ewallet_phone' => 'required_if:withdraw_method,ewallet',
         ]);
 
+        $user = auth()->user();
+
+        // Cek apakah saldo cukup
+        if ($request->amount > $user->balance) {
+            return back()->withErrors(['amount' => 'Saldo tidak cukup untuk melakukan penarikan.']);
+        }
+
         $destination = $request->withdraw_method === 'bank'
             ? $request->bank_account
             : $request->ewallet_phone;
 
+        // Buat withdrawal record
         Withdrawal::create([
-            'user_id' => Auth::id(),
+            'user_id' => $user->id,
             'amount' => $request->amount,
             'method' => $request->withdraw_method,
             'destination' => $destination,
         ]);
 
-        // Redirect ke halaman riwayat withdrawal
-        return redirect()->route('account.withdrawals')->with('success', 'Withdrawal request submitted.');
+        // Kurangi saldo user
+        $user->balance -= $request->amount;
+        $user->save();
+
+        return redirect()->route('account.balance')->with('success', 'Withdrawal request submitted.');
     }
-
-    public function showBalance()
-    {
-        $withdrawals = Withdrawal::where('user_id', auth()->id())
-                                ->orderBy('created_at', 'desc')
-                                ->get();
-
-        return view('account.balance', compact('withdrawals'));
-    }
-
 }

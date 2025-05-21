@@ -12,6 +12,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\WithdrawalsController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -70,20 +71,15 @@ Route::get('/provider/{id}', [ProviderController::class, 'show'])->name('provide
 Route::get('/jasa/{id}', [JasaController::class, 'show'])->name('jasa.detail');
 
 Route::middleware(['auth'])->group(function () {
-    // ... your existing routes
-    
-    // Account balance route (for Penyedia Jasa only)
     Route::get('/account/balance', [AccountController::class, 'balance'])
         ->middleware('auth')
         ->name('account.balance');
     
     Route::get('/account/balance', [AccountController::class, 'balance'])->name('account.balance');
     Route::get('/account/withdrawals', [AccountController::class, 'withdrawals'])->name('account.withdrawals');
-    Route::post('/account/withdraw', [WithdrawalController::class, 'withdraw'])->name('account.withdraw');
+    Route::post('/account/withdraw', [WithdrawalsController::class, 'withdraw'])->name('account.withdraw');
     Route::post('/account/deposit', [AccountController::class, 'deposit'])->name('account.deposit');
-
 });
-
 // Route untuk forum page
 Route::middleware(['auth'])->group(function () {
     Route::get('/forum', [PostController::class, 'index'])->name('forum');
