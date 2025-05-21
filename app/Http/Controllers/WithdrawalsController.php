@@ -13,13 +13,14 @@ class WithdrawalsController extends Controller
         $request->validate([
             'amount' => 'required|numeric|min:50000',
             'withdraw_method' => 'required|in:bank,ewallet',
-            'bank_account' => 'required_if:withdraw_method,bank',
-            'ewallet_phone' => 'required_if:withdraw_method,ewallet',
+            // Validasi bank_account: harus ada jika withdraw_method=bank, panjang tepat 16 digit, hanya angka
+            'bank_account' => 'required_if:withdraw_method,bank|digits:16',
+            // Validasi ewallet_phone: harus ada jika withdraw_method=ewallet, panjang tepat 13 digit, hanya angka
+            'ewallet_phone' => 'required_if:withdraw_method,ewallet|digits:13',
         ]);
 
         $user = auth()->user();
 
-        // Cek apakah saldo cukup
         if ($request->amount > $user->balance) {
             return back()->withErrors(['amount' => 'Saldo tidak cukup untuk melakukan penarikan.']);
         }
@@ -28,7 +29,6 @@ class WithdrawalsController extends Controller
             ? $request->bank_account
             : $request->ewallet_phone;
 
-        // Buat withdrawal record
         Withdrawal::create([
             'user_id' => $user->id,
             'amount' => $request->amount,
@@ -36,7 +36,6 @@ class WithdrawalsController extends Controller
             'destination' => $destination,
         ]);
 
-        // Kurangi saldo user
         $user->balance -= $request->amount;
         $user->save();
 
