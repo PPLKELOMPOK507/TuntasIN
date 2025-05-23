@@ -17,7 +17,7 @@
         <p class="subtitle">To be a part of the event</p>
         <p class="instruction">Fill the information carefully</p>
 
-        <form action="{{ route('register.submit') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('register.submit') }}" method="POST" enctype="multipart/form-data" novalidate>
             @csrf
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -63,7 +63,7 @@
                     <div class="photo-upload">
                         <div class="profile-pic-placeholder"></div>
                         <div class="upload-button">Select photo</div>
-                        <input type="file" id="photo" name="photo" required hidden>
+                        <input type="file" id="photo" name="photo" hidden>
                     </div>
                 </div>
 
