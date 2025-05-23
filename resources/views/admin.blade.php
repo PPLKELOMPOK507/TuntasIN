@@ -4,7 +4,7 @@
 <div class="dashboard-container">
     <nav class="nav-container">
         <div class="logo">
-            <a href="{{ route('admin.dashboard') }}">TUNTAS<span class="logo-in">IN</span></a>
+            <a href="{{ route('manage') }}">TUNTAS<span class="logo-in">IN</span></a>
         </div>
 
         <!-- Admin Menu -->
@@ -109,7 +109,7 @@
                                 </td>
                                 <td class="actions">
                                     @if($user->role !== 'Admin')
-                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('categories.destroy', $user->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="action-btn delete-btn" 
@@ -178,13 +178,16 @@
                 </div>
             </div>
 
+            <!-- Add hidden radio button for section control -->
+            <input type="radio" id="categories-tab" name="admin-tab" class="admin-tab-input" {{ session('current_section') == 'categories' ? 'checked' : '' }}>
+
             <!-- Categories Section -->
-            <div id="categories-section" class="admin-section">
+            <div id="categories-section" class="admin-section {{ session('current_section') == 'categories' ? 'active' : '' }}">
                 <div class="section-header">
                     <h2>Manajemen Kategori</h2>
-                    <button class="add-category-btn" onclick="openAddCategoryModal()">
+                    <a href="{{ route('categories.create') }}" class="add-category-btn">
                         <i class="fas fa-plus"></i> Tambah Kategori
-                    </button>
+                    </a>
                 </div>
 
                 <div class="table-responsive">
@@ -198,115 +201,53 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($categories as $category)
+                            @forelse($categories as $category)
                             <tr>
                                 <td>{{ $category->id }}</td>
                                 <td>{{ $category->name }}</td>
                                 <td>{{ $category->services_count }}</td>
                                 <td class="actions">
-                                    <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" style="display:inline;">
+                                    <a href="{{ route('categories.edit', $category->id) }}" class="action-btn edit-btn">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="action-btn delete-btn" onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">
+                                        <button type="submit" class="action-btn delete-btn" 
+                                            onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="4" class="text-center">Belum ada kategori</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
+
+                @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+                @endif
+
+                @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+                @endif
             </div>
         </div>
     </div>
 </div>
 
-<!-- Category Modal -->
-<div class="modal" id="categoryModal">
-    <div class="modal-content">
-        <h2>Add New Category</h2>
-        <form id="categoryForm" action="{{ route('admin.categories.store') }}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="categoryName">Category Name</label>
-                <input type="text" id="categoryName" name="name" required>
-            </div>
-            <div class="form-actions">
-                <button type="button" class="cancel-btn">Cancel</button>
-                <button type="submit" class="submit-btn">Save Category</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Add Category Modal -->
-<div id="addCategoryModal" class="modal">
-    <div class="modal-content">
-        <h2>Tambah Kategori Baru</h2>
-        <form action="{{ route('admin.categories.store') }}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="name">Nama Kategori</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-actions">
-                <button type="button" class="cancel-btn" onclick="closeAddCategoryModal()">Batal</button>
-                <button type="submit" class="submit-btn">Simpan</button>
-            </div>
-        </form>
-    </div>
-</div>
 
 @push('styles')
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
     <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 @endpush
-
-@push('scripts')
-<script>
-
-    
-document.addEventListener('DOMContentLoaded', function() {
-    // Search functionality
-    const searchInput = document.querySelector('.search-bar input');
-    searchInput.addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
-        const tableRows = document.querySelectorAll('.admin-table tbody tr');
-        
-        tableRows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(searchTerm) ? '' : 'none';
-        });
-    });
-
-    // Stats card navigation
-    const statCards = document.querySelectorAll('.stat-card.clickable');
-    const sections = document.querySelectorAll('.admin-section');
-
-    statCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const sectionId = this.getAttribute('data-section') + '-section';
-            sections.forEach(section => {
-                section.style.display = section.id === sectionId ? '' : 'none';
-            });
-        });
-    });
-
-    // Modal functionality
-    const addCategoryBtn = document.querySelector('.add-category-btn');
-    const categoryModal = document.getElementById('categoryModal');
-    const cancelBtn = categoryModal.querySelector('.cancel-btn');
-
-    addCategoryBtn.addEventListener('click', function() {
-        categoryModal.style.display = 'block';
-    });
-
-    cancelBtn.addEventListener('click', function() {
-        categoryModal.style.display = 'none';
-    });
-});
-</script>
-@endpush
-@endsection

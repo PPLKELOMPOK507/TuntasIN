@@ -92,7 +92,7 @@
     <div class="dashboard-main">
         @if(Auth::user()->role === 'Pengguna Jasa')
 
-            @isset($detailJasa)
+            {{-- @isset($detailJasa)
                 <!-- DETAIL JASA SECTION -->
                 <section class="jasa-detail-section">
                     <div class="jasa-detail-card">
@@ -100,7 +100,43 @@
                         <img src="{{ asset('storage/' . $detailJasa->gambar) }}" alt="{{ $detailJasa->nama_jasa }}" style="width: 100%; max-width: 500px;">
                         <p>{{ $detailJasa->deskripsi }}</p>
                         <p><strong>Harga Mulai:</strong> Rp {{ number_format($detailJasa->minimal_harga, 0, ',', '.') }}</p>
-                        <a href="{{ route('dashboard') }}" class="back-button">← Kembali ke Dashboard</a>
+                        <a href="{{ route('dashboard') }}" class="back-button">← Kembali ke Dashboard</a> --}}
+            <!-- Featured Section for Pengguna Jasa -->
+            <section class="featured-section">
+                <h2>Available Services</h2>
+
+                <!-- Add category filter -->
+                <div class="category-filter">
+                    <select id="category-select" class="form-control">
+                        <option value="">Semua Kategori</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="service-grid">
+                    @foreach($jasa as $item)
+                    <div class="service-card" data-category="{{ $item->category_id }}">
+                        <div class="service-image">
+                            <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->nama_jasa }}">
+                            <!-- Tambahkan tombol wishlist -->
+                            <a href="{{ route('wishlist') }}" class="wishlist-heart">
+                                <i class="fas fa-heart"></i>
+                            </a>
+                        </div>
+                        <div class="service-info">
+                            <!-- Info Penyedia Jasa -->                            
+                            <h3 class="service-title">{{ $item->nama_jasa }}</h3>
+                            <p>{{ $item->deskripsi }}</p>
+                            <span class="service-price">Rp {{ number_format($item->minimal_harga, 0, ',', '.') }}</span>
+                            
+                            <div class="service-actions">
+                                <a href="{{ route('jasa.detail', $item->id) }}" class="view-service-btn">
+                                    Lihat Detail Jasa
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </section>
             @else

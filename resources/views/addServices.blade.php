@@ -51,12 +51,16 @@
                 <select name="category_id" id="category_id" required>
                     <option value="" disabled selected>Pilih Kategori</option>
                     @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                        {{-- <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                             {{ $category->name }}
                         </option>
                     @endforeach
                 </select>
-                @error('category_id')
+                @error('category_id') --}}
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    @endforeach
+                </select>
+                @error('kategori')
                     <small class="error">{{ $message }}</small>
                 @enderror
             </div>
