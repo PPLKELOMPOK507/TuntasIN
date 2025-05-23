@@ -2,32 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        $faker = Faker::create();
+        $this->call([
+            CategorySeeder::class,
+        ]);
 
-        foreach (range(1, 10) as $i) {
-            DB::table('users')->insert([
-                'first_name' => $faker->firstName,
-                'last_name' => $faker->lastName,
-                'role' => $faker->randomElement(['Penyedia Jasa', 'Pengguna Jasa']),
-                'email' => $faker->unique()->safeEmail,
-                'mobile_number' => $faker->phoneNumber,
-                'photo' => $faker->imageUrl(200, 200, 'people', true), // URL palsu untuk placeholder gambar
-                'password' => Hash::make('password'), // default password
-                'remember_token' => Str::random(10),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        $this->call(AdminSeeder::class);
     }
-}}
+}
 ?>

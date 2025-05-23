@@ -17,12 +17,12 @@ class RegistrationController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'first_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'last_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'user_as' => 'required|in:Penyedia Jasa,Pengguna Jasa',
             'email' => 'required|string|email|max:255|unique:users',
-            'mobile_number' => 'required|string|max:15',
-            'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'mobile_number' => ['required', 'string', 'regex:/^[0-9]+$/', 'min:10', 'max:15'], // Perbaiki validasi
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Change from required to nullable
             'password' => 'required|string|min:8'
         ]);
 
