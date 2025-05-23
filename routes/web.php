@@ -139,13 +139,32 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.store');
 });
 
-Route::prefix('admin')->name('admin.')->middleware('auth', 'admin')->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-});
+// Route::prefix('admin')->name('admin.')->middleware('auth', 'admin')->group(function () {
+//     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+//     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+// });
 
 // Purchase History Routes (Protected + Pengguna Jasa Only)
 Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
     ->middleware(['auth'])
     ->name('purchases.history');
 
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/admin', function () {
+            if (auth()->user()->role !== 'Admin') {
+                return redirect()->route('dashboard');
+            }
+            $jasa = \App\Models\Jasa::with('user')->get();
+            $totalUsers = \App\Models\User::count();
+            $users = \App\Models\User::all(); // Add this line
+            $categories = \App\Models\Category::withCount('services')->get();
+            
+            return view('admin', compact('jasa', 'totalUsers', 'categories', 'users'));
+        })->name('admin.dashboard');
+        
+        Route::controller(CategoryController::class)->group(function() {
+            Route::get('/admin/categories/create', 'create')->name('admin.categories.create');
+            Route::post('/admin/categories', 'store')->name('admin.categories.store');
+            Route::delete('/admin/categories/{id}', 'destroy')->name('admin.categories.destroy');
+        });
+    });
