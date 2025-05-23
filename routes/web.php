@@ -161,7 +161,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-});
 
 // Purchase History Routes (Protected + Pengguna Jasa Only)
 Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
@@ -179,11 +178,11 @@ Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
             $categories = \App\Models\Category::withCount('services')->get();
             
             return view('admin', compact('jasa', 'totalUsers', 'categories', 'users'));
-        })->name('admin.dashboard');
+        })->name('manage');
         
         Route::controller(CategoryController::class)->group(function() {
-            Route::get('/admin/categories/create', 'create')->name('admin.categories.create');
-            Route::post('/admin/categories', 'store')->name('admin.categories.store');
-            Route::delete('/admin/categories/{id}', 'destroy')->name('admin.categories.destroy');
+            Route::get('/admin/categories/create', 'create')->name('categories.create');
+            Route::post('/admin/categories', 'store')->name('categories.store');
+            Route::delete('/admin/categories/{id}', 'destroy')->name('categories.destroy');
         });
     });
