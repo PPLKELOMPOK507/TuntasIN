@@ -57,13 +57,6 @@
                     <span>Profile</span>
                 </a>
 
-                @if(Auth::user()->role === 'Pengguna Jasa')
-                    <a href="{{ route('purchases.history') }}" class="menu-item">
-                        <i class="fas fa-shopping-bag"></i>
-                        <span>Riwayat Pembelian</span>
-                    </a>
-                @endif
-
                 @if(Auth::user()->role === 'Penyedia Jasa')
                     <a href="{{ route('account.balance') }}" class="menu-item account-balance">
                         <i class="fas fa-wallet wallet-icon"></i>

@@ -5,9 +5,6 @@
 }
 
 .history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-bottom: 2rem;
 }
 
@@ -16,25 +13,13 @@
     color: #333;
 }
 
-.filter-select {
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    background-color: white;
-}
-
 .purchase-card {
-    display: flex;
     background: white;
-    border-radius: 12px;
-    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     margin-bottom: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease;
-}
-
-.purchase-card:hover {
-    transform: translateY(-2px);
+    overflow: hidden;
+    display: flex;
 }
 
 .service-image {
@@ -49,9 +34,8 @@
 }
 
 .purchase-info {
-    flex: 1;
     padding: 1.5rem;
-    position: relative;
+    flex: 1;
 }
 
 .purchase-header {
@@ -62,11 +46,11 @@
 
 .order-id {
     font-weight: 600;
-    color: #666;
+    color: #333;
 }
 
 .purchase-date {
-    color: #888;
+    color: #666;
 }
 
 .service-name {
@@ -82,29 +66,17 @@
     margin-bottom: 1rem;
 }
 
-.price-info {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.price-info strong {
-    color: #2196f3;
-}
-
 .status-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.875rem;
-    font-weight: 500;
+    border-radius: 1rem;
+    font-size: 0.9rem;
     margin-bottom: 1rem;
 }
 
-.status-badge.pending {
-    background-color: #fff3cd;
-    color: #856404;
+.status-badge.selesai {
+    background: #e8f5e9;
+    color: #2e7d32;
 }
 
 .action-buttons {
@@ -112,31 +84,49 @@
     gap: 1rem;
 }
 
-.btn-detail, .btn-chat {
-    padding: 8px 16px;
+.btn-chat, .btn-review {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
     border: none;
-    border-radius: 6px;
-    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.btn-detail {
-    background-color: #e3f2fd;
-    color: #1976d2;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .btn-chat {
-    background-color: #2196f3;
-    color: white;
+    background: #e3f2fd;
+    color: #1976d2;
 }
 
-.btn-detail:hover {
-    background-color: #bbdefb;
+.btn-review {
+    background: #fff3e0;
+    color: #f57c00;
 }
 
-.btn-chat:hover {
-    background-color: #1976d2;
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 0.5rem;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    color: #ddd;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.star-rating input:checked ~ label {
+    color: #ffd700;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #ffed4a;
 }
 
 @media (max-width: 768px) {

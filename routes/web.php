@@ -20,6 +20,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PurchaseController; 
+use App\Http\Controllers\ReviewController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -141,6 +142,7 @@ Route::middleware(['auth'])->group(function () {
     // Riwayat Pembelian route (Pengguna Jasa only)
     Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
         ->name('purchases.history');
+    Route::post('/review/{pemesanan_id}', [ReviewController::class, 'store'])->name('review.store');
 });
 
 Route::put('/profile', [ProfileController::class, 'update'])

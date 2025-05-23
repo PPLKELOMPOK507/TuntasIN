@@ -29,4 +29,10 @@ class Pemesanan extends Model
     {
         return $this->belongsTo(Jasa::class);
     }
+
+    // Memeriksa apakah pemesanan memiliki ulasan
+    public function hasReview()
+    {
+        return $this->hasOne(ReviewRating::class)->exists();
+    }
 }
