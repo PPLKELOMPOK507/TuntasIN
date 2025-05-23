@@ -35,7 +35,7 @@ class Jasa extends Model
     }
     public function reviewratings()
     {
-        return $this->hasMany(ReviewRating::class);
+        return $this->hasMany(ReviewRating::class, 'jasa_id');
     }
     // Method untuk mendapatkan rata-rata rating
     public function getAverageRatingAttribute()

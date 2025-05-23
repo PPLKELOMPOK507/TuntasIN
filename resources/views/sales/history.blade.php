@@ -72,6 +72,15 @@
                                 {{ ucfirst($sale['status']) }}
                             </span>
                         </div>
+                        <div class="action-buttons">
+                            <button class="btn-detail">Lihat Detail</button>
+                            <button class="btn-chat">Chat Penjual</button>
+                            @if($sale['status'] === 'completed' && !$sale['hasReview'])
+                                <button class="btn-review" onclick="openReviewModal({{ $sale['id'] }}, '{{ $sale['service_name'] }}')">
+                                    <i class="fas fa-star"></i> Nilai
+                                </button>
+                            @endif
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -82,6 +91,42 @@
                 <p>Riwayat penjualan Anda akan muncul di sini</p>
             </div>
         @endif
+    </div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Beri Ulasan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ route('review.store') }}" method="POST" id="reviewForm">
+                @csrf
+                <input type="hidden" name="pemesanan_id" id="pemesanan_id">
+                <div class="modal-body">
+                    <div class="jasa-name mb-3"></div>
+                    <div class="rating-input mb-3">
+                        <label>Rating:</label>
+                        <div class="star-rating">
+                            @for($i = 5; $i >= 1; $i--)
+                                <input type="radio" name="rating" value="{{ $i }}" id="star{{ $i }}">
+                                <label for="star{{ $i }}"><i class="fas fa-star"></i></label>
+                            @endfor
+                        </div>
+                    </div>
+                    <div class="review-input">
+                        <label>Review:</label>
+                        <textarea name="review" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Kirim Review</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -130,6 +175,48 @@
         .sales-list {
             margin-top: 1rem;
         }
+
+        .action-buttons {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-detail, .btn-chat, .btn-review {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-detail {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-chat {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-review {
+            background: #ffc107;
+            color: white;
+        }
+
+        .btn-detail:hover {
+            background: #0056b3;
+        }
+
+        .btn-chat:hover {
+            background: #218838;
+        }
+
+        .btn-review:hover {
+            background: #e0a800;
+        }
     </style>
 @endpush
 
@@ -150,6 +237,13 @@ document.getElementById('status-filter').addEventListener('change', function() {
         }
     });
 });
+
+function openReviewModal(pemesananId, jasaName) {
+    document.getElementById('pemesanan_id').value = pemesananId;
+    document.querySelector('.jasa-name').innerText = jasaName;
+    const modal = new bootstrap.Modal(document.getElementById('reviewModal'));
+    modal.show();
+}
 </script>
 @endpush
 @endsection
