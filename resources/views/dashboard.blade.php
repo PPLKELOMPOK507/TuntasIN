@@ -17,11 +17,11 @@
             <form action="{{ route('dashboard') }}" method="GET">
                 <select name="category" class="category-select" onchange="this.form.submit()">
                     <option value="">-- Semua Kategori --</option>
-                    <option value="Kebersihan" {{ request('category') == 'Kebersihan' ? 'selected' : '' }}>Kebersihan</option>
-                    <option value="Perbaikan" {{ request('category') == 'Perbaikan' ? 'selected' : '' }}>Perbaikan</option>
-                    <option value="Rumah Tangga" {{ request('category') == 'Rumah Tangga' ? 'selected' : '' }}>Rumah Tangga</option>
-                    <option value="Teknologi" {{ request('category') == 'Teknologi' ? 'selected' : '' }}>Teknologi</option>
-                    <option value="Transformasi" {{ request('category') == 'Transformasi' ? 'selected' : '' }}>Transformasi</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
                 </select>
             </form>
         </div>
@@ -58,6 +58,20 @@
                 </a>
 
                 @if(Auth::user()->role === 'Pengguna Jasa')
+                    <a href="{{ route('purchases.history') }}" class="menu-item">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Riwayat Pembelian</span>
+                    </a>
+                @endif
+
+                @if(Auth::user()->role === 'Penyedia Jasa')
+                    <a href="{{ route('account.balance') }}" class="menu-item account-balance">
+                        <i class="fas fa-wallet wallet-icon"></i>
+                        <span>My Account Balance</span>
+                    </a>
+                @endif
+
+                 @if(Auth::user()->role === 'Pengguna Jasa')
                     <a href="{{ route('purchases.history') }}" class="menu-item">
                         <i class="fas fa-shopping-bag"></i>
                         <span>Riwayat Pembelian</span>
@@ -221,4 +235,20 @@
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
     <link href="{{ asset('css/services.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .account-balance {
+            border-top: 1px solid #eaeaea;
+            border-bottom: 1px solid #eaeaea;
+            padding: 12px 15px;
+        }
+        
+        .account-balance i {
+            color: #808080;
+        }
+        
+        .account-balance span {
+            font-weight: 500;
+        }
+    </style>
+
 @endpush

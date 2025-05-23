@@ -11,17 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Kosongkan karena kolom sender_id dan receiver_id sudah ada
-        // di migrasi create_messages_table
+        Schema::create('discussions', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('content');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
+        });
     }
+
+    
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        // Kosongkan karena tidak perlu rollback
-        // Kolom akan dihapus oleh migrasi create_messages_table
+        Schema::dropIfExists('discussions');
     }
 };
-

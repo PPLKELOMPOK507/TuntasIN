@@ -10,25 +10,26 @@ class ProfileController extends Controller
 {
     public function update(Request $request)
     {
-        $user = auth()->user();
-        
         $validated = $request->validate([
-            'first_name' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
-            'last_name' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'address' => 'nullable|string|max:500',
-            'description' => 'nullable|string|max:1000', // Add this line
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
             'current_password' => 'required_with:new_password',
             'new_password' => 'nullable|min:8|confirmed',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'cv_file' => 'nullable|mimes:pdf,doc,docx|max:5120' // 5MB max
         ]);
 
+        $user = auth()->user();
         // Update basic info including address and description
         $user->update([
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'address' => $validated['address'] ?? $user->address,
-            'description' => $validated['description'] ?? $user->description, // Add this line
+            'latitude' => $validated['latitude'] ?? $user->latitude,
+            'longitude' => $validated['longitude'] ?? $user->longitude,
         ]);
 
         // Update photo if provided

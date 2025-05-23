@@ -11,6 +11,18 @@ class Category extends Model
 
     protected $fillable = ['name'];
 
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+
+    public function index()
+    {
+    $categories = Category::all(); // Ambil semua kategori
+    return view('main.posts.forum', compact('categories'));
+    }   
+
     public function services()
     {
         return $this->hasMany(Service::class);

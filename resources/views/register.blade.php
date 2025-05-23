@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="photo">Upload Photo <span class="required">*</span></label>
+                    <label for="photo">Upload Photo</label>
                     <div class="photo-upload">
                         <div class="profile-pic-placeholder"></div>
                         <div class="upload-button">Select photo</div>

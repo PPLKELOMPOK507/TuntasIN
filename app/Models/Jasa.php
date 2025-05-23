@@ -10,7 +10,8 @@ class Jasa extends Model
     protected $table = 'jasas';
 
     protected $fillable = [
-        'user_id',          
+        'user_id',
+        'category_id',
         'nama_jasa',
         'deskripsi',
         'minimal_harga',
@@ -21,9 +22,9 @@ class Jasa extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function kategori()
+    public function category()
     {
-        return $this->belongsTo(Kategori::class, 'category_id');
+        return $this->belongsTo(Category::class);
     }
     public function penyedia()
     {

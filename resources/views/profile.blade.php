@@ -28,15 +28,27 @@
                     <i class="fas fa-user"></i>
                     <span>Profile</span>
                 </a>
+
+                @if(Auth::user()->role === 'Pengguna Jasa')
+                    <a href="{{ route('purchases.history') }}" class="menu-item">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Riwayat Pembelian</span>
+                    </a>
+                @endif
+
                 @if(Auth::user()->role === 'Penyedia Jasa')
                     <a href="{{ route('sales.history') }}" class="menu-item">
                         <i class="fas fa-history"></i>
                         <span>Riwayat Penjualan</span>
                     </a>
                 @endif
+
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="logout-btn">Logout</button>
+                    <button type="submit" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
                 </form>
             </div>
         </div>
@@ -101,12 +113,23 @@
                     @if(Auth::user()->role === 'Pengguna Jasa')
                         <div class="info-group">
                             <label for="address">Address</label>
-                            <textarea 
-                                id="address" 
-                                name="address" 
-                                class="profile-input" 
-                                rows="3" 
-                                placeholder="Enter your address">{{ Auth::user()->address }}</textarea>
+                            <div class="address-container">
+                                <textarea 
+                                    id="address" 
+                                    name="address" 
+                                    class="profile-input" 
+                                    rows="3" 
+                                    placeholder="Enter your address">{{ Auth::user()->address }}</textarea>
+                                
+                                <div id="map" style="height: 300px; width: 100%; margin-top: 10px; border-radius: 8px;"></div>
+                                
+                                <input type="hidden" id="latitude" name="latitude" value="{{ Auth::user()->latitude }}">
+                                <input type="hidden" id="longitude" name="longitude" value="{{ Auth::user()->longitude }}">
+                                
+                                <button type="button" class="btn-get-location" onclick="getCurrentLocation()">
+                                    <i class="fas fa-map-marker-alt"></i> Get Current Location
+                                </button>
+                            </div>
                         </div>
 
                         <div class="info-group">
@@ -271,69 +294,62 @@ document.getElementById('photo').addEventListener('change', function(e) {
         reader.onload = function(e) {
             const result = e.target.result;
             
-            // Remove existing elements if any
-            const existingPreview = photoContainer.querySelector('.preview-label');
-            const existingRevert = photoContainer.querySelector('.revert-photo-btn');
-            const existingImg = photoContainer.querySelector('img');
-            const existingPlaceholder = photoContainer.querySelector('.photo-placeholder');
-            
-            if (existingPreview) existingPreview.remove();
-            if (existingRevert) existingRevert.remove();
+            // Remove existing elements
+            const existingElements = photoContainer.querySelectorAll('.preview-label, .revert-photo-btn, .photo-overlay');
+            existingElements.forEach(el => el.remove());
             
             // Create or update image
-            let imageElement;
-            if (existingImg) {
-                imageElement = existingImg;
-                imageElement.dataset.originalSrc = imageElement.src;
-            } else {
+            let imageElement = photoContainer.querySelector('img');
+            const existingPlaceholder = photoContainer.querySelector('.photo-placeholder');
+            
+            if (!imageElement) {
                 imageElement = document.createElement('img');
                 if (existingPlaceholder) existingPlaceholder.remove();
+            } else {
+                imageElement.dataset.originalSrc = imageElement.src;
             }
             
-            // Set image properties
+            // Set image
             imageElement.src = result;
             imageElement.alt = 'Profile Photo Preview';
-            imageElement.style.width = '180px';
-            imageElement.style.height = '180px';
-            imageElement.style.borderRadius = '50%';
-            imageElement.style.objectFit = 'cover';
-            imageElement.style.border = '4px solid #f0f7ff';
-            imageElement.style.marginBottom = '1.5rem';
             
-            // Add image if it's new
-            if (!existingImg) {
+            // Add image if new
+            if (!photoContainer.contains(imageElement)) {
                 photoContainer.insertBefore(imageElement, photoContainer.firstChild);
             }
+            
+            // Add overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'photo-overlay';
+            overlay.innerHTML = '<i class="fas fa-camera" style="color: #2196f3; font-size: 2rem;"></i>';
+            photoContainer.insertBefore(overlay, photoContainer.firstChild.nextSibling);
             
             // Add preview label
             const previewLabel = document.createElement('div');
             previewLabel.className = 'preview-label';
-            previewLabel.textContent = 'Preview - Click Save Changes to update';
-            photoContainer.insertBefore(previewLabel, photoContainer.querySelector('.change-photo-btn'));
+            previewLabel.innerHTML = '<i class="fas fa-info-circle"></i> Click Save to update';
+            photoContainer.insertBefore(previewLabel, photoContainer.firstChild);
             
             // Add cancel button
             const revertBtn = document.createElement('button');
             revertBtn.type = 'button';
             revertBtn.className = 'revert-photo-btn';
             revertBtn.innerHTML = '<i class="fas fa-undo"></i> Cancel';
-            photoContainer.insertBefore(revertBtn, photoContainer.querySelector('.change-photo-btn'));
+            photoContainer.querySelector('.change-photo-btn').insertAdjacentElement('afterend', revertBtn);
             
-            // Handle cancel click
+            // Handle cancel
             revertBtn.addEventListener('click', function() {
-                if (existingImg) {
-                    // Restore original image
+                if (imageElement.dataset.originalSrc) {
                     imageElement.src = imageElement.dataset.originalSrc;
                 } else {
-                    // Restore placeholder
                     const placeholder = document.createElement('div');
                     placeholder.className = 'photo-placeholder';
-                    placeholder.innerHTML = '<i class="fas fa-user fa-3x" style="color: #0077cc;"></i>';
+                    placeholder.innerHTML = '<i class="fas fa-user fa-3x" style="color: #2196f3;"></i>';
                     imageElement.replaceWith(placeholder);
                 }
                 
                 // Cleanup
-                previewLabel.remove();
-                revertBtn.remove();
+                [previewLabel, revertBtn, overlay].forEach(el => el.remove());
                 document.getElementById('photo').value = '';
             });
         };
@@ -341,5 +357,84 @@ document.getElementById('photo').addEventListener('change', function(e) {
         reader.readAsDataURL(file);
     }
 });
+</script>
+
+<!-- Leaflet JavaScript -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+let map;
+let marker;
+
+function initMap() {
+    const defaultLat = {{ Auth::user()->latitude ?? -6.200000 }};
+    const defaultLng = {{ Auth::user()->longitude ?? 106.816666 }};
+    
+    map = L.map('map', {
+        scrollWheelZoom: false, // Disable scroll zoom by default
+        dragging: true,
+        tap: false
+    }).setView([defaultLat, defaultLng], 13);
+    
+    // Enable scroll zoom only when map is focused
+    map.on('click', function() {
+        map.scrollWheelZoom.enable();
+    });
+    
+    // Disable scroll zoom when mouse leaves map
+    map.on('mouseout', function() {
+        map.scrollWheelZoom.disable();
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    marker = L.marker([defaultLat, defaultLng], {
+        draggable: true
+    }).addTo(map);
+
+    marker.on('dragend', function() {
+        const pos = marker.getLatLng();
+        document.getElementById('latitude').value = pos.lat;
+        document.getElementById('longitude').value = pos.lng;
+        updateAddressFromCoordinates(pos.lat, pos.lng);
+    });
+}
+
+function getCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+
+            map.setView([pos.lat, pos.lng], 15);
+            marker.setLatLng([pos.lat, pos.lng]);
+            
+            document.getElementById('latitude').value = pos.lat;
+            document.getElementById('longitude').value = pos.lng;
+            
+            updateAddressFromCoordinates(pos.lat, pos.lng);
+        }, function() {
+            alert('Error: The Geolocation service failed.');
+        });
+    } else {
+        alert('Error: Your browser doesn\'t support geolocation.');
+    }
+}
+
+function updateAddressFromCoordinates(lat, lng) {
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('address').value = data.display_name;
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Initialize map when page loads
+window.addEventListener('load', initMap);
 </script>
 @endpush
