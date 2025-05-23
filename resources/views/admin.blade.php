@@ -178,15 +178,13 @@
                 </div>
             </div>
 
-
-
             <!-- Categories Section -->
             <div id="categories-section" class="admin-section">
                 <div class="section-header">
                     <h2>Manajemen Kategori</h2>
-                    <button class="add-category-btn" onclick="openAddCategoryModal()">
+                    <a href="{{ route('admin.categories.create') }}" class="add-category-btn">
                         <i class="fas fa-plus"></i> Tambah Kategori
-                    </button>
+                    </a>
                 </div>
 
                 <div class="table-responsive">
@@ -206,7 +204,7 @@
                                 <td>{{ $category->name }}</td>
                                 <td>{{ $category->services_count }}</td>
                                 <td class="actions">
-                                    <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" style="display:inline;">
+                                    <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="action-btn delete-btn" onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">
@@ -224,93 +222,9 @@
     </div>
 </div>
 
-<!-- Category Modal -->
-<div class="modal" id="categoryModal">
-    <div class="modal-content">
-        <h2>Add New Category</h2>
-        <form id="categoryForm" action="{{ route('admin.categories.store') }}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="categoryName">Category Name</label>
-                <input type="text" id="categoryName" name="name" required>
-            </div>
-            <div class="form-actions">
-                <button type="button" class="cancel-btn">Cancel</button>
-                <button type="submit" class="submit-btn">Save Category</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Add Category Modal -->
-<div id="addCategoryModal" class="modal">
-    <div class="modal-content">
-        <h2>Tambah Kategori Baru</h2>
-        <form action="{{ route('admin.categories.store') }}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="name">Nama Kategori</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-actions">
-                <button type="button" class="cancel-btn" onclick="closeAddCategoryModal()">Batal</button>
-                <button type="submit" class="submit-btn">Simpan</button>
-            </div>
-        </form>
-    </div>
-</div>
 
 @push('styles')
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
     <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 @endpush
-
-@push('scripts')
-<script>
-
-    
-document.addEventListener('DOMContentLoaded', function() {
-    // Search functionality
-    const searchInput = document.querySelector('.search-bar input');
-    searchInput.addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
-        const tableRows = document.querySelectorAll('.admin-table tbody tr');
-        
-        tableRows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(searchTerm) ? '' : 'none';
-        });
-    });
-
-    // Stats card navigation
-    const statCards = document.querySelectorAll('.stat-card.clickable');
-    const sections = document.querySelectorAll('.admin-section');
-
-    statCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const sectionId = this.getAttribute('data-section') + '-section';
-            sections.forEach(section => {
-                section.style.display = section.id === sectionId ? '' : 'none';
-            });
-        });
-    });
-
-    // Modal functionality
-
-    
-    const addCategoryBtn = document.querySelector('.add-category-btn');
-    const categoryModal = document.getElementById('categoryModal');
-    const cancelBtn = categoryModal.querySelector('.cancel-btn');
-
-    addCategoryBtn.addEventListener('click', function() {
-        categoryModal.style.display = 'block';
-    });
-
-    cancelBtn.addEventListener('click', function() {
-        categoryModal.style.display = 'none';
-    });
-});
-</script>
-@endpush
-@endsection
