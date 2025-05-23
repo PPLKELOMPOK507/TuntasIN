@@ -50,13 +50,13 @@
                 <label for="kategori">Kategori Jasa</label>
                 <select name="kategori" id="kategori" required>
                     <option value="" disabled selected>Pilih Kategori</option>
-                    <option value="Kebersihan">Kebersihan</option>
-                    <option value="Perbaikan">Perbaikan</option>
-                    <option value="Rumah Tangga">Rumah Tangga</option>
-                    <option value="Teknologi">Teknologi</option>
-                    <option value="Transportasi">Transportasi</option>
-                    <option value="Lainnya">Lainnya</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    @endforeach
                 </select>
+                @error('kategori')
+                    <small class="error">{{ $message }}</small>
+                @enderror
             </div>
 
             <div class="form-group">

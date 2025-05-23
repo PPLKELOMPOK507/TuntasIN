@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Jasa;
+use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class JasaController extends Controller
 {
@@ -13,19 +15,20 @@ class JasaController extends Controller
     {
         if (auth()->user()->role === 'Pengguna Jasa') {
             // Ambil semua jasa dengan data penyedia jasanya
-            $jasa = Jasa::with('user')->get();
-            return view('dashboard', compact('jasa'));
+            $jasa = Jasa::with('user','category')->get();
+            return view('dashboard', compact('jasa','categories'));
         } else {
             // Untuk penyedia jasa, tampilkan hanya jasanya sendiri
             $jasa = Jasa::where('user_id', auth()->id())->get();
-            return view('dashboard', compact('jasa'));
+            return view('dashboard', compact('jasa','categories'));
         }
     }
 
     // Halaman tambah jasa
     public function create()
     {
-        return view('addServices');
+        $categories = Category::all();
+        return view('addServices', compact('categories'));
     }
 
     // Menyimpan jasa baru
@@ -34,6 +37,7 @@ class JasaController extends Controller
         $validated = $request->validate([
             'nama_jasa' => 'required|string|max:255',
             'deskripsi' => 'required|string',
+            'kategori' => 'required|exists:categories,id',
             'minimal_harga' => 'required|integer|min:0',
             'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -44,6 +48,7 @@ class JasaController extends Controller
         // Simpan data jasa ke database
         Jasa::create([
             'user_id' => Auth::id(),
+            'category_id' => $validated['kategori'],
             'nama_jasa' => $validated['nama_jasa'],
             'deskripsi' => $validated['deskripsi'],
             'minimal_harga' => $validated['minimal_harga'],

@@ -29,23 +29,25 @@
 
     <div class="content-container">
         <div class="page-header">
-            <a href="{{ route('manage') }}" class="back-btn">← Kembali</a>
+            <h1>Edit Kategori</h1>
+            <a href="{{ route('manage') }}#categories-section" class="back-btn">← Kembali</a>
         </div>
 
         <div class="form-container">
-            <form action="{{ route('categories.store') }}" method="POST" class="add-category-form">
+            <form action="{{ route('categories.update', $category->id) }}" method="POST" class="edit-category-form">
                 @csrf
+                @method('PUT')
                 <div class="form-group">
                     <label for="name">Nama Kategori <span class="required">*</span></label>
-                    <input type="text" id="name" name="name" value="{{ old('name') }}" required>
+                    <input type="text" id="name" name="name" value="{{ old('name', $category->name) }}" required>
                     @error('name')
                         <small class="error">{{ $message }}</small>
                     @enderror
                 </div>
 
                 <div class="form-actions">
-                    <a href="{{ route('manage') }}" class="cancel-btn">Batal</a>
-                    <button type="submit" class="submit-btn">Simpan Kategori</button>
+                    <a href="{{ route('manage') }}#categories-section" class="cancel-btn">Batal</a>
+                    <button type="submit" class="submit-btn">Simpan Perubahan</button>
                 </div>
             </form>
         </div>

@@ -73,20 +73,19 @@ Route::middleware(['auth'])->group(function () {
         if (auth()->user()->role !== 'Admin') {
             return redirect()->route('dashboard');
         }
-        $jasa = \App\Models\Jasa::with('user')->get();
+        $jasa = \App\Models\Jasa::with(['user','category'])->get();
         $totalUsers = \App\Models\User::count();
         $users = \App\Models\User::all(); // Add this line
         $categories = \App\Models\Category::withCount('services')->get();
         
         return view('admin', compact('jasa', 'totalUsers', 'categories', 'users'));
-    })->name('admin.dashboard');
+    })->name('manage');
     
-    Route::delete('/admin/jasa/{id}', [AdminController::class, 'destroyJasa'])->name('admin.jasa.destroy');
-    Route::delete('/admin/users/{id}', [AdminController::class, 'destroyUser'])
-        ->name('admin.users.destroy');
-});
-
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
+    // Category routes
+    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
 

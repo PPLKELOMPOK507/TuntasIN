@@ -79,9 +79,20 @@
             <!-- Featured Section for Pengguna Jasa -->
             <section class="featured-section">
                 <h2>Available Services</h2>
+
+                <!-- Add category filter -->
+                <div class="category-filter">
+                    <select id="category-select" class="form-control">
+                        <option value="">Semua Kategori</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <div class="service-grid">
                     @foreach($jasa as $item)
-                    <div class="service-card">
+                    <div class="service-card" data-category="{{ $item->category_id }}">
                         <div class="service-image">
                             <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->nama_jasa }}">
                             <!-- Tambahkan tombol wishlist -->

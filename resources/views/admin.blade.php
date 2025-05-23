@@ -4,7 +4,7 @@
 <div class="dashboard-container">
     <nav class="nav-container">
         <div class="logo">
-            <a href="{{ route('admin.dashboard') }}">TUNTAS<span class="logo-in">IN</span></a>
+            <a href="{{ route('manage') }}">TUNTAS<span class="logo-in">IN</span></a>
         </div>
 
         <!-- Admin Menu -->
@@ -109,7 +109,7 @@
                                 </td>
                                 <td class="actions">
                                     @if($user->role !== 'Admin')
-                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('categories.destroy', $user->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="action-btn delete-btn" 
@@ -178,11 +178,14 @@
                 </div>
             </div>
 
+            <!-- Add hidden radio button for section control -->
+            <input type="radio" id="categories-tab" name="admin-tab" class="admin-tab-input" {{ session('current_section') == 'categories' ? 'checked' : '' }}>
+
             <!-- Categories Section -->
-            <div id="categories-section" class="admin-section">
+            <div id="categories-section" class="admin-section {{ session('current_section') == 'categories' ? 'active' : '' }}">
                 <div class="section-header">
                     <h2>Manajemen Kategori</h2>
-                    <a href="{{ route('admin.categories.create') }}" class="add-category-btn">
+                    <a href="{{ route('categories.create') }}" class="add-category-btn">
                         <i class="fas fa-plus"></i> Tambah Kategori
                     </a>
                 </div>
@@ -198,25 +201,45 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($categories as $category)
+                            @forelse($categories as $category)
                             <tr>
                                 <td>{{ $category->id }}</td>
                                 <td>{{ $category->name }}</td>
                                 <td>{{ $category->services_count }}</td>
                                 <td class="actions">
-                                    <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST">
+                                    <a href="{{ route('categories.edit', $category->id) }}" class="action-btn edit-btn">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="action-btn delete-btn" onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">
+                                        <button type="submit" class="action-btn delete-btn" 
+                                            onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="4" class="text-center">Belum ada kategori</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
+
+                @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+                @endif
+
+                @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+                @endif
             </div>
         </div>
     </div>
