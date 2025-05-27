@@ -13,20 +13,26 @@ class JasaController extends Controller
     // Menampilkan Dashboard berdasarkan role pengguna
     public function dashboard()
     {
+        // Ambil kategori terlebih dahulu
+        $categories = Category::all();
+        
         if (auth()->user()->role === 'Pengguna Jasa') {
-            // Ambil semua jasa dengan data penyedia jasanya
-            $jasa = Jasa::with('user','category')->get();
-            return view('dashboard', compact('jasa','categories'));
+            // Ambil semua jasa dengan data penyedia jasanya dan kategori
+            $jasa = Jasa::with(['user', 'category'])->get();
+            return view('dashboard', compact('jasa', 'categories'));
         } else {
-            // Untuk penyedia jasa, tampilkan hanya jasanya sendiri
-            $jasa = Jasa::where('user_id', auth()->id())->get();
-            return view('dashboard', compact('jasa','categories'));
+            // Untuk penyedia jasa, tampilkan hanya jasanya sendiri dengan kategori
+            $jasa = Jasa::where('user_id', auth()->id())
+                        ->with('category')
+                        ->get();
+            return view('dashboard', compact('jasa', 'categories'));
         }
     }
 
     // Halaman tambah jasa
     public function create()
     {
+        // Mengambil semua kategori dari database
         $categories = Category::all();
         return view('addServices', compact('categories'));
     }
@@ -62,7 +68,8 @@ class JasaController extends Controller
     public function edit($id)
     {
         $jasa = Jasa::findOrFail($id);
-        return view('serviceUpdate', compact('jasa'));
+        $categories = Category::all(); // Tambahkan ini
+        return view('serviceUpdate', compact('jasa', 'categories'));
     }
 
     // Update jasa
@@ -73,6 +80,7 @@ class JasaController extends Controller
         $validated = $request->validate([
             'nama_jasa' => 'required|string|max:255',
             'deskripsi' => 'required|string',
+            'kategori' => 'required|exists:categories,id', // Tambahkan validasi kategori
             'minimal_harga' => 'required|integer|min:0',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -89,6 +97,7 @@ class JasaController extends Controller
         $jasa->update([
             'nama_jasa' => $validated['nama_jasa'],
             'deskripsi' => $validated['deskripsi'],
+            'category_id' => $validated['kategori'], // Update kategori
             'minimal_harga' => $validated['minimal_harga'],
         ]);
 
