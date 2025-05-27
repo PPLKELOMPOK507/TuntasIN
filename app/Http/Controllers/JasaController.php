@@ -47,7 +47,6 @@ class JasaController extends Controller
             'kategori' => 'required|exists:categories,id',
             'minimal_harga' => 'required|integer|min:0',
             'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'category_id' => 'required|exists:categories,id'
         ]);
 
         // Simpan gambar ke folder public/storage/jasa

@@ -22,7 +22,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PurchaseController; 
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RefundController;
-
+use App\Http\Controllers\PemesananController;
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
 Route::post('/register', [RegistrationController::class, 'store'])->name('register.submit');
@@ -129,8 +129,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
 
-Route::get('/pesan/{jasa}', [App\Http\Controllers\PemesananController::class, 'create'])->name('pesanan.create');
-Route::post('/pesan/{jasa}', [App\Http\Controllers\PemesananController::class, 'store'])->name('pesanan.store');
+
 
 Route::post('/messages', [ChatController::class, 'store'])->name('messages.store');
 
@@ -141,6 +140,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat/{jasa_id}', [ChatController::class, 'show'])->name('chat.show');
     Route::get('/chat/{jasa_id}/messages', [ChatController::class, 'getMessages'])->name('chat.messages');
     Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.store');
+});
+Route::middleware(['auth'])->group(function () {
+    // ...existing routes...
+    Route::get('/pesan/{jasa}', [PemesananController::class, 'create'])->name('pesanan.create');
+    Route::post('/pesan/{jasa}', [PemesananController::class, 'store'])->name('pesanan.store');
 });
 
 // Route::prefix('admin')->name('admin.')->middleware('auth', 'admin')->group(function () {
@@ -192,10 +196,10 @@ Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
             Route::delete('/admin/categories/{id}', 'destroy')->name('categories.destroy');
         });
     });
-// Payment Routes
-Route::get('/payment/form', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
-Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
-Route::post('/payment/submit', [PaymentController::class, 'submitPayment'])->name('payment.submit');
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/payment/{pemesanan}', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
+        Route::post('/payment/{pemesanan}', [PaymentController::class, 'processPayment'])->name('payment.process');
+    });
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/refund', [RefundController::class, 'showRefundForm'])->name('refund.form');

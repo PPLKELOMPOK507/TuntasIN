@@ -48,8 +48,7 @@
 
             <div class="form-group">
                 <label for="category_id">Kategori Jasa</label>
-                <select name="category_id" id="category_id" required>
-                    <option value="" disabled selected>Pilih Kategori</option>
+                <select name="kategori" id="kategori" required>                    <option value="" disabled selected>Pilih Kategori</option>
                     @foreach($categories as $category)
                         {{-- <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                             {{ $category->name }}

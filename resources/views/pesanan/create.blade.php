@@ -80,7 +80,7 @@
                             @endif
                         </div>
                         <div class="provider-details">
-                            <h5 class="mb-0">{{ $jasa->penyedia->nama ?? 'Nama Penyedia' }}</h5>
+                            <h5 class="mb-0">{{ $jasa->user->full_name ?? 'Nama Penyedia' }}</h5>
                             <p class="text-muted mb-0">Top Rated Seller</p>
                         </div>
                     </div>
