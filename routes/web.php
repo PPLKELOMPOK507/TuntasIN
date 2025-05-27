@@ -20,6 +20,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PurchaseController; 
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\RefundController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -190,3 +192,12 @@ Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
             Route::delete('/admin/categories/{id}', 'destroy')->name('categories.destroy');
         });
     });
+// Payment Routes
+Route::get('/payment/form', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
+Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+Route::post('/payment/submit', [PaymentController::class, 'submitPayment'])->name('payment.submit');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/refund', [RefundController::class, 'showRefundForm'])->name('refund.form');
+    Route::post('/refund', [RefundController::class, 'submitRefund'])->name('refund.submit');
+});
