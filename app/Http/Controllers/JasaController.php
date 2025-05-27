@@ -13,15 +13,17 @@ class JasaController extends Controller
     // Menampilkan Dashboard berdasarkan role pengguna
     public function dashboard()
     {
+        $categories = Category::all();
+        
         if (auth()->user()->role === 'Pengguna Jasa') {
             // Ambil semua jasa dengan data penyedia jasanya
-            $jasa = Jasa::with(['user','category'])->get();
-            return view('dashboard', compact('jasa','categories'));
+            $jasa = Jasa::with(['user', 'category'])->get();
         } else {
             // Untuk penyedia jasa, tampilkan hanya jasanya sendiri
             $jasa = Jasa::where('user_id', auth()->id())->get();
-            return view('dashboard', compact('jasa','categories'));
         }
+        
+        return view('dashboard', compact('jasa', 'categories'));
     }
     public function show($id)
 {

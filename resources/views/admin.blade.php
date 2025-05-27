@@ -159,7 +159,7 @@
                                     <button class="action-btn view-btn" title="View Details">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <form action="{{ route('admin.jasa.destroy', $service->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('manage.jasa.destroy', $service->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="action-btn delete-btn" title="Delete Service">

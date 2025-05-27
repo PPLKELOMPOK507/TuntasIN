@@ -123,7 +123,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/forum/discussions/{id}', [DiscussionController::class, 'show'])->name('discussion.show');
     Route::delete('/forum/discussions/{id}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
 });
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('dashboard');
 
 Route::get('/pesan/{jasa}', [App\Http\Controllers\PemesananController::class, 'create'])->name('pesanan.create');
 Route::post('/pesan/{jasa}', [App\Http\Controllers\PemesananController::class, 'store'])->name('pesanan.store');
@@ -180,6 +182,8 @@ Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
             return view('admin', compact('jasa', 'totalUsers', 'categories', 'users'));
         })->name('manage');
         
+        Route::delete('/admin/jasa/{id}', [AdminController::class, 'destroyJasa'])->name('manage.jasa.destroy');
+
         Route::controller(CategoryController::class)->group(function() {
             Route::get('/admin/categories/create', 'create')->name('categories.create');
             Route::post('/admin/categories', 'store')->name('categories.store');
