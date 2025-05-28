@@ -928,6 +928,18 @@ function copyVANumber() {
 // Modifikasi event listener form submit
 document.querySelector('form').addEventListener('submit', function(e) {
     e.preventDefault();
+    
+    // Hanya cek apakah metode pembayaran dipilih
+    const selectedMethod = document.querySelector('input[name="payment_method"]:checked');
+    if (!selectedMethod) {
+        Swal.fire({
+            title: 'Peringatan',
+            text: 'Silakan pilih metode pembayaran',
+            icon: 'warning',
+            confirmButtonColor: '#2563eb'
+        });
+        return;
+    }
 
     Swal.fire({
         title: 'Konfirmasi Pembayaran',
@@ -935,343 +947,45 @@ document.querySelector('form').addEventListener('submit', function(e) {
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#2563eb',
-        cancelButtonColor: '#d1d5db', // Warna abu-abu untuk tombol Tidak
-        confirmButtonText: '<span style="font-size: 1.1rem; padding: 0.5rem 1rem;">Ya, Bayar Sekarang</span>',
-        cancelButtonText: '<span style="font-size: 0.9rem;">Tidak, Kembali</span>',
-        customClass: {
-            confirmButton: 'swal2-confirm-large',
-            cancelButton: 'swal2-cancel-small',
-            popup: 'swal2-popup-custom'
-        },
-        reverseButtons: true
+        cancelButtonColor: '#d1d5db',
+        confirmButtonText: 'Ya, Bayar Sekarang',
+        cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Jika user memilih Ya
-            Swal.fire({
-                title: 'Pembayaran Berhasil!',
-                text: 'Pembayaran akan diverifikasi oleh Admin',
-                icon: 'success',
-                confirmButtonColor: '#2563eb',
-                timer: 2000,
-                timerProgressBar: true,
-                showConfirmButton: false
-            }).then(() => {
-                window.location.href = "{{ route('dashboard') }}";
-            });
-
-            this.submit();
-        } else {
-            // Jika user memilih Tidak
-            window.location.href = "{{ route('dashboard') }}";
-        }
-    });
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // ...existing code...
-
-    // Update form submit handler
-    const form = document.querySelector('form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
             const formData = new FormData(this);
-
-            Swal.fire({
-                title: 'Konfirmasi Pembayaran',
-                text: 'Apakah Anda yakin akan melakukan pembayaran?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#2563eb',
-                cancelButtonColor: '#d1d5db',
-                confirmButtonText: '<span style="font-size: 1.1rem; padding: 0.5rem 1rem;">Ya, Bayar Sekarang</span>',
-                cancelButtonText: '<span style="font-size: 0.9rem;">Tidak, Kembali</span>',
-                customClass: {
-                    confirmButton: 'swal2-confirm-large',
-                    cancelButton: 'swal2-cancel-small',
-                    popup: 'swal2-popup-custom'
-                },
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Submit form using fetch
-                    fetch(form.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            Swal.fire({
-                                title: 'Pembayaran Berhasil!',
-                                text: 'Pembayaran akan diverifikasi oleh Admin',
-                                icon: 'success',
-                                confirmButtonColor: '#2563eb',
-                                timer: 2000,
-                                timerProgressBar: true,
-                                showConfirmButton: false
-                            }).then(() => {
-                                window.location.href = "{{ route('dashboard') }}";
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Terjadi kesalahan saat memproses pembayaran',
-                            icon: 'error',
-                            confirmButtonColor: '#2563eb'
-                        });
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Pembayaran Diproses!',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonColor: '#2563eb'
+                    }).then(() => {
+                        window.location.href = data.redirect;
                     });
                 } else {
-                    // Stay on current page if canceled
-                    return false;
+                    throw new Error(data.message);
                 }
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: 'Error',
+                    text: error.message || 'Terjadi kesalahan',
+                    icon: 'error',
+                    confirmButtonColor: '#2563eb'
+                });
             });
-        });
-    }
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Tampilkan konfirmasi pembayaran
-            Swal.fire({
-                title: 'Konfirmasi Pembayaran',
-                text: 'Apakah Anda yakin akan melakukan pembayaran?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#2563eb',
-                cancelButtonColor: '#d1d5db',
-                confirmButtonText: '<span style="font-size: 1.1rem; padding: 0.5rem 1rem;">Ya, Bayar Sekarang</span>',
-                cancelButtonText: '<span style="font-size: 0.9rem;">Tidak, Kembali</span>',
-                customClass: {
-                    confirmButton: 'swal2-confirm-large',
-                    cancelButton: 'swal2-cancel-small',
-                    popup: 'swal2-popup-custom'
-                },
-                reverseButtons: true,
-                allowOutsideClick: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Jika user memilih Ya
-                    const formData = new FormData(form);
-                    
-                    fetch(form.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Tampilkan notifikasi sukses
-                            Swal.fire({
-                                title: 'Pembayaran Berhasil!',
-                                text: 'Pembayaran akan diverifikasi oleh Admin',
-                                icon: 'success',
-                                confirmButtonColor: '#2563eb',
-                                timer: 2000,
-                                timerProgressBar: true,
-                                showConfirmButton: false
-                            }).then(() => {
-                                // Redirect ke dashboard setelah notifikasi hilang
-                                window.location.href = "{{ route('dashboard') }}";
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Terjadi kesalahan saat memproses pembayaran',
-                            icon: 'error',
-                            confirmButtonColor: '#2563eb'
-                        });
-                    });
-                }
-            });
-        });
-    }
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            Swal.fire({
-                title: 'Konfirmasi Pembayaran',
-                text: 'Apakah Anda yakin akan melakukan pembayaran?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#2563eb',
-                cancelButtonColor: '#d1d5db',
-                confirmButtonText: 'Ya, Bayar Sekarang',
-                cancelButtonText: 'Tidak, Kembali',
-                reverseButtons: true,
-                allowOutsideClick: false,
-                showLoaderOnConfirm: true,
-                customClass: {
-                    confirmButton: 'swal2-confirm-large',
-                    cancelButton: 'swal2-cancel-small',
-                    popup: 'swal2-popup-custom'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Pembayaran Berhasil!',
-                        text: 'Pembayaran akan diverifikasi oleh Admin',
-                        icon: 'success',
-                        confirmButtonColor: '#2563eb',
-                        timerProgressBar: true,
-                        showConfirmButton: true, // Menambahkan tombol konfirmasi
-                        confirmButtonText: 'OK',
-                        allowOutsideClick: false
-                    }).then(() => {
-                        window.location.href = "{{ route('dashboard') }}";
-                    });
-                    
-                    // Submit form jika user klik "Ya"
-                    this.submit();
-                }
-            });
-        });
-    }
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            Swal.fire({
-                title: 'Konfirmasi Pembayaran',
-                text: 'Apakah Anda yakin akan melakukan pembayaran?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#2563eb',
-                cancelButtonColor: '#d1d5db',
-                confirmButtonText: 'Ya, Bayar Sekarang',
-                cancelButtonText: 'Tidak, Kembali',
-                reverseButtons: true,
-                allowOutsideClick: false,
-                customClass: {
-                    confirmButton: 'swal2-confirm-large',
-                    cancelButton: 'swal2-cancel-small',
-                    popup: 'swal2-popup-custom'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Pembayaran Berhasil!',
-                        text: 'Pembayaran akan diverifikasi oleh Admin',
-                        icon: 'success',
-                        confirmButtonColor: '#2563eb',
-                        showConfirmButton: true,
-                        confirmButtonText: 'OK',
-                        allowOutsideClick: false
-                    }).then(() => {
-                        window.location.href = "{{ route('dashboard') }}";
-                    });
-                    // Jika ingin submit ke backend, aktifkan baris berikut:
-                    // form.submit();
-                }
-                // Jika user memilih Tidak, tidak terjadi apa-apa (tetap di halaman)
-            });
-        });
-    }
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            Swal.fire({
-                title: 'Konfirmasi Pembayaran',
-                text: 'Apakah Anda yakin akan melakukan pembayaran?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#2563eb',
-                cancelButtonColor: '#d1d5db',
-                confirmButtonText: 'Ya, Bayar Sekarang',
-                cancelButtonText: 'Tidak, Kembali',
-                reverseButtons: true,
-                allowOutsideClick: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const formData = new FormData(form);
-                    
-                    // Show loading state
-                    Swal.fire({
-                        title: 'Memproses Pembayaran',
-                        text: 'Mohon tunggu...',
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        showConfirmButton: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
-
-                    // Send AJAX request
-                    fetch(form.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire({
-                                title: 'Pembayaran Berhasil!',
-                                text: data.message,
-                                icon: 'success',
-                                confirmButtonColor: '#2563eb',
-                                confirmButtonText: 'OK',
-                                allowOutsideClick: false
-                            }).then(() => {
-                                window.location.href = data.redirect;
-                            });
-                        } else {
-                            throw new Error(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: error.message || 'Terjadi kesalahan saat memproses pembayaran',
-                            icon: 'error',
-                            confirmButtonColor: '#2563eb'
-                        });
-                    });
-                }
-            });
-        });
-    }
+        }
+    });
 });
 </script>
 @endpush

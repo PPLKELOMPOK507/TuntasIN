@@ -253,6 +253,64 @@
                 </div>
                 @endif
             </div>
+
+            <!-- Payments Section -->
+            <div class="admin-section" id="payments-section">
+                <div class="section-header">
+                    <h2>Payment Management</h2>
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search payments...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Payment ID</th>
+                                <th>User</th>
+                                <th>Service</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($payments as $payment)
+                            <tr>
+                                <td>{{ $payment->payment_reference }}</td>
+                                <td>{{ $payment->user->full_name }}</td>
+                                <td>{{ $payment->pemesanan->jasa->nama_jasa }}</td>
+                                <td>Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
+                                <td>{{ ucfirst($payment->payment_method) }}</td>
+                                <td>
+                                    <span class="status-badge {{ $payment->status }}">
+                                        {{ ucfirst($payment->status) }}
+                                    </span>
+                                </td>
+                                <td class="actions">
+                                    <form action="{{ route('manage.payments.verify', $payment->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <select name="status" class="status-select" onchange="this.form.submit()">
+                                            <option value="pending" {{ $payment->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="completed" {{ $payment->status === 'completed' ? 'selected' : '' }}>Accept</option>
+                                            <option value="declined" {{ $payment->status === 'declined' ? 'selected' : '' }}>Decline</option>
+                                        </select>
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="7" class="text-center">No payments found</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

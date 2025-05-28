@@ -81,8 +81,8 @@
                                 @case('pending')
                                     Menunggu Pembayaran
                                     @break
-                                @case('awaiting_payment')
-                                    Menunggu Verifikasi
+                                @case('awaiting_verification')
+                                    Menunggu Verifikasi Admin
                                     @break
                                 @case('paid')
                                     Pembayaran Diterima
