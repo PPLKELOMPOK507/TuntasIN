@@ -65,18 +65,15 @@
                         <div class="action-buttons">
                             <button class="btn-chat">Chat Penjual</button>
                             @if($purchase->status === 'Selesai' && !$purchase->hasReview)
-                                <form action="{{ route('review.store', $purchase->id) }}" method="POST">
-                                    @csrf
-                                    <button type="button" class="btn-review" data-bs-toggle="modal" data-bs-target="#reviewModal-{{ $purchase->id }}">
-                                        <i class="fas fa-star"></i> Nilai
-                                    </button>
-                                </form>
+                                <button type="button" class="btn-review" data-bs-toggle="modal" data-bs-target="#reviewModal-{{ $purchase->id }}">
+                                    <i class="fas fa-star"></i> Nilai
+                                </button>
                             @endif
                         </div>
                     </div>
                 </div>
 
-                <!-- Modal Review untuk setiap pembelian -->
+                <!-- Modal Review -->
                 <div class="modal fade" id="reviewModal-{{ $purchase->id }}" tabindex="-1">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -84,8 +81,9 @@
                                 <h5 class="modal-title">Beri Ulasan untuk {{ $purchase->jasa->nama_jasa }}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
-                            <form action="{{ route('review.store', $purchase->id) }}" method="POST">
+                            <form action="{{ route('review.store') }}" method="POST">
                                 @csrf
+                                <input type="hidden" name="pemesanan_id" value="{{ $purchase->id }}">
                                 <div class="modal-body">
                                     <div class="rating-input mb-3">
                                         <label>Rating:</label>
@@ -100,7 +98,7 @@
                                     </div>
                                     <div class="review-input">
                                         <label>Review:</label>
-                                        <textarea name="review" class="form-control" rows="3" required></textarea>
+                                        <textarea name="review" class="form-control" rows="3" placeholder="Bagikan pengalaman Anda menggunakan jasa ini..." required></textarea>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
