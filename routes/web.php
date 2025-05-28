@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PurchaseController; 
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\AdminPaymentController;
+use App\Http\Controllers\AdminRefundController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -242,4 +243,9 @@ Route::middleware(['auth', 'provider'])->group(function () {
     Route::get('/provider/refunds', [RefundController::class, 'providerIndex'])->name('provider.refunds.index');
     Route::get('/provider/refunds/{id}', [RefundController::class, 'providerShow'])->name('provider.refunds.show');
     Route::post('/provider/refunds/{id}/response', [RefundController::class, 'providerResponse'])->name('provider.refunds.response');
+});
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/refunds', [AdminRefundController::class, 'index'])->name('admin.refunds.index');
+    Route::get('/admin/refunds/{id}', [AdminRefundController::class, 'show'])->name('admin.refunds.show');
+    Route::post('/admin/refunds/{id}/review', [AdminRefundController::class, 'review'])->name('admin.refunds.review');
 });
