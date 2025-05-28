@@ -56,159 +56,202 @@
 
     <div class="profile-container">
         <div class="profile-header">
-            <h1>My Profile</h1>
-        </div>
-
-        <div class="profile-content">
-            <div class="profile-photo">
-                @if(Auth::user()->photo)
-                    <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Profile Photo">
-                @else
-                    <div class="photo-placeholder">
-                        <i class="fas fa-user fa-3x" style="color: #0077cc;"></i>
-                    </div>
-                @endif
-                <button type="button" class="change-photo-btn" onclick="document.getElementById('photo').click()">
-                    <i class="fas fa-camera"></i>
-                    Change Photo
+            <div class="header-content">
+                <h1>My Profile</h1>
+                <p>Manage your account information and settings</p>
+            </div>
+            <div class="header-actions">
+                <button type="button" class="btn-save-all" form="profile-form">
+                    <i class="fas fa-save"></i>
+                    Save Changes
                 </button>
             </div>
+        </div>
 
-            <div class="profile-info">
-                <form action="{{ route('profile.update') }}" method="POST" class="profile-form" enctype="multipart/form-data">
+        <div class="profile-layout">
+            <!-- Profile Sidebar -->
+            <div class="profile-sidebar">
+                <div class="profile-photo-section">
+                    <div class="profile-photo">
+                        @if(Auth::user()->photo)
+                            <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Profile">
+                        @else
+                            <div class="photo-placeholder">
+                                <span>{{ strtoupper(substr(Auth::user()->first_name, 0, 1)) }}</span>
+                            </div>
+                        @endif
+                        <button type="button" class="change-photo-btn" onclick="document.getElementById('photo').click()">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                    <div class="profile-info-summary">
+                        <h3>{{ Auth::user()->full_name }}</h3>
+                        <span class="role-badge">{{ Auth::user()->role }}</span>
+                    </div>
+                </div>
+
+                <nav class="profile-nav">
+                    <button type="button" class="nav-item active" data-section="general">
+                        <i class="fas fa-user"></i>
+                        General Information
+                    </button>
+                    <button type="button" class="nav-item" data-section="security">
+                        <i class="fas fa-lock"></i>
+                        Security
+                    </button>
+                    @if(Auth::user()->role === 'Pengguna Jasa')
+                        <button type="button" class="nav-item" data-section="address">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Address
+                        </button>
+                    @endif
+                    @if(Auth::user()->role === 'Penyedia Jasa')
+                        <button type="button" class="nav-item" data-section="documents">
+                            <i class="fas fa-file-alt"></i>
+                            Documents
+                        </button>
+                    @endif
+                </nav>
+            </div>
+
+            <!-- Profile Content -->
+            <div class="profile-content">
+                <form id="profile-form" action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    
-                    <input type="file" 
-                           id="photo" 
-                           name="photo" 
-                           accept="image/*" 
-                           hidden>
-                    
-                    <div class="info-group">
-                        <label for="first_name">First Name</label>
-                        <input type="text" id="first_name" name="first_name" value="{{ Auth::user()->first_name }}" class="profile-input">
-                    </div>
-                    
-                    <div class="info-group">
-                        <label for="last_name">Last Name</label>
-                        <input type="text" id="last_name" name="last_name" value="{{ Auth::user()->last_name }}" class="profile-input">
-                    </div>
+                    <input type="file" id="photo" name="photo" accept="image/*" hidden>
 
-                    <div class="info-group">
-                        <label>Email</label>
-                        <p class="static-info">{{ Auth::user()->email }}</p>
-                    </div>
+                    <!-- General Information Section -->
+                    <div class="profile-section active" id="general-section">
+                        <div class="section-grid">
+                            <div class="form-group">
+                                <label for="first_name">First Name</label>
+                                <input type="text" id="first_name" name="first_name" value="{{ Auth::user()->first_name }}" class="form-input">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" id="last_name" name="last_name" value="{{ Auth::user()->last_name }}" class="form-input">
+                            </div>
 
-                    <div class="info-group">
-                        <label>Role</label>
-                        <p class="static-info">{{ Auth::user()->role }}</p>
-                    </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <div class="static-input">{{ Auth::user()->email }}</div>
+                            </div>
 
-                    <div class="info-group">
-                        <label>Mobile Number</label>
-                        <p class="static-info">{{ Auth::user()->mobile_number }}</p>
-                    </div>
-
-                    @if(Auth::user()->role === 'Pengguna Jasa')
-                        <div class="info-group">
-                            <label for="address">Address</label>
-                            <div class="address-container">
-                                <textarea 
-                                    id="address" 
-                                    name="address" 
-                                    class="profile-input" 
-                                    rows="3" 
-                                    placeholder="Enter your address">{{ Auth::user()->address }}</textarea>
-                                
-                                <div id="map" style="height: 300px; width: 100%; margin-top: 10px; border-radius: 8px;"></div>
-                                
-                                <input type="hidden" id="latitude" name="latitude" value="{{ Auth::user()->latitude }}">
-                                <input type="hidden" id="longitude" name="longitude" value="{{ Auth::user()->longitude }}">
-                                
-                                <button type="button" class="btn-get-location" onclick="getCurrentLocation()">
-                                    <i class="fas fa-map-marker-alt"></i> Get Current Location
-                                </button>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <div class="static-input">{{ Auth::user()->mobile_number }}</div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="info-group">
-                            <label for="description">Description</label>
-                            <textarea 
-                                id="description" 
-                                name="description" 
-                                class="profile-input" 
-                                rows="4" 
-                                placeholder="Tell us about yourself">{{ Auth::user()->description }}</textarea>
-                            <small class="form-text text-muted">Share some information about yourself, your interests, or what kind of services you're looking for.</small>
+                    <!-- Security Section -->
+                    <div class="profile-section" id="security-section">
+                        <div class="section-grid">
+                            <div class="form-group">
+                                <label for="current_password">Current Password</label>
+                                <div class="password-input-group">
+                                    <input type="password" id="current_password" name="current_password" class="form-input">
+                                    <button type="button" class="toggle-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="new_password">New Password</label>
+                                <div class="password-input-group">
+                                    <input type="password" id="new_password" name="new_password" class="form-input">
+                                    <button type="button" class="toggle-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="new_password_confirmation">Confirm New Password</label>
+                                <div class="password-input-group">
+                                    <input type="password" id="new_password_confirmation" name="new_password_confirmation" class="form-input">
+                                    <button type="button" class="toggle-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Section (Pengguna Jasa) -->
+                    @if(Auth::user()->role === 'Pengguna Jasa')
+                        <div class="profile-section" id="address-section">
+                            <div class="section-grid">
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <div class="address-container">
+                                        <textarea 
+                                            id="address" 
+                                            name="address" 
+                                            class="form-input" 
+                                            rows="3" 
+                                            placeholder="Enter your address">{{ Auth::user()->address }}</textarea>
+                                        
+                                        <div id="map" style="height: 300px; width: 100%; margin-top: 10px; border-radius: 8px;"></div>
+                                        
+                                        <input type="hidden" id="latitude" name="latitude" value="{{ Auth::user()->latitude }}">
+                                        <input type="hidden" id="longitude" name="longitude" value="{{ Auth::user()->longitude }}">
+                                        
+                                        <button type="button" class="btn-get-location" onclick="getCurrentLocation()">
+                                            <i class="fas fa-map-marker-alt"></i> Get Current Location
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea 
+                                        id="description" 
+                                        name="description" 
+                                        class="form-input" 
+                                        rows="4" 
+                                        placeholder="Tell us about yourself">{{ Auth::user()->description }}</textarea>
+                                    <small class="form-text text-muted">Share some information about yourself, your interests, or what kind of services you're looking for.</small>
+                                </div>
+                            </div>
                         </div>
                     @endif
 
-                    <div class="password-section">
-                        <h3>
-                            <i class="fas fa-lock"></i>
-                            Change Password
-                        </h3>
-                        <div class="info-group">
-                            <label for="current_password">Current Password</label>
-                            <input type="password" 
-                                   id="current_password" 
-                                   name="current_password" 
-                                   class="profile-input"
-                                   placeholder="Enter your current password">
-                        </div>
-
-                        <div class="info-group">
-                            <label for="new_password">New Password</label>
-                            <input type="password" 
-                                   id="new_password" 
-                                   name="new_password" 
-                                   class="profile-input"
-                                   placeholder="Enter new password">
-                        </div>
-
-                        <div class="info-group">
-                            <label for="new_password_confirmation">Confirm New Password</label>
-                            <input type="password" 
-                                   id="new_password_confirmation" 
-                                   name="new_password_confirmation" 
-                                   class="profile-input"
-                                   placeholder="Confirm your new password">
-                        </div>
-                    </div>
-
+                    <!-- Documents Section (Penyedia Jasa) -->
                     @if(Auth::user()->role === 'Penyedia Jasa')
-                        <div class="cv-section">
-                            <h3>
-                                <i class="fas fa-file-alt"></i>
-                                Curriculum Vitae
-                            </h3>
-                            <div class="info-group">
-                                <div class="cv-upload-container">
-                                    @if(Auth::user()->cv_file)
-                                        <div class="current-cv">
-                                            <i class="fas fa-file-pdf"></i>
-                                            <span class="cv-filename">{{ basename(Auth::user()->cv_file) }}</span>
-                                            <a href="{{ asset('storage/' . Auth::user()->cv_file) }}" 
-                                               class="view-cv-btn" 
-                                               target="_blank">
-                                                <i class="fas fa-eye"></i>
-                                                View CV
-                                            </a>
-                                        </div>
-                                    @endif
-                                    <input type="file" 
-                                           id="cv_file" 
-                                           name="cv_file" 
-                                           accept=".pdf,.doc,.docx" 
-                                           hidden>
-                                    <button type="button" 
-                                            class="upload-cv-btn" 
-                                            onclick="document.getElementById('cv_file').click()">
-                                        <i class="fas fa-upload"></i>
-                                        {{ Auth::user()->cv_file ? 'Change CV' : 'Upload CV' }}
-                                    </button>
-                                    <p class="cv-help-text">Accepted formats: PDF, DOC, DOCX (Max. 5MB)</p>
+                        <div class="profile-section" id="documents-section">
+                            <div class="section-grid">
+                                <div class="form-group">
+                                    <label for="cv_file">Curriculum Vitae</label>
+                                    <div class="cv-upload-container">
+                                        @if(Auth::user()->cv_file)
+                                            <div class="current-cv">
+                                                <i class="fas fa-file-pdf"></i>
+                                                <span class="cv-filename">{{ basename(Auth::user()->cv_file) }}</span>
+                                                <a href="{{ asset('storage/' . Auth::user()->cv_file) }}" 
+                                                   class="view-cv-btn" 
+                                                   target="_blank">
+                                                    <i class="fas fa-eye"></i>
+                                                    View CV
+                                                </a>
+                                            </div>
+                                        @endif
+                                        <input type="file" 
+                                               id="cv_file" 
+                                               name="cv_file" 
+                                               accept=".pdf,.doc,.docx" 
+                                               hidden>
+                                        <button type="button" 
+                                                class="upload-cv-btn" 
+                                                onclick="document.getElementById('cv_file').click()">
+                                            <i class="fas fa-upload"></i>
+                                            {{ Auth::user()->cv_file ? 'Change CV' : 'Upload CV' }}
+                                        </button>
+                                        <p class="cv-help-text">Accepted formats: PDF, DOC, DOCX (Max. 5MB)</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -229,10 +272,6 @@
                             </ul>
                         </div>
                     @endif
-
-                    <div class="button-group">
-                        <button type="submit" class="save-btn">Save Changes</button>
-                    </div>
                 </form>
             </div>
         </div>
