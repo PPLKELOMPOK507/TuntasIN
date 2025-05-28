@@ -25,6 +25,8 @@ class WithdrawalsController extends Controller
             return back()->withErrors(['amount' => 'Saldo tidak cukup untuk melakukan penarikan.']);
         }
 
+
+        
         $destination = $request->withdraw_method === 'bank'
             ? $request->bank_account
             : $request->ewallet_phone;
