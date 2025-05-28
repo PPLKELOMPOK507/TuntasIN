@@ -35,4 +35,9 @@ class Pemesanan extends Model
     {
         return $this->hasOne(ReviewRating::class)->exists();
     }
+
+    public function pemesanan()
+    {
+        return $this->belongsTo(Pemesanan::class);
+    }
 }

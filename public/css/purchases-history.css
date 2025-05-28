@@ -100,14 +100,28 @@
 }
 
 .btn-review {
-    background: #fff3e0;
-    color: #f57c00;
+    background: #ffd700;
+    color: #333;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-review:hover {
+    background: #ffc800;
+    transform: translateY(-1px);
 }
 
 .star-rating {
     display: flex;
     flex-direction: row-reverse;
-    gap: 0.5rem;
+    justify-content: flex-start;
+    gap: 8px;
 }
 
 .star-rating input {
@@ -115,18 +129,40 @@
 }
 
 .star-rating label {
-    color: #ddd;
     cursor: pointer;
-    font-size: 1.5rem;
+    color: #ddd;
+    font-size: 24px;
+    transition: color 0.2s;
 }
 
+.star-rating label:hover,
+.star-rating label:hover ~ label,
 .star-rating input:checked ~ label {
     color: #ffd700;
 }
 
-.star-rating label:hover,
-.star-rating label:hover ~ label {
-    color: #ffed4a;
+.modal-content {
+    border-radius: 8px;
+}
+
+.modal-header {
+    background: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+}
+
+.rating-input {
+    text-align: center;
+}
+
+.review-input textarea {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.review-input textarea:focus {
+    border-color: #ffd700;
+    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
 }
 
 @media (max-width: 768px) {
