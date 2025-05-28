@@ -34,7 +34,8 @@ class RefundController extends Controller
             ]);
         }
 
-        return redirect()->route('dashboard')->with('success', 'Permohonan refund berhasil diajukan.');
+        return redirect()->route('dashboard')
+            ->with('success', 'Permohonan refund berhasil diajukan.');
     }
 
     public function listRefundRequests()
