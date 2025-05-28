@@ -17,7 +17,8 @@ class Pemesanan extends Model
         'jasa_id',
         'catatan',
         'tanggal_mulai',
-        'harga'
+        'harga',
+        'status'
     ];
 
     public function user(): BelongsTo

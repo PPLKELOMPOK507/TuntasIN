@@ -33,7 +33,7 @@
         </div>
 
         <div class="form-container">
-            <form action="{{ route('categories.store') }}" method="POST" class="add-category-form">
+            <form action="{{ route('manage.categories.store') }}" method="POST" class="add-category-form">
                 @csrf
                 <div class="form-group">
                     <label for="name">Nama Kategori <span class="required">*</span></label>

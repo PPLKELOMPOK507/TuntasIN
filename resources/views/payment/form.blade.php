@@ -1200,14 +1200,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-@push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
+    
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-
+            
             Swal.fire({
                 title: 'Konfirmasi Pembayaran',
                 text: 'Apakah Anda yakin akan melakukan pembayaran?',
@@ -1218,34 +1218,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 confirmButtonText: 'Ya, Bayar Sekarang',
                 cancelButtonText: 'Tidak, Kembali',
                 reverseButtons: true,
-                allowOutsideClick: false,
-                customClass: {
-                    confirmButton: 'swal2-confirm-large',
-                    cancelButton: 'swal2-cancel-small',
-                    popup: 'swal2-popup-custom'
-                }
+                allowOutsideClick: false
             }).then((result) => {
                 if (result.isConfirmed) {
+                    const formData = new FormData(form);
+                    
+                    // Show loading state
                     Swal.fire({
-                        title: 'Pembayaran Berhasil!',
-                        text: 'Pembayaran akan diverifikasi oleh Admin',
-                        icon: 'success',
-                        confirmButtonColor: '#2563eb',
-                        showConfirmButton: true,
-                        confirmButtonText: 'OK',
-                        allowOutsideClick: false
-                    }).then(() => {
-                        window.location.href = "{{ route('dashboard') }}";
+                        title: 'Memproses Pembayaran',
+                        text: 'Mohon tunggu...',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
                     });
-                    // Jika ingin submit ke backend, aktifkan baris berikut:
-                    // form.submit();
+
+                    // Send AJAX request
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: 'Pembayaran Berhasil!',
+                                text: data.message,
+                                icon: 'success',
+                                confirmButtonColor: '#2563eb',
+                                confirmButtonText: 'OK',
+                                allowOutsideClick: false
+                            }).then(() => {
+                                window.location.href = data.redirect;
+                            });
+                        } else {
+                            throw new Error(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: error.message || 'Terjadi kesalahan saat memproses pembayaran',
+                            icon: 'error',
+                            confirmButtonColor: '#2563eb'
+                        });
+                    });
                 }
-                // Jika user memilih Tidak, tidak terjadi apa-apa (tetap di halaman)
             });
         });
     }
 });
 </script>
-@endpush
 @endpush
 @endsection

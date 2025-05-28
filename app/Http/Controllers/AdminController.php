@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Jasa;
 use App\Models\User;
-use App\Models\Transaction;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,10 +12,16 @@ class AdminController extends Controller
 {
     public function index()
     {
+        if (auth()->user()->role !== 'Admin') {
+            return redirect()->route('dashboard');
+        }
+
         $data = [
+            'jasa' => Jasa::with(['user', 'category'])->get(),
             'totalUsers' => User::count(),
-            'jasa' => Jasa::with('user')->get(),
-            'categories' => Category::withCount('services')->get()
+            'users' => User::all(),
+            'categories' => Category::withCount('services')->get(),
+            'payments' => \App\Models\Payment::with(['user', 'pemesanan.jasa'])->get()
         ];
 
         return view('admin', $data);
@@ -26,32 +31,39 @@ class AdminController extends Controller
     {
         $jasa = Jasa::findOrFail($id);
         
-        // Delete the image from storage if it exists
         if ($jasa->gambar && Storage::disk('public')->exists($jasa->gambar)) {
             Storage::disk('public')->delete($jasa->gambar);
         }
 
-        // Delete the service
         $jasa->delete();
-
-        return redirect()->route('admin.dashboard')->with('success', 'Jasa berhasil dihapus!');
+        return back()->with('success', 'Jasa berhasil dihapus');
     }
 
-    public function destroyUser($id)
+    public function destroyUser($id) 
     {
         $user = User::findOrFail($id);
         
         // Prevent deleting admin users
         if ($user->role === 'Admin') {
-            return back()->with('error', 'Admin users cannot be deleted');
+            return back()->with('error', 'Tidak dapat menghapus akun Admin');
         }
 
         // Delete user's photo if exists
-        if ($user->photo) {
+        if ($user->photo && Storage::disk('public')->exists($user->photo)) {
             Storage::disk('public')->delete($user->photo);
         }
 
+        // If user is service provider, delete their services
+        if ($user->role === 'Penyedia Jasa') {
+            foreach ($user->jasas as $jasa) {
+                if ($jasa->gambar && Storage::disk('public')->exists($jasa->gambar)) {
+                    Storage::disk('public')->delete($jasa->gambar);
+                }
+                $jasa->delete();
+            }
+        }
+
         $user->delete();
-        return back()->with('success', 'User deleted successfully');
+        return back()->with('success', 'User berhasil dihapus');
     }
 }

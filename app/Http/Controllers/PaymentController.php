@@ -22,15 +22,14 @@ class PaymentController extends Controller
     {
         try {
             $request->validate([
-                'payment_method' => 'required|in:credit_card,bank_transfer,e_wallet,qris',
-                'phone' => 'required|regex:/^[0-9]{10,13}$/',
+                'payment_method' => 'required|in:credit_card,bank_transfer,e_wallet,qris'
             ]);
 
             // Generate unique payment reference
             $paymentReference = 'PAY-' . uniqid();
 
             // Create payment record
-            $payment = Payment::create([
+            Payment::create([
                 'pemesanan_id' => $pemesanan->id,
                 'user_id' => auth()->id(),
                 'amount' => $pemesanan->harga,
@@ -39,14 +38,13 @@ class PaymentController extends Controller
                 'payment_reference' => $paymentReference
             ]);
 
-            // Update pemesanan status
-            $pemesanan->update(['status' => 'awaiting_payment']);
+            // Update order status
+            $pemesanan->update(['status' => 'awaiting_verification']);
 
-            // Redirect dengan sweet alert
             return response()->json([
                 'success' => true,
-                'message' => 'Pembayaran berhasil diproses',
-                'payment_reference' => $paymentReference
+                'message' => 'Pembayaran berhasil! Akan diverifikasi oleh Admin',
+                'redirect' => route('riwayat-pembelian')
             ]);
 
         } catch (\Exception $e) {

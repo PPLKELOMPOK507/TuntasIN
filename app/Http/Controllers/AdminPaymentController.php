@@ -13,7 +13,7 @@ class AdminPaymentController extends Controller
         $payments = Payment::with(['user', 'pemesanan.jasa'])
                     ->orderBy('created_at', 'desc')
                     ->get();
-        return view('admin', compact('payments'));
+        return view('admin.payments.index', compact('payments'));
     }
 
     // Menampilkan detail pembayaran
@@ -35,6 +35,31 @@ class AdminPaymentController extends Controller
         $payment->update([
             'status' => $request->status
         ]);
+
+        return back()->with('success', 'Status pembayaran berhasil diperbarui');
+    }
+
+    public function verifyPayment(Request $request, Payment $payment)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:completed,declined'
+        ]);
+
+        // Update payment status
+        $payment->update([
+            'status' => $validated['status']
+        ]);
+
+        // Update pemesanan status
+        $payment->pemesanan->update([
+            'status' => $validated['status'] === 'completed' ? 'paid' : 'cancelled'
+        ]);
+
+        // If payment is completed, update penyedia jasa's balance
+        if ($validated['status'] === 'completed') {
+            $penyediaJasa = $payment->pemesanan->jasa->user;
+            $penyediaJasa->increment('balance', $payment->amount);
+        }
 
         return back()->with('success', 'Status pembayaran berhasil diperbarui');
     }

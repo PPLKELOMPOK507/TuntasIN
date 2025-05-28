@@ -109,11 +109,23 @@
                                 </td>
                                 <td class="actions">
                                     @if($user->role !== 'Admin')
-                                        <form action="{{ route('categories.destroy', $user->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('manage.categories.destroy', $user->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="action-btn delete-btn" 
                                                     onclick="return confirm('Are you sure?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </td>
+                                <td class="actions">
+                                    @if($user->role !== 'Admin')
+                                        <form action="{{ route('manage.users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="action-btn delete-btn" 
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -185,7 +197,7 @@
             <div id="categories-section" class="admin-section {{ session('current_section') == 'categories' ? 'active' : '' }}">
                 <div class="section-header">
                     <h2>Manajemen Kategori</h2>
-                    <a href="{{ route('categories.create') }}" class="add-category-btn">
+                    <a href="{{ route('manage.categories.create') }}" class="add-category-btn">
                         <i class="fas fa-plus"></i> Tambah Kategori
                     </a>
                 </div>
@@ -207,10 +219,10 @@
                                 <td>{{ $category->name }}</td>
                                 <td>{{ $category->services_count }}</td>
                                 <td class="actions">
-                                    <a href="{{ route('categories.edit', $category->id) }}" class="action-btn edit-btn">
+                                    <a href="{{ route('manage.categories.edit', $category->id) }}" class="action-btn edit-btn">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display: inline;">
+                                    <form action="{{ route('manage.categories.destroy', $category->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="action-btn delete-btn" 
