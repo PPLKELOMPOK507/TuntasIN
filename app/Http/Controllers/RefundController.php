@@ -119,4 +119,46 @@ class RefundController extends Controller
 
         return view('refunds.index', compact('refunds'));
     }
+
+    public function providerIndex()
+    {
+        $refunds = Refund::whereHas('pemesanan.jasa', function($query) {
+            $query->where('user_id', auth()->id());
+        })
+        ->with(['pemesanan.jasa', 'user'])
+        ->latest()
+        ->get();
+
+        return view('provider.refunds.index', compact('refunds'));
+    }
+
+    public function providerShow($id)
+    {
+        $refund = Refund::whereHas('pemesanan.jasa', function($query) {
+            $query->where('user_id', auth()->id());
+        })
+        ->with(['pemesanan.jasa', 'user'])
+        ->findOrFail($id);
+
+        return view('provider.refunds.show', compact('refund'));
+    }
+
+    public function providerResponse(Request $request, $id)
+    {
+        $request->validate([
+            'response' => 'required|string|min:10',
+        ]);
+
+        $refund = Refund::whereHas('pemesanan.jasa', function($query) {
+            $query->where('user_id', auth()->id());
+        })->findOrFail($id);
+
+        $refund->update([
+            'provider_response' => $request->response,
+            'provider_responded_at' => now(),
+        ]);
+
+        return redirect()->route('provider.refunds.index')
+            ->with('success', 'Tanggapan refund berhasil dikirim');
+    }
 }

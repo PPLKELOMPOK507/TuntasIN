@@ -15,6 +15,9 @@ return new class extends Migration
             $table->text('reason');
             $table->text('bukti_refund')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            // Tambahan kolom untuk penyedia jasa
+            $table->text('provider_response')->nullable();
+            $table->timestamp('provider_responded_at')->nullable();
             $table->timestamps();
         });
     }

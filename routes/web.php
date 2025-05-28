@@ -238,3 +238,8 @@ Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
     Route::get('/refunds', [RefundController::class, 'index'])->name('refunds.index');
 });
 });
+Route::middleware(['auth', 'provider'])->group(function () {
+    Route::get('/provider/refunds', [RefundController::class, 'providerIndex'])->name('provider.refunds.index');
+    Route::get('/provider/refunds/{id}', [RefundController::class, 'providerShow'])->name('provider.refunds.show');
+    Route::post('/provider/refunds/{id}/response', [RefundController::class, 'providerResponse'])->name('provider.refunds.response');
+});
