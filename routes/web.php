@@ -185,7 +185,7 @@ Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
             $users = \App\Models\User::all(); // Add this line
             $categories = \App\Models\Category::withCount('services')->get();
             
-            return view('admin', compact('jasa', 'totalUsers', 'categories', 'users'));
+            return view('admin', compact('jasa', 'totalUsers', 'categories', 'users', 'payments'));
         })->name('manage');
         
         Route::delete('/admin/jasa/{id}', [AdminController::class, 'destroyJasa'])->name('manage.jasa.destroy');
@@ -204,4 +204,9 @@ Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
 Route::middleware(['auth'])->group(function () {
     Route::get('/refund', [RefundController::class, 'showRefundForm'])->name('refund.form');
     Route::post('/refund', [RefundController::class, 'submitRefund'])->name('refund.submit');
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin', [AdminPaymentController::class, 'index'])->name('admin.payments.index');
+    Route::put('/admin/payments/{payment}', [AdminPaymentController::class, 'update'])->name('admin.payments.update');
 });

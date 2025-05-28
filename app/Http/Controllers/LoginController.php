@@ -22,11 +22,12 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             
+            // Redirect berdasarkan role
             if (Auth::user()->role === 'Admin') {
                 return redirect()->route('manage');
+            } else {
+                return redirect()->route('dashboard');
             }
-
-            return redirect()->route('dashboard');
         }
 
         return back()->withErrors([

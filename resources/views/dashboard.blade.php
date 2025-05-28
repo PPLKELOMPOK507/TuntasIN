@@ -92,10 +92,10 @@
                         <span>Riwayat Penjualan</span>
                     </a>
                 @endif
-                <a href="{{ route('payment.form') }}" class="menu-item">
+                {{-- <a href="{{ route('payment.form') }}" class="menu-item">
                     <i class="fas fa-credit-card"></i>
                     <span>Payment</span>
-                </a>
+                </a> --}}
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="logout-btn">
