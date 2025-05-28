@@ -231,4 +231,10 @@ Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
             });
         });
     });
+    Route::middleware(['auth'])->group(function () {
+    // Refund routes
+    Route::get('/pemesanan/{pemesanan_id}/refund', [RefundController::class, 'create'])->name('refunds.create');
+    Route::post('/pemesanan/{pemesanan_id}/refund', [RefundController::class, 'store'])->name('refunds.store');
+    Route::get('/refunds', [RefundController::class, 'index'])->name('refunds.index');
+});
 });

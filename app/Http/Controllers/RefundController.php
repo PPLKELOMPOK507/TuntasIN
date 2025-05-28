@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Pemesanan;
+use App\Models\Refund;
 
 class RefundController extends Controller
 {
@@ -64,5 +66,57 @@ class RefundController extends Controller
         }
 
         return view('refund.detail', compact('refund'));
+    }
+
+    public function create($pemesanan_id)
+    {
+        $pemesanan = Pemesanan::findOrFail($pemesanan_id);
+        
+        // Cek apakah pesanan milik user yang login
+        if ($pemesanan->user_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
+
+        return view('refunds.create', compact('pemesanan'));
+    }
+
+    public function store(Request $request, $pemesanan_id)
+    {
+        $request->validate([
+            'reason' => 'required|string|min:10',
+            'bukti_refund' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+        ]);
+
+        $pemesanan = Pemesanan::findOrFail($pemesanan_id);
+
+        // Cek apakah pesanan milik user yang login
+        if ($pemesanan->user_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
+
+        // Upload bukti refund
+        $buktiPath = $request->file('bukti_refund')->store('refund-bukti', 'public');
+
+        // Buat refund request
+        Refund::create([
+            'pemesanan_id' => $pemesanan_id,
+            'user_id' => auth()->id(),
+            'reason' => $request->reason,
+            'bukti_refund' => $buktiPath,
+            'status' => 'pending'
+        ]);
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Permintaan refund berhasil diajukan');
+    }
+
+    public function index()
+    {
+        $refunds = Refund::where('user_id', auth()->id())
+            ->with('pemesanan.jasa')
+            ->latest()
+            ->get();
+
+        return view('refunds.index', compact('refunds'));
     }
 }
