@@ -21,7 +21,6 @@
 
         <form action="{{ route('jasa.store') }}" method="POST" enctype="multipart/form-data" class="add-service-form">
             @csrf
-
             <div class="form-group">
                 <label for="nama_jasa">Nama Jasa</label>
                 <input type="text" name="nama_jasa" id="nama_jasa" value="{{ old('nama_jasa') }}" required>
@@ -47,17 +46,13 @@
             </div>
 
             <div class="form-group">
-                <label for="category_id">Kategori Jasa</label>
-                <select name="category_id" id="category_id" required>
+                <label for="kategori">Kategori Jasa</label>
+                <select name="kategori" id="kategori" required>
                     <option value="" disabled selected>Pilih Kategori</option>
                     @foreach($categories as $category)
-                        {{-- <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                        <option value="{{ $category->id }}" {{ old('kategori') == $category->id ? 'selected' : '' }}>
                             {{ $category->name }}
                         </option>
-                    @endforeach
-                </select>
-                @error('category_id') --}}
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @endforeach
                 </select>
                 @error('kategori')

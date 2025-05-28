@@ -23,12 +23,17 @@
     background-color: white;
 }
 
+.purchases-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
 .purchase-card {
     display: flex;
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    margin-bottom: 1.5rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform 0.2s ease;
 }
@@ -40,6 +45,7 @@
 .service-image {
     width: 200px;
     height: 200px;
+    flex-shrink: 0;
 }
 
 .service-image img {
@@ -51,7 +57,6 @@
 .purchase-info {
     flex: 1;
     padding: 1.5rem;
-    position: relative;
 }
 
 .purchase-header {
@@ -107,18 +112,37 @@
     color: #856404;
 }
 
+.status-badge.awaiting_payment {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.status-badge.paid {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-badge.declined {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
 .action-buttons {
     display: flex;
     gap: 1rem;
 }
 
-.btn-detail, .btn-chat {
+.btn-detail, .btn-chat, .btn-pay {
     padding: 8px 16px;
     border: none;
     border-radius: 6px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-detail {
@@ -131,12 +155,46 @@
     color: white;
 }
 
+.btn-pay {
+    background-color: #4caf50;
+    color: white;
+}
+
 .btn-detail:hover {
     background-color: #bbdefb;
 }
 
 .btn-chat:hover {
     background-color: #1976d2;
+}
+
+.btn-pay:hover {
+    background-color: #43a047;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.empty-icon {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1.5rem;
+    opacity: 0.6;
+}
+
+.empty-state h2 {
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: #666;
 }
 
 @media (max-width: 768px) {
@@ -151,5 +209,9 @@
 
     .action-buttons {
         flex-direction: column;
+    }
+
+    .btn-detail, .btn-chat, .btn-pay {
+        width: 100%;
     }
 }

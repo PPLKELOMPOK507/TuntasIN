@@ -22,6 +22,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PurchaseController; 
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\RefundController;
+use App\Http\Controllers\PemesananController;
+use App\Http\Controllers\AdminPaymentController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -134,10 +138,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/forum/discussions/{id}', [DiscussionController::class, 'show'])->name('discussion.show');
     Route::delete('/forum/discussions/{id}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
 });
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('dashboard');
 
-Route::get('/pesan/{jasa}', [App\Http\Controllers\PemesananController::class, 'create'])->name('pesanan.create');
-Route::post('/pesan/{jasa}', [App\Http\Controllers\PemesananController::class, 'store'])->name('pesanan.store');
+
 
 Route::post('/messages', [ChatController::class, 'store'])->name('messages.store');
 
@@ -149,60 +154,83 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat/{jasa_id}/messages', [ChatController::class, 'getMessages'])->name('chat.messages');
     Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.store');
 });
+Route::middleware(['auth'])->group(function () {
+    // ...existing routes...
+    Route::get('/pesan/{jasa}', [PemesananController::class, 'create'])->name('pesanan.create');
+    Route::post('/pesan/{jasa}', [PemesananController::class, 'store'])->name('pesanan.store');
+});
 
 // Route::prefix('admin')->name('admin.')->middleware('auth', 'admin')->group(function () {
 //     Route::get('/users', [UserController::class, 'index'])->name('users.index');
 //     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 // });
-    Route::get('/admin', function () {
-        if (auth()->user()->role !== 'Admin') {
-            return redirect()->route('dashboard');
-        }
-        $jasa = \App\Models\Jasa::with(['user','category'])->get();
-        $totalUsers = \App\Models\User::count();
-        $users = \App\Models\User::all(); // Add this line
-        $categories = \App\Models\Category::withCount('services')->get();
+    // Route::get('/admin', function () {
+    //     if (auth()->user()->role !== 'Admin') {
+    //         return redirect()->route('dashboard');
+    //     }
+    //     $jasa = \App\Models\Jasa::with(['user','category'])->get();
+    //     $totalUsers = \App\Models\User::count();
+    //     $users = \App\Models\User::all(); // Add this line
+    //     $categories = \App\Models\Category::withCount('services')->get();
         
-        return view('admin', compact('jasa', 'totalUsers', 'categories', 'users'));
-    })->name('manage');
+    //     return view('admin', compact('jasa', 'totalUsers', 'categories', 'users'));
+    // })->name('manage');
     
-    // Category routes
-    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
-    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-    Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-    Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
-    Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    // // Category routes
+    // Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    // Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    // Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+    // Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+    // Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
+
+    
 // Purchase History Routes (Protected + Pengguna Jasa Only)
 Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
     ->middleware(['auth'])
     ->name('purchases.history');
 
     Route::middleware(['auth'])->group(function () {
-        Route::get('/admin', function () {
+        Route::get('/manage', function () {
             if (auth()->user()->role !== 'Admin') {
                 return redirect()->route('dashboard');
             }
-            $jasa = \App\Models\Jasa::with('user')->get();
-            $totalUsers = \App\Models\User::count();
-            $users = \App\Models\User::all(); // Add this line
-            $categories = \App\Models\Category::withCount('services')->get();
-            
-            return view('admin', compact('jasa', 'totalUsers', 'categories', 'users'));
+            $data = [
+            'jasa' => \App\Models\Jasa::with(['user', 'category'])->get(),
+            'totalUsers' => \App\Models\User::count(),
+            'users' => \App\Models\User::all(),
+            'categories' => \App\Models\Category::withCount('services')->get(),
+            'payments' => \App\Models\Payment::with(['user', 'pemesanan.jasa'])->get()
+            ];
+
+            return view('admin', $data);
         })->name('manage');
-        
+        Route::prefix('manage')->name('manage.')->group(function() {
+
+        Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+        Route::delete('/jasa/{id}', [AdminController::class, 'destroyJasa'])->name('jasa.destroy');
+
         Route::controller(CategoryController::class)->group(function() {
-            Route::get('/admin/categories/create', 'create')->name('categories.create');
-            Route::post('/admin/categories', 'store')->name('categories.store');
-            Route::delete('/admin/categories/{id}', 'destroy')->name('categories.destroy');
+            Route::get('/categories/create', 'create')->name('categories.create');
+            Route::post('/categories', 'store')->name('categories.store');
+            Route::get('/categories/{id}/edit', 'edit')->name('categories.edit');
+            Route::put('/categories/{id}', 'update')->name('categories.update');
+            Route::delete('/categories/{id}', 'destroy')->name('categories.destroy');
         });
     });
-// Payment Routes
-Route::get('/payment/form', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
-Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
-Route::post('/payment/submit', [PaymentController::class, 'submitPayment'])->name('payment.submit');
+    Route::middleware(['auth'])->group(function () {
+    // Payment Routes
+    Route::get('/payment/{pemesanan}', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
+    Route::post('/payment/{pemesanan}/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+    
+    // Admin Payment Management
+    Route::prefix('manage')->name('manage.')->middleware(['admin'])->group(function() {
+        Route::put('/payments/{payment}/verify', [AdminPaymentController::class, 'verifyPayment'])->name('payments.verify');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/refund', [RefundController::class, 'showRefundForm'])->name('refund.form');
-    Route::post('/refund', [RefundController::class, 'submitRefund'])->name('refund.submit');
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/refund', [RefundController::class, 'showRefundForm'])->name('refund.form');
+        Route::post('/refund', [RefundController::class, 'submitRefund'])->name('refund.submit');
+            });
+        });
+    });
 });

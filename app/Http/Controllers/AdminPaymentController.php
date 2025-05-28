@@ -10,7 +10,9 @@ class AdminPaymentController extends Controller
     // Menampilkan daftar pembayaran
     public function index()
     {
-        $payments = Payment::orderBy('created_at', 'desc')->get(); // Urutkan berdasarkan tanggal terbaru
+        $payments = Payment::with(['user', 'pemesanan.jasa'])
+                    ->orderBy('created_at', 'desc')
+                    ->get();
         return view('admin.payments.index', compact('payments'));
     }
 
@@ -28,23 +30,37 @@ class AdminPaymentController extends Controller
     }
 
     // Mengubah status pembayaran
-    public function update(Request $request, $id)
+    public function update(Request $request, Payment $payment)
     {
-        $request->validate([
-            'status' => 'required|in:pending,completed,failed',
+        $payment->update([
+            'status' => $request->status
         ]);
 
-        $payment = Payment::find($id);
+        return back()->with('success', 'Status pembayaran berhasil diperbarui');
+    }
 
-        if (!$payment) {
-            return redirect()->route('admin.payments.index')
-                ->with('error', 'Pembayaran tidak ditemukan.');
+    public function verifyPayment(Request $request, Payment $payment)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:completed,declined'
+        ]);
+
+        // Update payment status
+        $payment->update([
+            'status' => $validated['status']
+        ]);
+
+        // Update pemesanan status
+        $payment->pemesanan->update([
+            'status' => $validated['status'] === 'completed' ? 'paid' : 'cancelled'
+        ]);
+
+        // If payment is completed, update penyedia jasa's balance
+        if ($validated['status'] === 'completed') {
+            $penyediaJasa = $payment->pemesanan->jasa->user;
+            $penyediaJasa->increment('balance', $payment->amount);
         }
 
-        $payment->status = $request->status;
-        $payment->save();
-
-        return redirect()->route('admin.payments.index')
-            ->with('success', 'Status pembayaran berhasil diperbarui.');
+        return back()->with('success', 'Status pembayaran berhasil diperbarui');
     }
 }

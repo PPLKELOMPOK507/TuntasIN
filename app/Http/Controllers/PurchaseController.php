@@ -11,12 +11,13 @@ class PurchaseController extends Controller
     public function history()
     {
         if (Auth::user()->role !== 'Pengguna Jasa') {
-            return redirect()->route('dashboard')->with('error', 'Unauthorized access');
+            return redirect()->route('dashboard')
+                ->with('error', 'Unauthorized access');
         }
 
         // Get user's purchase history
         $purchases = Pemesanan::where('user_id', Auth::id())
-            ->with(['jasa', 'jasa.user']) // Include service and provider details
+            ->with(['jasa', 'jasa.user', 'payment']) // Include service, provider, and payment details
             ->orderBy('created_at', 'desc')
             ->get();
 

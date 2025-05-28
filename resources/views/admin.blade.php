@@ -109,11 +109,23 @@
                                 </td>
                                 <td class="actions">
                                     @if($user->role !== 'Admin')
-                                        <form action="{{ route('categories.destroy', $user->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('manage.categories.destroy', $user->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="action-btn delete-btn" 
                                                     onclick="return confirm('Are you sure?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </td>
+                                <td class="actions">
+                                    @if($user->role !== 'Admin')
+                                        <form action="{{ route('manage.users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="action-btn delete-btn" 
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -159,7 +171,7 @@
                                     <button class="action-btn view-btn" title="View Details">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <form action="{{ route('admin.jasa.destroy', $service->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('manage.jasa.destroy', $service->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="action-btn delete-btn" title="Delete Service">
@@ -185,7 +197,7 @@
             <div id="categories-section" class="admin-section {{ session('current_section') == 'categories' ? 'active' : '' }}">
                 <div class="section-header">
                     <h2>Manajemen Kategori</h2>
-                    <a href="{{ route('categories.create') }}" class="add-category-btn">
+                    <a href="{{ route('manage.categories.create') }}" class="add-category-btn">
                         <i class="fas fa-plus"></i> Tambah Kategori
                     </a>
                 </div>
@@ -207,10 +219,10 @@
                                 <td>{{ $category->name }}</td>
                                 <td>{{ $category->services_count }}</td>
                                 <td class="actions">
-                                    <a href="{{ route('categories.edit', $category->id) }}" class="action-btn edit-btn">
+                                    <a href="{{ route('manage.categories.edit', $category->id) }}" class="action-btn edit-btn">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display: inline;">
+                                    <form action="{{ route('manage.categories.destroy', $category->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="action-btn delete-btn" 
@@ -245,6 +257,71 @@
     </div>
 </div>
 
+<div class="container py-5">
+    <h2 class="mb-4">Daftar Pembayaran</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID Pembayaran</th>
+                            <th>Pengguna</th>
+                            <th>Jasa</th>
+                            <th>Metode</th>
+                            <th>Jumlah</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($payments as $payment)
+                        <tr>
+                            <td>{{ $payment->payment_reference }}</td>
+                            <td>{{ $payment->user->full_name }}</td>
+                            <td>{{ $payment->pemesanan->jasa->nama_jasa }}</td>
+                            <td>{{ ucfirst($payment->payment_method) }}</td>
+                            <td>Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
+                            <td>
+                                <span class="badge bg-{{ $payment->status === 'pending' ? 'warning' : ($payment->status === 'completed' ? 'success' : 'danger') }}">
+                                    {{ ucfirst($payment->status) }}
+                                </span>
+                            </td>
+                            <td>
+                                <form action="{{ route('admin.payments.update', $payment->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PUT')
+                                    <select name="status" class="form-select form-select-sm status-select" onchange="this.form.submit()">
+                                        <option value="pending" {{ $payment->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                                        <option value="completed" {{ $payment->status === 'completed' ? 'selected' : '' }}>Completed</option>
+                                        <option value="failed" {{ $payment->status === 'failed' ? 'selected' : '' }}>Failed</option>
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.status-select {
+    min-width: 120px;
+    border-radius: 0.5rem;
+    border: 1.5px solid #e5e7eb;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+.status-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+</style>
+@endsection
 
 @push('styles')
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
