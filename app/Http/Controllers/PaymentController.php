@@ -21,33 +21,28 @@ class PaymentController extends Controller
     public function processPayment(Request $request, Pemesanan $pemesanan)
     {
         try {
-            // Generate simple payment reference
+            // Buat payment reference
             $paymentReference = 'PAY-' . uniqid();
 
-            // Create payment record
+            // Buat record pembayaran dengan status awaiting_verification
             Payment::create([
                 'pemesanan_id' => $pemesanan->id,
                 'user_id' => auth()->id(),
                 'amount' => $pemesanan->harga,
                 'payment_method' => $request->payment_method,
-                'status' => 'pending',
+                'status' => 'awaiting_verification',
                 'payment_reference' => $paymentReference
             ]);
 
-            // Update pemesanan status
+            // Update status pemesanan 
             $pemesanan->update(['status' => 'awaiting_verification']);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Pembayaran sedang diverifikasi admin',
-                'redirect' => route('riwayat-pembelian')
-            ]);
+            return redirect()->route('purchases.history')
+                ->with('success', 'Pembayaran sedang diverifikasi admin');
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat memproses pembayaran'
-            ]);
+            return redirect()->back()
+                ->with('error', 'Gagal memproses pembayaran');
         }
     }
 }

@@ -94,18 +94,13 @@
                                     {{ ucfirst($purchase->status) }}
                             @endswitch
                         </div>
+
                         <div class="action-buttons">
                             @if($purchase->status === 'pending')
                                 <a href="{{ route('payment.form', $purchase->id) }}" class="btn-pay">
                                     Bayar Sekarang
                                 </a>
                             @endif
-                            <button class="btn-detail" onclick="showPurchaseDetail({{ $purchase->id }})">
-                                Lihat Detail
-                            </button>
-                            <a href="{{ route('chat.show', $purchase->jasa_id) }}" class="btn-chat">
-                                Chat Penjual
-                            </a>
                         </div>
                     </div>
                 </div>

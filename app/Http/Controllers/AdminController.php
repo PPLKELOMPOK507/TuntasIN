@@ -21,7 +21,8 @@ class AdminController extends Controller
             'totalUsers' => \App\Models\User::count(),
             'users' => \App\Models\User::all(),
             'categories' => \App\Models\Category::withCount('services')->get(),
-            'payments' => \App\Models\Payment::with(['user', 'pemesanan.jasa'])->get()
+            'payments' => \App\Models\Payment::with(['user', 'pemesanan.jasa'])->get(),
+            'totalTransactions' => \App\Models\Payment::count() // Menambahkan total transaksi
         ];
 
         return view('admin', $data);

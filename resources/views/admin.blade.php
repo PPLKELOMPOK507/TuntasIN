@@ -254,117 +254,58 @@
                 @endif
             </div>
 
-            <!-- Payments Section -->
-            <div class="admin-section" id="payments-section">
+            <!-- Payment/Transaction Section -->
+            <div class="admin-section" id="transactions-section">
                 <div class="section-header">
-                    <h2>Payment Management</h2>
-                    <div class="search-bar">
-                        <input type="text" placeholder="Search payments...">
-                        <i class="fas fa-search"></i>
-                    </div>
+                    <h2>Manajemen Pembayaran</h2>
                 </div>
-                
                 <div class="table-responsive">
                     <table class="admin-table">
                         <thead>
                             <tr>
-                                <th>Payment ID</th>
-                                <th>User</th>
-                                <th>Service</th>
-                                <th>Amount</th>
-                                <th>Method</th>
+                                <th>ID Pembayaran</th>
+                                <th>Pengguna</th>
+                                <th>Jasa</th>
+                                <th>Metode</th>
+                                <th>Jumlah</th>
                                 <th>Status</th>
-                                <th>Actions</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($payments as $payment)
+                            @foreach($payments as $payment)
                             <tr>
                                 <td>{{ $payment->payment_reference }}</td>
                                 <td>{{ $payment->user->full_name }}</td>
                                 <td>{{ $payment->pemesanan->jasa->nama_jasa }}</td>
-                                <td>Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
                                 <td>{{ ucfirst($payment->payment_method) }}</td>
+                                <td>Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
                                 <td>
                                     <span class="status-badge {{ $payment->status }}">
                                         {{ ucfirst($payment->status) }}
                                     </span>
                                 </td>
-                                <td class="actions">
-                                    <form action="{{ route('manage.payments.verify', $payment->id) }}" method="POST">
+                                <td>
+                                    @if($payment->status === 'pending')
+                                    <form action="{{ route('manage.payments.verify', $payment->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('PUT')
-                                        <select name="status" class="status-select" onchange="this.form.submit()">
-                                            <option value="pending" {{ $payment->status === 'pending' ? 'selected' : '' }}>Pending</option>
-                                            <option value="completed" {{ $payment->status === 'completed' ? 'selected' : '' }}>Accept</option>
-                                            <option value="declined" {{ $payment->status === 'declined' ? 'selected' : '' }}>Decline</option>
-                                        </select>
+                                        <button type="submit" name="status" value="completed" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check"></i> Accept
+                                        </button>
+                                        <button type="submit" name="status" value="declined" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times"></i> Decline
+                                        </button>
                                     </form>
+                                    @endif
                                 </td>
                             </tr>
-                            @empty
-                            <tr>
-                                <td colspan="7" class="text-center">No payments found</td>
-                            </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="container py-5">
-    <h2 class="mb-4">Daftar Pembayaran</h2>
-
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID Pembayaran</th>
-                            <th>Pengguna</th>
-                            <th>Jasa</th>
-                            <th>Metode</th>
-                            <th>Jumlah</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($payments as $payment)
-                        <tr>
-                            <td>{{ $payment->payment_reference }}</td>
-                            <td>{{ $payment->user->full_name }}</td>
-                            <td>{{ $payment->pemesanan->jasa->nama_jasa }}</td>
-                            <td>{{ ucfirst($payment->payment_method) }}</td>
-                            <td>Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
-                            <td>
-                                <span class="badge bg-{{ $payment->status === 'pending' ? 'warning' : ($payment->status === 'completed' ? 'success' : 'danger') }}">
-                                    {{ ucfirst($payment->status) }}
-                                </span>
-                            </td>
-                            <td>
-                                <form action="{{ route('admin.payments.update', $payment->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('PUT')
-                                    <select name="status" class="form-select form-select-sm status-select" onchange="this.form.submit()">
-                                        <option value="pending" {{ $payment->status === 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="completed" {{ $payment->status === 'completed' ? 'selected' : '' }}>Completed</option>
-                                        <option value="failed" {{ $payment->status === 'failed' ? 'selected' : '' }}>Failed</option>
-                                    </select>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
 
 <style>
 .status-select {
