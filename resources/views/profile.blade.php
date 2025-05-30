@@ -195,7 +195,7 @@
                                             rows="3" 
                                             placeholder="Enter your address">{{ Auth::user()->address }}</textarea>
                                         
-                                        <div id="map" style="height: 300px; width: 100%; margin-top: 10px; border-radius: 8px;"></div>
+                                        <div id="map"></div>
                                         
                                         <input type="hidden" id="latitude" name="latitude" value="{{ Auth::user()->latitude }}">
                                         <input type="hidden" id="longitude" name="longitude" value="{{ Auth::user()->longitude }}">
@@ -206,7 +206,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group description">
                                     <label for="description">Description</label>
                                     <textarea 
                                         id="description" 
@@ -214,7 +214,7 @@
                                         class="form-input" 
                                         rows="4" 
                                         placeholder="Tell us about yourself">{{ Auth::user()->description }}</textarea>
-                                    <small class="form-text text-muted">Share some information about yourself, your interests, or what kind of services you're looking for.</small>
+                                    <small class="form-text">Share some information about yourself, your interests, or what kind of services you're looking for.</small>
                                 </div>
                             </div>
                         </div>
@@ -283,197 +283,216 @@
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
     <link href="{{ asset('css/profile.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 @endpush
 
 @push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-function togglePassword(inputId) {
-    const input = document.getElementById(inputId);
-    const icon = input.nextElementSibling.querySelector('i');
-    
-    if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
-    } else {
-        input.type = 'password';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
-    }
-}
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab Navigation
+    const initTabs = () => {
+        const navButtons = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('.profile-section');
 
-document.getElementById('cv_file')?.addEventListener('change', function(e) {
-    if (e.target.files && e.target.files[0]) {
-        const file = e.target.files[0];
-        const container = document.querySelector('.cv-upload-container');
-        let currentCV = container.querySelector('.current-cv');
-        
-        if (!currentCV) {
-            currentCV = document.createElement('div');
-            currentCV.className = 'current-cv';
-            container.insertBefore(currentCV, container.firstChild);
-        }
-        
-        currentCV.innerHTML = `
-            <i class="fas fa-file-pdf"></i>
-            <span class="cv-filename">${file.name}</span>
-        `;
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and sections
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                sections.forEach(section => section.classList.remove('active'));
 
-        // Auto submit form when file is selected
-        document.querySelector('.profile-form').submit();
-    }
-});
+                // Add active class to clicked button and corresponding section
+                button.classList.add('active');
+                const targetSection = document.getElementById(button.dataset.section + '-section');
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+            });
+        });
+    };
 
-document.getElementById('photo').addEventListener('change', function(e) {
-    if (e.target.files && e.target.files[0]) {
-        const file = e.target.files[0];
-        const reader = new FileReader();
+    // Password Toggle Functionality
+    const initPasswordToggles = () => {
+        const toggleButtons = document.querySelectorAll('.toggle-password');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                const icon = this.querySelector('i');
+
+                input.type = input.type === 'password' ? 'text' : 'password';
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+        });
+    };
+
+    // Profile Photo Handling
+    const initProfilePhoto = () => {
+        const photoInput = document.getElementById('photo');
         const photoContainer = document.querySelector('.profile-photo');
-        
-        reader.onload = function(e) {
-            const result = e.target.result;
-            
-            // Remove existing elements
-            const existingElements = photoContainer.querySelectorAll('.preview-label, .revert-photo-btn, .photo-overlay');
-            existingElements.forEach(el => el.remove());
-            
-            // Create or update image
-            let imageElement = photoContainer.querySelector('img');
-            const existingPlaceholder = photoContainer.querySelector('.photo-placeholder');
-            
-            if (!imageElement) {
-                imageElement = document.createElement('img');
-                if (existingPlaceholder) existingPlaceholder.remove();
-            } else {
-                imageElement.dataset.originalSrc = imageElement.src;
+
+        photoInput?.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const imageUrl = e.target.result;
+                    
+                    // Update profile photo preview
+                    let img = photoContainer.querySelector('img');
+                    if (!img) {
+                        img = document.createElement('img');
+                        const placeholder = photoContainer.querySelector('.photo-placeholder');
+                        if (placeholder) placeholder.remove();
+                        photoContainer.insertBefore(img, photoContainer.firstChild);
+                    }
+                    img.src = imageUrl;
+                    img.alt = 'Profile Preview';
+
+                    // Show success notification
+                    Swal.fire({
+                        title: 'Photo Selected',
+                        text: 'Click Save Changes to update your profile photo',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                };
+
+                reader.readAsDataURL(file);
             }
+        });
+    };
+
+    // Form Submission Handler
+    const initFormSubmission = () => {
+        const form = document.getElementById('profile-form');
+        const saveButton = document.querySelector('.btn-save-all');
+
+        saveButton?.addEventListener('click', function(e) {
+            e.preventDefault();
             
-            // Set image
-            imageElement.src = result;
-            imageElement.alt = 'Profile Photo Preview';
-            
-            // Add image if new
-            if (!photoContainer.contains(imageElement)) {
-                photoContainer.insertBefore(imageElement, photoContainer.firstChild);
-            }
-            
-            // Add overlay
-            const overlay = document.createElement('div');
-            overlay.className = 'photo-overlay';
-            overlay.innerHTML = '<i class="fas fa-camera" style="color: #2196f3; font-size: 2rem;"></i>';
-            photoContainer.insertBefore(overlay, photoContainer.firstChild.nextSibling);
-            
-            // Add preview label
-            const previewLabel = document.createElement('div');
-            previewLabel.className = 'preview-label';
-            previewLabel.innerHTML = '<i class="fas fa-info-circle"></i> Click Save to update';
-            photoContainer.insertBefore(previewLabel, photoContainer.firstChild);
-            
-            // Add cancel button
-            const revertBtn = document.createElement('button');
-            revertBtn.type = 'button';
-            revertBtn.className = 'revert-photo-btn';
-            revertBtn.innerHTML = '<i class="fas fa-undo"></i> Cancel';
-            photoContainer.querySelector('.change-photo-btn').insertAdjacentElement('afterend', revertBtn);
-            
-            // Handle cancel
-            revertBtn.addEventListener('click', function() {
-                if (imageElement.dataset.originalSrc) {
-                    imageElement.src = imageElement.dataset.originalSrc;
+            // Show loading state
+            this.disabled = true;
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json' // Tambahkan header Accept
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Profile updated successfully',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.reload();
+                    });
                 } else {
-                    const placeholder = document.createElement('div');
-                    placeholder.className = 'photo-placeholder';
-                    placeholder.innerHTML = '<i class="fas fa-user fa-3x" style="color: #2196f3;"></i>';
-                    imageElement.replaceWith(placeholder);
+                    throw new Error(data.message || 'Failed to update profile');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Jika update berhasil tapi response JSON error, tetap refresh
+                if (error.message.includes('JSON')) {
+                    window.location.reload();
+                    return;
                 }
                 
-                // Cleanup
-                [previewLabel, revertBtn, overlay].forEach(el => el.remove());
-                document.getElementById('photo').value = '';
+                Swal.fire({
+                    title: 'Error!', 
+                    text: 'Profile has been updated but encountered display error',
+                    icon: 'info',
+                    showConfirmButton: true
+                }).then(() => {
+                    window.location.reload();
+                });
+            })
+            .finally(() => {
+                // Restore button state
+                this.disabled = false;
+                this.innerHTML = originalText;
             });
-        };
-        
-        reader.readAsDataURL(file);
-    }
-});
-</script>
-
-<!-- Leaflet JavaScript -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-let map;
-let marker;
-
-function initMap() {
-    const defaultLat = {{ Auth::user()->latitude ?? -6.200000 }};
-    const defaultLng = {{ Auth::user()->longitude ?? 106.816666 }};
-    
-    map = L.map('map', {
-        scrollWheelZoom: false, // Disable scroll zoom by default
-        dragging: true,
-        tap: false
-    }).setView([defaultLat, defaultLng], 13);
-    
-    // Enable scroll zoom only when map is focused
-    map.on('click', function() {
-        map.scrollWheelZoom.enable();
-    });
-    
-    // Disable scroll zoom when mouse leaves map
-    map.on('mouseout', function() {
-        map.scrollWheelZoom.disable();
-    });
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    marker = L.marker([defaultLat, defaultLng], {
-        draggable: true
-    }).addTo(map);
-
-    marker.on('dragend', function() {
-        const pos = marker.getLatLng();
-        document.getElementById('latitude').value = pos.lat;
-        document.getElementById('longitude').value = pos.lng;
-        updateAddressFromCoordinates(pos.lat, pos.lng);
-    });
-}
-
-function getCurrentLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            const pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-
-            map.setView([pos.lat, pos.lng], 15);
-            marker.setLatLng([pos.lat, pos.lng]);
-            
-            document.getElementById('latitude').value = pos.lat;
-            document.getElementById('longitude').value = pos.lng;
-            
-            updateAddressFromCoordinates(pos.lat, pos.lng);
-        }, function() {
-            alert('Error: The Geolocation service failed.');
         });
-    } else {
-        alert('Error: Your browser doesn\'t support geolocation.');
-    }
-}
+    };
 
-function updateAddressFromCoordinates(lat, lng) {
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-        .then(response => response.json())
-        .then(data => {
+    // Map Initialization (if address section exists)
+    const initMap = () => {
+        const mapElement = document.getElementById('map');
+        if (!mapElement) return;
+
+        let map = L.map('map').setView([-6.200000, 106.816666], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        let marker = L.marker([-6.200000, 106.816666], { draggable: true }).addTo(map);
+
+        // Update coordinates when marker is dragged
+        marker.on('dragend', function(e) {
+            const position = marker.getLatLng();
+            document.getElementById('latitude').value = position.lat;
+            document.getElementById('longitude').value = position.lng;
+            updateAddress(position.lat, position.lng);
+        });
+
+        // Get current location button
+        document.querySelector('.btn-get-location')?.addEventListener('click', () => {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const { latitude, longitude } = position.coords;
+                    map.setView([latitude, longitude], 15);
+                    marker.setLatLng([latitude, longitude]);
+                    updateAddress(latitude, longitude);
+                },
+                error => {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Unable to get your location',
+                        icon: 'error'
+                    });
+                }
+            );
+        });
+    };
+
+    // Helper function to update address from coordinates
+    const updateAddress = async (lat, lng) => {
+        try {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+            );
+            const data = await response.json();
             document.getElementById('address').value = data.display_name;
-        })
-        .catch(error => console.error('Error:', error));
-}
+        } catch (error) {
+            console.error('Error fetching address:', error);
+        }
+    };
 
-// Initialize map when page loads
-window.addEventListener('load', initMap);
+    // Initialize all components
+    initTabs();
+    initPasswordToggles();
+    initProfilePhoto();
+    initFormSubmission();
+    initMap();
+});
 </script>
 @endpush

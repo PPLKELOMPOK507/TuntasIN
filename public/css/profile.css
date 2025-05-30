@@ -226,19 +226,231 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .profile-layout {
-        grid-template-columns: 250px 1fr;
-    }
+/* Documents Section Styling */
+.documents-section {
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    margin-top: 1rem;
 }
 
+.current-cv {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.current-cv i {
+    font-size: 2rem;
+    color: #dc2626;
+}
+
+.cv-filename {
+    flex: 1;
+    font-size: 0.875rem;
+    color: #374151;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cv-upload-container {
+    position: relative;
+    border: 2px dashed #e5e7eb;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.cv-upload-container:hover {
+    border-color: #2563eb;
+    background: #f3f4f6;
+}
+
+.upload-icon {
+    font-size: 2rem;
+    color: #9ca3af;
+    margin-bottom: 1rem;
+}
+
+.upload-text {
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.upload-info {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.view-cv-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #f3f4f6;
+    color: #374151;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.view-cv-btn:hover {
+    background: #e5e7eb;
+    transform: translateY(-1px);
+}
+
+.change-cv-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.change-cv-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+/* File Input Styling */
+.file-input-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.file-input-wrapper input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.accepted-formats {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+}
+
+/* Document Status */
+.document-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+.status-verified {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Address Section Styling */
+.address-container {
+    width: 100%;
+    grid-column: span 2; /* Make it span both columns */
+}
+
+.address-container textarea {
+    width: 100%;
+    margin-bottom: 1rem;
+    resize: vertical;
+    min-height: 80px;
+}
+
+#map {
+    width: 100%;
+    height: 300px;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-get-location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-get-location:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.btn-get-location i {
+    font-size: 1.1rem;
+}
+
+/* Description Field Styling */
+.form-group.description {
+    grid-column: span 2; /* Make description span both columns */
+}
+
+.form-group.description textarea {
+    width: 100%;
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-text {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* Profile Section Grid Adjustment */
+#address-section .section-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     .profile-layout {
         grid-template-columns: 1fr;
     }
     
-    .section-grid {
-        grid-template-columns: 1fr;
+    .address-container,
+    .form-group.description {
+        grid-column: span 1;
     }
 }
