@@ -101,29 +101,28 @@
 .status-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
-    border-radius: 20px;
+    border-radius: 9999px;
     font-size: 0.875rem;
     font-weight: 500;
-    margin-bottom: 1rem;
 }
 
 .status-badge.pending {
-    background-color: #fff3cd;
+    background: #fff3cd;
     color: #856404;
 }
 
-.status-badge.awaiting_payment {
-    background-color: #cce5ff;
+.status-badge.awaiting_verification {
+    background: #cce5ff;
     color: #004085;
 }
 
 .status-badge.paid {
-    background-color: #d4edda;
+    background: #d4edda;
     color: #155724;
 }
 
 .status-badge.declined {
-    background-color: #f8d7da;
+    background: #f8d7da;
     color: #721c24;
 }
 

@@ -224,6 +224,7 @@ Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
     
     // Admin Payment Management
     Route::prefix('manage')->name('manage.')->middleware(['admin'])->group(function() {
+        // Payment verification routes
         Route::put('/payments/{payment}/verify', [AdminPaymentController::class, 'verifyPayment'])->name('payments.verify');
 
     Route::middleware(['auth'])->group(function () {

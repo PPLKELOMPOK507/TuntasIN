@@ -17,11 +17,12 @@ class AdminController extends Controller
         }
 
         $data = [
-            'jasa' => Jasa::with(['user', 'category'])->get(),
-            'totalUsers' => User::count(),
-            'users' => User::all(),
-            'categories' => Category::withCount('services')->get(),
-            'payments' => \App\Models\Payment::with(['user', 'pemesanan.jasa'])->get()
+            'jasa' => \App\Models\Jasa::with(['user', 'category'])->get(),
+            'totalUsers' => \App\Models\User::count(),
+            'users' => \App\Models\User::all(),
+            'categories' => \App\Models\Category::withCount('services')->get(),
+            'payments' => \App\Models\Payment::with(['user', 'pemesanan.jasa'])->get(),
+            'totalTransactions' => \App\Models\Payment::count() // Menambahkan total transaksi
         ];
 
         return view('admin', $data);
