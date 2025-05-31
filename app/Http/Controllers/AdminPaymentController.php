@@ -47,7 +47,7 @@ class AdminPaymentController extends Controller
             $payment->update(['status' => $status]);
             
             $payment->pemesanan->update([
-                'status' => $status === 'completed' ? 'paid' : 'declined'
+                'status' => $status === 'completed' ? 'paid' : 'cancelled'
             ]);
 
             if ($status === 'completed') {
