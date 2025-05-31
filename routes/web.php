@@ -159,56 +159,27 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pesan/{jasa}', [PemesananController::class, 'store'])->name('pesanan.store');
 });
 
-// Route::prefix('admin')->name('admin.')->middleware('auth', 'admin')->group(function () {
-//     Route::get('/users', [UserController::class, 'index'])->name('users.index');
-//     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-// });
-    // Route::get('/admin', function () {
-    //     if (auth()->user()->role !== 'Admin') {
-    //         return redirect()->route('dashboard');
-    //     }
-    //     $jasa = \App\Models\Jasa::with(['user','category'])->get();
-    //     $totalUsers = \App\Models\User::count();
-    //     $users = \App\Models\User::all(); // Add this line
-    //     $categories = \App\Models\Category::withCount('services')->get();
-        
-    //     return view('admin', compact('jasa', 'totalUsers', 'categories', 'users'));
-    // })->name('manage');
-    
-    // // Category routes
-    // Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
-    // Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-    // Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-    // Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
-    // Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-
-
-    
-// Purchase History Routes (Protected + Pengguna Jasa Only)
-Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
-    ->middleware(['auth'])
-    ->name('purchases.history');
-
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/manage', function () {
-            if (auth()->user()->role !== 'Admin') {
-                return redirect()->route('dashboard');
-            }
-            $data = [
+// Admin Management Routes
+Route::middleware(['auth', 'admin'])->group(function () {
+    // Dashboard Admin
+    Route::get('/manage', function () {
+        $data = [
             'jasa' => \App\Models\Jasa::with(['user', 'category'])->get(),
             'totalUsers' => \App\Models\User::count(),
             'users' => \App\Models\User::all(),
             'categories' => \App\Models\Category::withCount('services')->get(),
             'payments' => \App\Models\Payment::with(['user', 'pemesanan.jasa'])->get()
-            ];
+        ];
+        return view('admin', $data);
+    })->name('manage');
 
-            return view('admin', $data);
-        })->name('manage');
-        Route::prefix('manage')->name('manage.')->group(function() {
-
+    // Admin Routes with /manage prefix
+    Route::prefix('manage')->name('manage.')->group(function() {
+        // Users Management
         Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');
         Route::delete('/jasa/{id}', [AdminController::class, 'destroyJasa'])->name('jasa.destroy');
 
+        // Categories Management
         Route::controller(CategoryController::class)->group(function() {
             Route::get('/categories/create', 'create')->name('categories.create');
             Route::post('/categories', 'store')->name('categories.store');
@@ -216,22 +187,56 @@ Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
             Route::put('/categories/{id}', 'update')->name('categories.update');
             Route::delete('/categories/{id}', 'destroy')->name('categories.destroy');
         });
+
+        // Payment Management
+        Route::post('/payments/{payment}/verify', [AdminPaymentController::class, 'verifyPayment'])
+            ->name('payments.verify');
+
+        // Admin Refund Management
+        Route::get('/refunds', [AdminRefundController::class, 'index'])->name('refunds.index');
+        Route::get('/refunds/{id}', [AdminRefundController::class, 'show'])->name('refunds.show');
+        Route::post('/refunds/{id}/review', [AdminRefundController::class, 'review'])->name('refunds.review');
     });
-    Route::middleware(['auth'])->group(function () {
+});
+
+// Purchase History Routes (Protected + Pengguna Jasa Only)
+Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
+    ->middleware(['auth'])
+    ->name('purchases.history');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/manage', function () {
+        if (auth()->user()->role !== 'Admin') {
+            return redirect()->route('dashboard');
+        }
+        $data = [
+        'jasa' => \App\Models\Jasa::with(['user', 'category'])->get(),
+        'totalUsers' => \App\Models\User::count(),
+        'users' => \App\Models\User::all(),
+        'categories' => \App\Models\Category::withCount('services')->get(),
+        'payments' => \App\Models\Payment::with(['user', 'pemesanan.jasa'])->get()
+        ];
+
+        return view('admin', $data);
+    })->name('manage');
+    Route::prefix('manage')->name('manage.')->group(function() {
+
+    Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+    Route::delete('/jasa/{id}', [AdminController::class, 'destroyJasa'])->name('jasa.destroy');
+
+    Route::controller(CategoryController::class)->group(function() {
+        Route::get('/categories/create', 'create')->name('categories.create');
+        Route::post('/categories', 'store')->name('categories.store');
+        Route::get('/categories/{id}/edit', 'edit')->name('categories.edit');
+        Route::put('/categories/{id}', 'update')->name('categories.update');
+        Route::delete('/categories/{id}', 'destroy')->name('categories.destroy');
+    });
+});
+Route::middleware(['auth'])->group(function () {
     // Payment Routes
     Route::get('/payment/{pemesanan}', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
     Route::post('/payment/{pemesanan}/process', [PaymentController::class, 'processPayment'])->name('payment.process');
     
-    // Admin Payment Management
-    Route::prefix('manage')->name('manage.')->middleware(['admin'])->group(function() {
-        // Payment verification routes
-        Route::put('/payments/{payment}/verify', [AdminPaymentController::class, 'verifyPayment'])->name('payments.verify');
-
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/refund', [RefundController::class, 'showRefundForm'])->name('refund.form');
-        Route::post('/refund', [RefundController::class, 'submitRefund'])->name('refund.submit');
-            });
-        });
     });
     Route::middleware(['auth'])->group(function () {
     // Refund routes

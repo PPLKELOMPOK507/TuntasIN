@@ -286,10 +286,9 @@
                                     </span>
                                 </td>
                                 <td>
-                                    @if($payment->status === 'pending')
+                                    @if($payment->status === 'awaiting_verification')
                                     <form action="{{ route('manage.payments.verify', $payment->id) }}" method="POST" class="d-inline">
                                         @csrf
-                                        @method('PUT')
                                         <button type="submit" name="status" value="completed" class="btn btn-success btn-sm">
                                             <i class="fas fa-check"></i> Accept
                                         </button>
