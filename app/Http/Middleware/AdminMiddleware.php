@@ -13,13 +13,6 @@ class AdminMiddleware
             return $next($request);
         }
 
-        return redirect()->route('login')->with('error', 'Unauthorized access.');
-    {
-        if (auth()->check() && auth()->user()->role === 'Admin') {
-            return $next($request);
-        }
-        
-        return redirect()->route('dashboard');
+        return redirect()->route('dashboard')->with('error', 'Unauthorized access.');
     }
-}
 }

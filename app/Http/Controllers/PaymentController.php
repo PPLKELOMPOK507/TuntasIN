@@ -21,6 +21,14 @@ class PaymentController extends Controller
     public function processPayment(Request $request, Pemesanan $pemesanan)
     {
         try {
+            // Validate request
+            if (!$request->payment_method) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Metode pembayaran harus dipilih'
+                ], 422);
+            }
+
             // Buat payment reference
             $paymentReference = 'PAY-' . uniqid();
 
@@ -37,12 +45,17 @@ class PaymentController extends Controller
             // Update status pemesanan 
             $pemesanan->update(['status' => 'awaiting_verification']);
 
-            return redirect()->route('purchases.history')
-                ->with('success', 'Pembayaran sedang diverifikasi admin');
+            return response()->json([
+                'success' => true,
+                'message' => 'Pembayaran sedang diverifikasi admin',
+                'redirect' => route('purchases.history')
+            ]);
 
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Gagal memproses pembayaran');
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memproses pembayaran: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

@@ -41,22 +41,23 @@ class AdminPaymentController extends Controller
 
     public function verifyPayment(Request $request, Payment $payment)
     {
-        $status = $request->status; // completed atau declined
+        try {
+            $status = $request->input('status');
+            
+            $payment->update(['status' => $status]);
+            
+            $payment->pemesanan->update([
+                'status' => $status === 'completed' ? 'paid' : 'declined'
+            ]);
 
-        // Update payment status
-        $payment->update(['status' => $status]);
-        
-        // Update pemesanan status
-        $payment->pemesanan->update([
-            'status' => $status === 'completed' ? 'paid' : 'declined'
-        ]);
+            if ($status === 'completed') {
+                $penyediaJasa = $payment->pemesanan->jasa->user;
+                $penyediaJasa->increment('balance', $payment->amount);
+            }
 
-        // Update balance penyedia jasa jika diterima
-        if ($status === 'completed') {
-            $penyediaJasa = $payment->pemesanan->jasa->user;
-            $penyediaJasa->increment('balance', $payment->amount);
+            return redirect()->back()->with('success', 'Status pembayaran berhasil diperbarui');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal memperbarui status pembayaran: ' . $e->getMessage());
         }
-
-        return back()->with('success', 'Status pembayaran diperbarui');
     }
 }
