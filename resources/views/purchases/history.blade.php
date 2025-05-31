@@ -51,7 +51,7 @@
                     <option value="pending">Menunggu Pembayaran</option>
                     <option value="awaiting_payment">Menunggu Verifikasi</option>
                     <option value="paid">Pembayaran Diterima</option>
-                    <option value="declined">Pembayaran Ditolak</option>
+                    <option value="cancelled">Pembayaran Ditolak</option>
                 </select>
             </div>
         </div>
@@ -87,7 +87,7 @@
                                 @case('paid')
                                     Pembayaran Diterima
                                     @break
-                                @case('declined')
+                                @case('cancelled')
                                     Pembayaran Ditolak
                                     @break
                                 @default

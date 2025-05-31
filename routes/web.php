@@ -61,7 +61,6 @@ Route::get('/profile', function () {
 })->middleware(['auth'])->name('profile');
 
 // Payment Routes
-Route::get('/payment/form', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
 Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
 Route::post('/payment/submit', [PaymentController::class, 'submitPayment'])->name('payment.submit');
 
