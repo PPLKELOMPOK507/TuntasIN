@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+
 class Pemesanan extends Model
 {
     use HasFactory;
@@ -45,5 +46,9 @@ class Pemesanan extends Model
     public function review(): HasOne
     {
         return $this->hasOne(ReviewRating::class);
+    }
+    public function refunds()
+    {
+        return $this->hasMany(\App\Models\Refund::class, 'pemesanan_id');
     }
 }

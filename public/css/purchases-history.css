@@ -52,6 +52,9 @@
 
 .purchase-info {
     padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .purchase-header {
@@ -115,9 +118,29 @@
     color: #721c24;
 }
 
+/* Tambahkan di bagian style atau file CSS terkait */
+.status-badge.refund-accepted {
+    background: #e6f4ea;
+    color: #137333;
+}
+
+.status-badge.refund-approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.refund-rejected {
+    background: #f8d7da;
+    color: #721c24;
+}
+
 .action-buttons {
     display: flex;
     gap: 1rem;
+    margin-left: auto;
+    margin-top: auto;
+    display: flex;
+    gap: 0.5em;
 }
 
 .btn-detail, .btn-chat, .btn-pay {
@@ -220,6 +243,22 @@
 
 .btn-pay:hover {
     background-color: #43a047;
+}
+
+.btn-refund {
+    background: #ef4444;
+    color: #fff;
+    padding: 0.5em 1.2em;
+    border-radius: 0.5em;
+    font-weight: 600;
+    display: inline-block;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.btn-refund:hover {
+    background: #dc2626;
+    color: #fff;
 }
 
 .empty-state {

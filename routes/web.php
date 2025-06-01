@@ -210,20 +210,7 @@ Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
     ->name('purchases.history');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/manage', function () {
-        if (auth()->user()->role !== 'Admin') {
-            return redirect()->route('dashboard');
-        }
-        $data = [
-        'jasa' => \App\Models\Jasa::with(['user', 'category'])->get(),
-        'totalUsers' => \App\Models\User::count(),
-        'users' => \App\Models\User::all(),
-        'categories' => \App\Models\Category::withCount('services')->get(),
-        'payments' => \App\Models\Payment::with(['user', 'pemesanan.jasa'])->get()
-        ];
-
-        return view('admin', $data);
-    })->name('manage');
+    Route::get('/manage', [App\Http\Controllers\AdminController::class, 'index'])->name('manage');
     Route::prefix('manage')->name('manage.')->group(function() {
 
     Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');

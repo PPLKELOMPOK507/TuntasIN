@@ -21,42 +21,47 @@ class AdminRefundController extends Controller
         $refund = Refund::with(['pemesanan.jasa', 'user'])
             ->findOrFail($id);
 
-        return view('admin.refunds.show', compact('refund'));
+        return view('refunds.detailadmin', compact('refund'));
     }
 
     public function review(Request $request, $id)
     {
+        // Ganti 'status' menjadi 'review' agar sesuai dengan input form
         $request->validate([
-            'status' => 'required|in:approved,rejected',
-            'admin_notes' => 'required|string|min:10',
+            'review' => 'required|in:approved,rejected',
+            'admin_notes' => 'required|string',
         ]);
 
         $refund = Refund::findOrFail($id);
-        
+
         $refund->update([
-            'status' => $request->status,
+            'status' => $request->review,
             'admin_notes' => $request->admin_notes,
             'admin_reviewed_at' => now()
         ]);
 
-        // Jika refund disetujui
-        if ($request->status === 'approved') {
+        // Jika refund disetujui (approved)
+        if ($request->review === 'approved') {
             $pemesanan = $refund->pemesanan;
-            
-            // Update status pemesanan
-            $pemesanan->update(['status' => 'refunded']);
-            
+
+            // // Update status pemesanan jika perlu
+            // $pemesanan->update(['status' => 'refunded']);
+
             // Kembalikan dana ke user
             $user = $refund->user;
-            $user->increment('balance', $pemesanan->total_price);
-            
+            if (isset($user->balance) && isset($pemesanan->total_price)) {
+                $user->increment('balance', $pemesanan->total_price);
+            }
+
             // Kurangi balance penyedia jasa
-            $penyediaJasa = $pemesanan->jasa->user;
-            $penyediaJasa->decrement('balance', $pemesanan->total_price);
+            $penyediaJasa = $pemesanan->jasa->user ?? null;
+            if ($penyediaJasa && isset($penyediaJasa->balance) && isset($pemesanan->total_price)) {
+                $penyediaJasa->decrement('balance', $pemesanan->total_price);
+            }
         }
 
         return redirect()
-            ->route('admin.refunds.index')
+            ->route('manage')
             ->with('success', 'Review refund berhasil disimpan');
     }
 }
