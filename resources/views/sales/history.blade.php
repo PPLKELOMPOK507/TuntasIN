@@ -66,11 +66,45 @@
                         </div>
                         <div class="sale-details">
                             <h3>{{ $sale['service_name'] }}</h3>
-                            <p>Pembeli: {{ $sale['buyer_name'] }}</p>
-                            <p>Harga: Rp {{ number_format($sale['amount'], 0, ',', '.') }}</p>
-                            <span class="status-badge {{ $sale['status'] }}">
-                                {{ ucfirst($sale['status']) }}
+                            <p>Pembeli: {{ $sale->user->email }}</p>
+                            <p>Harga: Rp {{ number_format($sale['harga'], 0, ',', '.') }}</p>
+                            @php
+                                $refundPending = isset($sale->refunds) && $sale->refunds->where('status', 'pending')->count() > 0;
+                                $pendingRefund = isset($sale->refunds) ? $sale->refunds->where('status', 'pending')->first() : null;
+                                $refundStatus = null;
+                                if ($pendingRefund) {
+                                    $refundStatus = $pendingRefund->provider_response ?? 'pending';
+                                }
+                            @endphp
+                            <span class="status-badge
+                                @if($sale['status'] === 'completed') completed
+                                @elseif($sale['status'] === 'pending') pending
+                                @elseif($sale['status'] === 'cancelled') cancelled
+                                @elseif($sale['status'] === 'paid' && $refundPending && $refundStatus === 'pending') refund-request
+                                @elseif($sale['status'] === 'paid' && $refundPending && $refundStatus === 'accepted') refund-accepted
+                                @elseif($sale['status'] === 'paid' && $refundPending && $refundStatus === 'declined') refund-declined
+                                @endif
+                            ">
+                                @if($sale['status'] === 'paid' && $refundPending)
+                                    @if($refundStatus === 'pending')
+                                        Request Refund
+                                    @elseif($refundStatus === 'accepted')
+                                        Refund Diterima, Menunggu Verifikasi Admin
+                                    @elseif($refundStatus === 'declined')
+                                        Refund Ditolak Penyedia Jasa
+                                    @else
+                                        Request Refund
+                                    @endif
+                                @else
+                                    {{ ucfirst($sale['status']) }}
+                                @endif
                             </span>
+                            @if($sale['status'] === 'paid' && $refundPending && $pendingRefund)
+                                <br>
+                                <a href="{{ route('provider.refunds.show', $pendingRefund->id) }}" class="btn btn-info" style="margin-top:8px;">
+                                    Lihat Detail Refund
+                                </a>
+                            @endif
                         </div>
                     </div>
                 @endforeach
@@ -123,6 +157,20 @@
         }
 
         .status-badge.cancelled {
+            background: #fce8e6;
+            color: #c5221f;
+        }
+
+        /* Refund status colors */
+        .status-badge.refund-request {
+            background: #e3f0ff;
+            color: #1565c0;
+        }
+        .status-badge.refund-accepted {
+            background: #e6f4ea;
+            color: #137333;
+        }
+        .status-badge.refund-declined {
             background: #fce8e6;
             color: #c5221f;
         }
