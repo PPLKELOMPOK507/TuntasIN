@@ -62,43 +62,69 @@
                     <div class="service-image">
                         <img src="{{ asset('storage/' . $purchase->jasa->gambar) }}" alt="{{ $purchase->jasa->nama_jasa }}">
                     </div>
-                    <div class="purchase-info">
-                        <div class="purchase-header">
-                            <span class="order-id">#{{ $purchase->id }}</span>
-                            <span class="purchase-date">{{ $purchase->created_at->format('d M Y') }}</span>
+                    <div class="purchase-info" style="display: flex; flex-direction: column; height: 100%;">
+                        <div>
+                            <div class="purchase-header">
+                                <span class="order-id">#{{ $purchase->id }}</span>
+                                <span class="purchase-date">{{ $purchase->created_at->format('d M Y') }}</span>
+                            </div>
+                            <h3 class="service-name">{{ $purchase->jasa->nama_jasa }}</h3>
+                            <div class="provider-info">
+                                <i class="fas fa-user-circle"></i>
+                                <span>Oleh: {{ $purchase->jasa->user->full_name }}</span>
+                            </div>
+                            <div class="price-info">
+                                <span>Total Pembayaran:</span>
+                                <strong>Rp {{ number_format($purchase->harga, 0, ',', '.') }}</strong>
+                            </div>
+                            @php
+                                $refundApproved = isset($purchase->refunds) && $purchase->refunds->where('status', 'approved')->count() > 0;
+                                $refundRejected = isset($purchase->refunds) && $purchase->refunds->where('status', 'rejected')->count() > 0;
+                            @endphp
+                            <div class="status-badge
+                                @if($refundApproved)
+                                    refund-approved
+                                @elseif($refundRejected)
+                                    refund-rejected
+                                @else
+                                    {{ $purchase->status }}
+                                @endif
+                            ">
+                                @if($refundApproved)
+                                    Refund Disetujui Admin
+                                @elseif($refundRejected)
+                                    Refund Ditolak
+                                @else
+                                    @switch($purchase->status)
+                                        @case('pending')
+                                            Menunggu Pembayaran
+                                            @break
+                                        @case('awaiting_verification')
+                                            Menunggu Verifikasi Admin
+                                            @break
+                                        @case('paid')
+                                            Pembayaran Diterima
+                                            @break
+                                        @case('cancelled')
+                                            Pembayaran Ditolak
+                                            @break
+                                        @default
+                                            {{ ucfirst($purchase->status) }}
+                                    @endswitch
+                                @endif
+                            </div>
                         </div>
-                        <h3 class="service-name">{{ $purchase->jasa->nama_jasa }}</h3>
-                        <div class="provider-info">
-                            <i class="fas fa-user-circle"></i>
-                            <span>Oleh: {{ $purchase->jasa->user->full_name }}</span>
-                        </div>
-                        <div class="price-info">
-                            <span>Total Pembayaran:</span>
-                            <strong>Rp {{ number_format($purchase->harga, 0, ',', '.') }}</strong>
-                        </div>
-                        <div class="status-badge {{ $purchase->status }}">
-                            @switch($purchase->status)
-                                @case('pending')
-                                    Menunggu Pembayaran
-                                    @break
-                                @case('awaiting_verification')
-                                    Menunggu Verifikasi Admin
-                                    @break
-                                @case('paid')
-                                    Pembayaran Diterima
-                                    @break
-                                @case('cancelled')
-                                    Pembayaran Ditolak
-                                    @break
-                                @default
-                                    {{ ucfirst($purchase->status) }}
-                            @endswitch
-                        </div>
-
-                        <div class="action-buttons">
+                        <div class="action-buttons" style="margin-left:auto; margin-top:auto;">
                             @if($purchase->status === 'pending')
                                 <a href="{{ route('payment.form', $purchase->id) }}" class="btn-pay">
                                     Bayar Sekarang
+                                </a>
+                            @endif
+
+                            {{-- Tombol Ajukan Refund hanya muncul jika status paid dan BELUM ada refund approved/rejected --}}
+                            @if($purchase->status === 'paid' && !$refundApproved && !$refundRejected)
+                                <a href="{{ route('refunds.create', $purchase->id) }}" class="btn-refund">
+                                    Ajukan Refund
                                 </a>
                             @endif
                         </div>

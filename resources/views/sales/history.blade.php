@@ -89,27 +89,47 @@
                                 @endswitch
                             </div>
                         </div>
-
-                        <div class="service-info">
-                            <h3 class="service-name">{{ $sale->jasa->nama_jasa }}</h3>
-                            <div class="buyer-info">
-                                <i class="fas fa-user"></i>
-                                <div class="buyer-details">
-                                    <span class="buyer-label">Pembeli:</span>
-                                    <span class="buyer-name">{{ $sale->user->full_name }}</span>
-                                    @if($sale->status === 'paid' && $sale->user->address)
-                                        <div class="buyer-location">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                            <span>{{ $sale->user->address }}</span>
-                                        </div>
+                        <div class="sale-details">
+                            <h3>{{ $sale['service_name'] }}</h3>
+                            <p>Pembeli: {{ $sale->user->fullname }}</p>
+                            <p>Harga: Rp {{ number_format($sale['harga'], 0, ',', '.') }}</p>
+                            @php
+                                $refundPending = isset($sale->refunds) && $sale->refunds->where('status', 'pending')->count() > 0;
+                                $pendingRefund = isset($sale->refunds) ? $sale->refunds->where('status', 'pending')->first() : null;
+                                $refundStatus = null;
+                                if ($pendingRefund) {
+                                    $refundStatus = $pendingRefund->provider_response ?? 'pending';
+                                }
+                            @endphp
+                            <span class="status-badge
+                                @if($sale['status'] === 'completed') completed
+                                @elseif($sale['status'] === 'pending') pending
+                                @elseif($sale['status'] === 'cancelled') cancelled
+                                @elseif($sale['status'] === 'paid' && $refundPending && $refundStatus === 'pending') refund-request
+                                @elseif($sale['status'] === 'paid' && $refundPending && $refundStatus === 'accepted') refund-accepted
+                                @elseif($sale['status'] === 'paid' && $refundPending && $refundStatus === 'declined') refund-declined
+                                @endif
+                            ">
+                                @if($sale['status'] === 'paid' && $refundPending)
+                                    @if($refundStatus === 'pending')
+                                        Request Refund
+                                    @elseif($refundStatus === 'accepted')
+                                        Refund Diterima, Menunggu Verifikasi Admin
+                                    @elseif($refundStatus === 'declined')
+                                        Refund Ditolak Penyedia Jasa
+                                    @else
+                                        Request Refund
                                     @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="price-info">
-                            <span>Total Pembayaran:</span>
-                            <strong>Rp {{ number_format($sale->harga, 0, ',', '.') }}</strong>
+                                @else
+                                    {{ ucfirst($sale['status']) }}
+                                @endif
+                            </span>
+                            @if($sale['status'] === 'paid' && $refundPending && $pendingRefund)
+                                <br>
+                                <a href="{{ route('provider.refunds.show', $pendingRefund->id) }}" class="btn btn-info" style="margin-top:8px;">
+                                    Lihat Detail Refund
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>

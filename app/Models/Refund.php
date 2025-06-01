@@ -11,7 +11,9 @@ class Refund extends Model
         'user_id',
         'reason',
         'bukti_refund',
-        'status'
+        'status',
+        'provider_response',      
+        'provider_responded_at',  
     ];
 
     public function pemesanan()

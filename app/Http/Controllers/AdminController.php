@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Jasa;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Refund; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,7 +23,8 @@ class AdminController extends Controller
             'users' => \App\Models\User::all(),
             'categories' => \App\Models\Category::withCount('services')->get(),
             'payments' => \App\Models\Payment::with(['user', 'pemesanan.jasa'])->get(),
-            'totalTransactions' => \App\Models\Payment::count() // Menambahkan total transaksi
+            'totalTransactions' => \App\Models\Payment::count(),
+            'refunds' => Refund::with(['user', 'pemesanan.jasa'])->latest()->get(), 
         ];
 
         return view('admin', $data);
