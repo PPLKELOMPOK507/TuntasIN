@@ -134,19 +134,14 @@ class RefundController extends Controller
 
     public function providerShow($id)
     {
-        $refund = Refund::whereHas('pemesanan.jasa', function($query) {
-            $query->where('user_id', auth()->id());
-        })
-        ->with(['pemesanan.jasa', 'user'])
-        ->findOrFail($id);
-
-        return view('provider.refunds.show', compact('refund'));
+        $refund = \App\Models\Refund::with(['pemesanan.jasa', 'user'])->findOrFail($id);
+        return view('refunds.detail', compact('refund'));
     }
 
     public function providerResponse(Request $request, $id)
     {
         $request->validate([
-            'response' => 'required|string|min:10',
+            'response' => 'required|in:accepted,rejected',
         ]);
 
         $refund = Refund::whereHas('pemesanan.jasa', function($query) {
@@ -156,9 +151,12 @@ class RefundController extends Controller
         $refund->update([
             'provider_response' => $request->response,
             'provider_responded_at' => now(),
+            // Optional: update status jika declined
+            'status' => $request->response === 'rejected' ? 'rejected' : $refund->status,
         ]);
 
-        return redirect()->route('provider.refunds.index')
+
+        return redirect()->route('sales.history')
             ->with('success', 'Tanggapan refund berhasil dikirim');
     }
 }
