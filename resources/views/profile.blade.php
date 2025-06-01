@@ -37,6 +37,11 @@
                 @endif
 
                 @if(Auth::user()->role === 'Penyedia Jasa')
+                    <a href="{{ route('account.balance') }}" class="menu-item">
+                        <i class="fas fa-wallet"></i>
+                        <span>My Balance</span>
+                    </a>
+
                     <a href="{{ route('sales.history') }}" class="menu-item">
                         <i class="fas fa-history"></i>
                         <span>Riwayat Penjualan</span>
