@@ -18,7 +18,6 @@
                 </div>
                 <div class="col-md-6 text-md-end mt-3 mt-md-0">
                     <div class="balance-actions">
-                        <button id="depositBtn" class="btn btn-secondary btn-action me-2" data-bs-toggle="modal" data-bs-target="#depositModal">Tambah Saldo</button>
                         <button id="withdrawBtn" class="btn-primary btn-action" data-bs-toggle="modal" data-bs-target="#withdrawModal">Tarik Dana</button>
                     </div>
                 </div>
@@ -144,30 +143,6 @@
     </div>
 </div>
 <!-- Deposit Modal -->
-<div class="modal fade" id="depositModal" tabindex="-1" aria-labelledby="depositModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="depositModalLabel">Tambah Saldo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-            </div>
-            <form action="{{ route('account.deposit') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="form-group mb-3">
-                        <label for="depositAmount">Jumlah Saldo</label>
-                        <input type="number" min="10000" class="form-control" name="amount" id="depositAmount" placeholder="Masukkan jumlah saldo" required>
-                        <small class="form-text text-muted">Minimal IDR 10.000</small>
-                    </div>
-                    <div class="action-buttons">
-                        <button type="button" class="btn-cancel" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn-submit">Tambah</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 @endsection
 
