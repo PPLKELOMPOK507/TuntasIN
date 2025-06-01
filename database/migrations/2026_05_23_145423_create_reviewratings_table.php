@@ -14,13 +14,11 @@ return new class extends Migration
         Schema::create('reviewratings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('jasa_id')->references('id')->on('jasas')->onDelete('cascade');
-            $table->integer('rating')->comment('Rating 1-5');
-            $table->text('review')->nullable();
+            $table->foreignId('jasa_id')->constrained('jasas')->onDelete('cascade');
+            $table->foreignId('pemesanan_id')->constrained('pemesanans')->onDelete('cascade');
+            $table->integer('rating');
+            $table->text('review');
             $table->timestamps();
-            
-            // Memastikan satu user hanya bisa review satu jasa satu kali
-            $table->unique(['user_id', 'jasa_id']);
         });
     }
 

@@ -150,6 +150,19 @@
     background-color: #bbdefb;
 }
 
+.btn-review {
+    background: #ffd700;
+    color: #333;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
 .btn-review:hover {
     background: #ffc800;
     transform: translateY(-1px);
@@ -158,8 +171,8 @@
 .star-rating {
     display: flex;
     flex-direction: row-reverse;
-    justify-content: flex-start;
     gap: 8px;
+    justify-content: flex-start;
 }
 
 .star-rating input {
@@ -167,16 +180,18 @@
 }
 
 .star-rating label {
-    cursor: pointer;
     color: #ddd;
+    cursor: pointer;
     font-size: 24px;
-    transition: color 0.2s;
+}
+
+.star-rating input:checked ~ label {
+    color: #ffd700;
 }
 
 .star-rating label:hover,
-.star-rating label:hover ~ label,
-.star-rating input:checked ~ label {
-    color: #ffd700;
+.star-rating label:hover ~ label {
+    color: #ffed4a;
 }
 
 .modal-content {

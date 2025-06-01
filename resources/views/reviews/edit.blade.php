@@ -1,9 +1,12 @@
+<?php
 @extends('layouts.app')
 
 @section('content')
 <div class="dashboard-container">
     <nav class="nav-container">
-        <!-- ... existing nav code ... -->
+        <div class="logo">
+            <a href="{{ route('dashboard') }}">TUNTAS<span class="logo-in">IN</span></a>
+        </div>
     </nav>
 
     <div class="review-edit-container">

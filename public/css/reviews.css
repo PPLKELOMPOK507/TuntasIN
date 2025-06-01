@@ -43,12 +43,6 @@
     font-weight: 500;
 }
 
-.service-name {
-    font-size: 1.1rem;
-    color: #333;
-    font-weight: 600;
-}
-
 .star-rating {
     display: flex;
     flex-direction: row-reverse;
@@ -72,6 +66,12 @@
 .star-rating label:hover,
 .star-rating label:hover ~ label {
     color: #ffed4a;
+}
+
+.service-name {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 600;
 }
 
 textarea.form-control {

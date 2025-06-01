@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ReviewRating;
+use App\Models\Pemesanan;
 use Illuminate\Http\Request;
 
 class ReviewRatingController extends Controller
@@ -15,6 +17,16 @@ class ReviewRatingController extends Controller
         ]);
 
         $pemesanan = Pemesanan::find($request->pemesanan_id);
+        
+        // Cek apakah pesanan milik user yang login
+        if ($pemesanan->user_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'Unauthorized action');
+        }
+
+        // Cek apakah sudah ada review
+        if ($pemesanan->hasReview()->exists()) {
+            return redirect()->back()->with('error', 'Anda sudah memberikan review');
+        }
 
         ReviewRating::create([
             'user_id' => auth()->id(),
@@ -31,7 +43,6 @@ class ReviewRatingController extends Controller
     {
         $review = ReviewRating::findOrFail($id);
         
-        // Pastikan user hanya bisa edit review miliknya
         if ($review->user_id !== auth()->id()) {
             return redirect()->back()->with('error', 'Unauthorized action');
         }
@@ -43,7 +54,6 @@ class ReviewRatingController extends Controller
     {
         $review = ReviewRating::findOrFail($id);
         
-        // Validasi user
         if ($review->user_id !== auth()->id()) {
             return redirect()->back()->with('error', 'Unauthorized action');
         }
