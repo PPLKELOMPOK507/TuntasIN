@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
 class Pemesanan extends Model
 {
     use HasFactory;
@@ -33,5 +34,10 @@ class Pemesanan extends Model
     public function jasa(): BelongsTo
     {
         return $this->belongsTo(Jasa::class);
+    }
+
+    public function refunds()
+    {
+        return $this->hasMany(\App\Models\Refund::class, 'pemesanan_id');
     }
 }

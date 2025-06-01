@@ -38,6 +38,7 @@
         <input type="radio" id="services-tab" name="admin-section" class="tab-toggle" hidden checked>
         <input type="radio" id="transactions-tab" name="admin-section" class="tab-toggle" hidden>
         <input type="radio" id="categories-tab" name="admin-section" class="tab-toggle" hidden>
+        <input type="radio" id="refunds-tab" name="admin-section" class="tab-toggle" hidden>
 
         <!-- Stats Container -->
         <div class="stats-container">
@@ -70,6 +71,14 @@
                 <div class="stat-info">
                     <h3>Categories</h3>
                     <p>{{ $categories->count() ?? 0 }}</p>
+                </div>
+            </label>
+
+            <label class="stat-card" for="refunds-tab">
+                <i class="fas fa-undo-alt"></i>
+                <div class="stat-info">
+                    <h3>Total Refunds</h3>
+                    <p>{{ $refunds->count() ?? 0 }}</p>
                 </div>
             </label>
         </div>
@@ -304,8 +313,71 @@
                     </table>
                 </div>
             </div>
-        </div>
 
+            <!-- Refunds Section -->
+            <div class="admin-section" id="refunds-section">
+                <div class="section-header">
+                    <h2>Manajemen Refund</h2>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID Refund</th>
+                                <th>Pengguna</th>
+                                <th>Jasa</th>
+                                <th>Alasan</th>
+                                <th>Status</th>
+                                <th>Tanggal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($refunds as $refund)
+                            <tr>
+                                <td>#{{ $refund->id }}</td>
+                                <td>{{ $refund->user->full_name }}</td>
+                                <td>{{ $refund->pemesanan->jasa->nama_jasa }}</td>
+                                <td>{{ Str::limit($refund->reason, 30) }}</td>
+                                <td>
+                                    <span class="status-badge 
+                                        @if($refund->status === 'pending') bg-warning text-dark
+                                        @elseif($refund->status === 'declined') bg-danger
+                                        @elseif($refund->status === 'accepted' || $refund->status === 'approved') bg-success
+                                        @elseif($refund->status === 'completed') bg-primary
+                                        @else bg-secondary
+                                        @endif
+                                    ">
+                                        @if($refund->status === 'pending' && $refund->provider_response === 'accepted')
+                                            Menunggu Verifikasi Admin
+                                        @elseif($refund->status === 'pending' && $refund->provider_response === 'declined')
+                                            Ditolak Penyedia Jasa
+                                        @elseif($refund->status === 'pending')
+                                            Menunggu Tanggapan Penyedia Jasa
+                                        @elseif($refund->status === 'declined')
+                                            Refund Ditolak
+                                        @elseif($refund->status === 'accepted' || $refund->status === 'approved')
+                                            Refund Disetujui
+                                        @elseif($refund->status === 'completed')
+                                            Refund Selesai
+                                        @else
+                                            {{ ucfirst($refund->status) }}
+                                        @endif
+                                    </span>
+                                </td>
+                                <td>{{ $refund->created_at->format('d M Y H:i') }}</td>
+                                <td>
+                                    <a href="{{ route('admin.refunds.show', $refund->id) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye"></i> Review
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 <style>
 .status-select {
     min-width: 120px;
@@ -317,6 +389,21 @@
 .status-select:focus {
     border-color: #2563eb;
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+.status-badge.bg-warning { background: #fff3cd; color: #856404; }
+.status-badge.bg-danger { background: #f8d7da; color: #721c24; }
+.status-badge.bg-success { background: #d4edda; color: #155724; }
+.status-badge.bg-primary { background: #cce5ff; color: #004085; }
+.status-badge.bg-secondary { background: #e2e3e5; color: #383d41; }
+
+/* Tampilkan hanya section yang sesuai radio button aktif */
+.admin-section { display: none; }
+#users-tab:checked ~ .admin-sections #users-section,
+#services-tab:checked ~ .admin-sections #services-section,
+#transactions-tab:checked ~ .admin-sections #transactions-section,
+#categories-tab:checked ~ .admin-sections #categories-section,
+#refunds-tab:checked ~ .admin-sections #refunds-section {
+    display: block;
 }
 </style>
 @endsection

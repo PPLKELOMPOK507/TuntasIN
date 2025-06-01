@@ -19,6 +19,11 @@
                         </div>
 
                         <div class="mb-3">
+                            <label class="form-label">Deskripsi Jasa</label>
+                            <textarea class="form-control" rows="3" readonly>{{ $pemesanan->jasa->deskripsi }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label">Alasan Refund</label>
                             <textarea name="reason" class="form-control @error('reason') is-invalid @enderror" rows="4" required>{{ old('reason') }}</textarea>
                             @error('reason')
