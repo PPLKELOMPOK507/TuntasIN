@@ -121,11 +121,24 @@
                                 </a>
                             @endif
 
-                            {{-- Tombol Ajukan Refund hanya muncul jika status paid dan BELUM ada refund approved/rejected --}}
-                            @if($purchase->status === 'paid' && !$refundApproved && !$refundRejected)
-                                <a href="{{ route('refunds.create', $purchase->id) }}" class="btn-refund">
-                                    Ajukan Refund
-                                </a>
+                            @if($purchase->status === 'paid')
+                                @if($purchase->hasReview()->exists())
+                                    <!-- Tampilkan tombol edit jika sudah ada review -->
+                                    <a href="{{ route('review.edit', $purchase->review->id) }}" class="btn-edit-review">
+                                        <i class="fas fa-edit"></i> Edit Review
+                                    </a>
+                                @else
+                                    <!-- Tampilkan tombol beri review jika belum ada -->
+                                    <a href="{{ route('review.create', $purchase->id) }}" class="btn-review">
+                                        <i class="fas fa-star"></i> Beri Review
+                                    </a>
+                                @endif
+
+                                @if(!$refundApproved && !$refundRejected)
+                                    <a href="{{ route('refunds.create', $purchase->id) }}" class="btn-refund">
+                                        Ajukan refund
+                                    </a>
+                                @endif
                             @endif
                         </div>
                     </div>

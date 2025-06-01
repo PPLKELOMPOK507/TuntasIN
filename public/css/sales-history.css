@@ -76,3 +76,59 @@
         padding: 2rem 1rem;
     }
 }
+
+.sale-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.sale-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.status-badge.completed {
+    background: #e6f4ea;
+    color: #137333;
+}
+
+.status-badge.pending {
+    background: #fef7e0;
+    color: #b06000;
+}
+
+.status-badge.cancelled {
+    background: #fce8e6;
+    color: #c5221f;
+}
+
+        /* Refund status colors */
+.status-badge.refund-request {
+    background: #e3f0ff;
+    color: #1565c0;
+}
+
+.status-badge.refund-accepted {
+    background: #e6f4ea;
+    color: #137333;
+}
+.status-badge.refund-declined {
+    background: #fce8e6;
+    color: #c5221f;
+}
+
+.sales-list {
+    margin-top: 1rem;
+}

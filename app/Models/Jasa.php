@@ -46,6 +46,7 @@ class Jasa extends Model
     {
         return $this->reviewratings()->avg('rating') ?? 0;
     }
+
     // Method untuk mendapatkan jumlah review
     public function getReviewsCountAttribute()
     {

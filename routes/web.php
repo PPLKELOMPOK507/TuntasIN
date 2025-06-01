@@ -152,16 +152,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat/{jasa_id}', [ChatController::class, 'show'])->name('chat.show');
     Route::get('/chat/{jasa_id}/messages', [ChatController::class, 'getMessages'])->name('chat.messages');
     Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.store');
-    
+    Route::get('/pesan/{jasa}', [PemesananController::class, 'create'])->name('pesanan.create');
+    Route::post('/pesan/{jasa}', [PemesananController::class, 'store'])->name('pesanan.store');
+    Route::get('/review/create/{pemesanan_id}', [ReviewRatingController::class, 'create'])->name('review.create');
+    Route::post('/review/{pemesanan_id}', [ReviewRatingController::class, 'store'])->name('review.store');
+    Route::get('/review/{id}/edit', [ReviewRatingController::class, 'edit'])->name('review.edit');
+    Route::put('/review/{id}', [ReviewRatingController::class, 'update'])->name('review.update');
+
     // Riwayat Pembelian route (Pengguna Jasa only)
     Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
         ->name('purchases.history');
-    Route::post('/review/{pemesanan_id}', [ReviewRatingController::class, 'store'])->name('review.store');
-});
-Route::middleware(['auth'])->group(function () {
-    // ...existing routes...
-    Route::get('/pesan/{jasa}', [PemesananController::class, 'create'])->name('pesanan.create');
-    Route::post('/pesan/{jasa}', [PemesananController::class, 'store'])->name('pesanan.store');
 });
 
 // Admin Management Routes

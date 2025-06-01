@@ -1,4 +1,3 @@
-<?php
 @extends('layouts.app')
 
 @section('content')
@@ -18,16 +17,21 @@
         </div>
 
         <div class="review-form-container">
+            <!-- Service Info -->
+            <div class="service-info">
+                <img src="{{ asset('storage/' . $review->jasa->gambar) }}" alt="{{ $review->jasa->nama_jasa }}">
+                <div class="service-details">
+                    <h3>{{ $review->jasa->nama_jasa }}</h3>
+                    <p>Oleh: {{ $review->jasa->user->first_name }} {{ $review->jasa->user->last_name }}</p>
+                </div>
+            </div>
+
             <form action="{{ route('review.update', $review->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 
-                <div class="form-group">
-                    <label>Jasa:</label>
-                    <p class="service-name">{{ $review->jasa->nama_jasa }}</p>
-                </div>
-
-                <div class="form-group">
+                <!-- Rating Section -->
+                <div class="rating-section">
                     <label>Rating:</label>
                     <div class="star-rating">
                         @for($i = 5; $i >= 1; $i--)
@@ -39,16 +43,29 @@
                             </label>
                         @endfor
                     </div>
+                    @error('rating')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
                 </div>
 
-                <div class="form-group">
+                <!-- Review Section -->
+                <div class="review-section">
                     <label>Review:</label>
-                    <textarea name="review" class="form-control" rows="4" required>{{ $review->review }}</textarea>
+                    <textarea name="review" rows="4" required 
+                        placeholder="Bagikan pengalaman Anda menggunakan jasa ini...">{{ $review->review }}</textarea>
+                    @error('review')
+                        <span class="error-message">{{ $message }}</span>
+                    @enderror
                 </div>
 
+                <!-- Action Buttons -->
                 <div class="form-actions">
-                    <button type="button" class="btn-cancel" onclick="history.back()">Batal</button>
-                    <button type="submit" class="btn-submit">Update Review</button>
+                    <button type="button" class="btn-cancel" onclick="history.back()">
+                        <i class="fas fa-times"></i> Batal
+                    </button>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-check"></i> Update Review
+                    </button>
                 </div>
             </form>
         </div>
@@ -59,4 +76,5 @@
 @push('styles')
 <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
 <link href="{{ asset('css/reviews.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 @endpush

@@ -148,6 +148,8 @@
                                     </a>
                                 </div>
                             </div>
+
+                            
                         </div>
                     @empty
                         <p>Tidak ada jasa ditemukan.</p>
