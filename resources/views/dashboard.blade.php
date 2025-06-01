@@ -92,6 +92,12 @@
                         <span>Riwayat Penjualan</span>
                     </a>
                 @endif
+                @if(Auth::user()->role === 'Penyedia Jasa')
+                <a href="{{ route('chat.show', $jasa->first()->id) }}" class="menu-item">
+                    <i class="fas fa-history"></i>
+                    <span>Chat Negosiasi</span>
+                </a>
+                @endif
                 {{-- <a href="{{ route('payment.form') }}" class="menu-item">
                     <i class="fas fa-credit-card"></i>
                     <span>Payment</span>

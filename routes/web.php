@@ -142,15 +142,13 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 
 
-Route::post('/messages', [ChatController::class, 'store'])->name('messages.store');
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
     Route::post('/wishlist/add/{id}', [WishlistController::class, 'add'])->name('wishlist.add');
     Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
     Route::get('/chat/{jasa_id}', [ChatController::class, 'show'])->name('chat.show');
     Route::get('/chat/{jasa_id}/messages', [ChatController::class, 'getMessages'])->name('chat.messages');
-    Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.store');
+    Route::post('/messages', [ChatController::class, 'store'])->name('messages.store');
 });
 Route::middleware(['auth'])->group(function () {
     // ...existing routes...

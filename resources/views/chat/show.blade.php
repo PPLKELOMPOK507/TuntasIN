@@ -422,51 +422,7 @@
             <span class="price-badge">Harga Minimal: Rp 5.000.000</span>
           </div>
           
-          <div id="chat-messages">
-            <!-- Sample messages -->
-            <div class="message-wrapper">
-              <div class="message received">
-                <div class="message-sender">Nama Penyedia</div>
-                <div class="message-content">Halo! Terima kasih sudah tertarik dengan jasa design logo kami. Ada yang bisa saya bantu?</div>
-                <div class="message-time">10:30</div>
-              </div>
-            </div>
-            
-            <div class="message-wrapper">
-              <div class="message sent">
-                <div class="message-sender">Anda</div>
-                <div class="message-content">Hai, saya tertarik dengan paket Basic Anda. Apakah bisa dijelaskan lebih detail tentang revisi yang termasuk?</div>
-                <div class="message-time">10:32</div>
-              </div>
-            </div>
-            
-            <div class="message-wrapper">
-              <div class="message received">
-                <div class="message-sender">Nama Penyedia</div>
-                <div class="message-content">Tentu saja! Dalam paket Basic, Anda berhak mendapatkan 2 kali revisi mayor, termasuk perubahan konsep, warna, dan tipografi. Setiap revisi akan dikerjakan dalam waktu 1 hari kerja.</div>
-                <div class="message-time">10:35</div>
-              </div>
-            </div>
-            
-            <div class="message-wrapper">
-              <div class="message sent">
-                <div class="message-sender">Anda</div>
-                <div class="message-content">Baik, saya mengerti. Apakah bisa mendapatkan penawaran harga lebih baik?</div>
-                <div class="price-offer">
-                  <i class="fas fa-tag"></i> Penawaran Harga: Rp 5.000.000
-                </div>
-                <div class="message-time">10:37</div>
-              </div>
-            </div>
-            
-            <div class="message-wrapper">
-              <div class="message received">
-                <div class="message-sender">Nama Penyedia</div>
-                <div class="message-content">Terima kasih atas penawaran Anda. Untuk penawaran Rp 5.000.000, saya bisa memberikan 1 revisi tambahan menjadi total 3 revisi. Bagaimana menurut Anda?</div>
-                <div class="message-time">10:40</div>
-              </div>
-            </div>
-          </div>
+          <div id="chat-messages" class="chat-messages"></div>
           
           <div class="chat-input">
             <form>
@@ -508,42 +464,6 @@
               </div>
             </div>
           </div>
-          
-          <div class="package-card position-relative">
-            <i class="fas fa-heart favorite-icon"></i>
-            <div class="package-title">Paket Basic</div>
-            <div class="package-price">Rp 5.555.000</div>
-            <div class="package-desc">Layanan standar sesuai deskripsi dengan kualitas terjamin.</div>
-            
-            <div class="features-list">
-              <div class="feature-item">
-                <span class="feature-icon">
-                  <i class="fas fa-clock"></i>
-                </span>
-                <span>Pengerjaan dalam 3 Hari</span>
-              </div>
-              
-              <div class="feature-item">
-                <span class="feature-icon">
-                  <i class="fas fa-sync-alt"></i>
-                </span>
-                <span>Garansi 2 Revisi</span>
-              </div>
-              
-              <div class="feature-item">
-                <span class="feature-icon">
-                  <i class="fas fa-comments"></i>
-                </span>
-                <span>Konsultasi Gratis</span>
-              </div>
-              
-              <div class="feature-item">
-                <span class="feature-icon">
-                  <i class="fas fa-shield-alt"></i>
-                </span>
-                <span>Garansi Kepuasan</span>
-              </div>
-            </div>
             
             <a href="{{ route('pesanan.create', $jasa->id) }}"  class="btn order-button">
               <i class="fas fa-shopping-cart me-2"></i> Pesan Sekarang
@@ -556,70 +476,72 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Sample function for sending messages
-    function sendMessage() {
-      const messageInput = document.getElementById('message-input');
-      const priceOffer = document.querySelector('input[name="price_offer"]');
-      
-      if (messageInput.value.trim() === '' && priceOffer.value.trim() === '') {
-        return;
-      }
-      
-      // Here you would normally send the message to the server
-      // For demo purposes, we'll just add it to the chat
-      
-      const chatMessages = document.getElementById('chat-messages');
-      const messageWrapper = document.createElement('div');
-      messageWrapper.className = 'message-wrapper';
-      
-      const message = document.createElement('div');
-      message.className = 'message sent';
-      
-      const messageSender = document.createElement('div');
-      messageSender.className = 'message-sender';
-      messageSender.textContent = 'Anda';
-      
-      const messageContent = document.createElement('div');
-      messageContent.className = 'message-content';
-      messageContent.textContent = messageInput.value;
-      
-      const messageTime = document.createElement('div');
-      messageTime.className = 'message-time';
-      const now = new Date();
-      messageTime.textContent = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
-      
-      message.appendChild(messageSender);
-      message.appendChild(messageContent);
-      
-      if (priceOffer.value.trim() !== '') {
-        const priceOfferDiv = document.createElement('div');
-        priceOfferDiv.className = 'price-offer';
-        priceOfferDiv.innerHTML = `<i class="fas fa-tag"></i> Penawaran Harga: Rp ${parseInt(priceOffer.value).toLocaleString('id-ID')}`;
-        message.appendChild(priceOfferDiv);
-      }
-      
-      message.appendChild(messageTime);
-      messageWrapper.appendChild(message);
-      chatMessages.appendChild(messageWrapper);
-      
-      // Clear inputs
-      messageInput.value = '';
-      priceOffer.value = '';
-      
-      // Scroll to the bottom
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-    
-    // Toggle favorite
-    document.querySelector('.favorite-icon').addEventListener('click', function() {
-      this.classList.toggle('active');
+const currentUserId = {{ Auth::id() }};
+
+// Ambil pesan saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    getMessages();
+});
+
+// Fungsi ambil pesan
+function getMessages() {
+    const jasaId = document.querySelector('[name="jasa_id"]').value;
+    fetch(`/chat/${jasaId}/messages`)
+        .then(res => res.json())
+        .then(messages => {
+            const chatBox = document.getElementById('chat-messages');
+            chatBox.innerHTML = '';
+            messages.forEach(msg => {
+                const isSent = msg.sender_id == currentUserId;
+                chatBox.innerHTML += `
+                    <div class="message-wrapper ${isSent ? 'text-right' : 'text-left'}">
+                        <div class="message ${isSent ? 'sent' : 'received'}">
+                            <div class="message-sender">${isSent ? 'Anda' : (msg.sender?.name || 'Pengguna')}</div>
+                            <div class="message-content">${msg.message}</div>
+                            ${msg.price_offer ? `<div class="price-offer"><i class="fas fa-tag"></i> Penawaran: Rp ${parseInt(msg.price_offer).toLocaleString('id-ID')}</div>` : ''}
+                            <div class="message-time">${(new Date(msg.created_at)).toLocaleString('id-ID')}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+}
+
+// Fungsi kirim pesan
+function sendMessage() {
+    const messageInput = document.getElementById('message-input');
+    const priceInput = document.querySelector('input[name="price_offer"]');
+    const receiverId = document.querySelector('[name="receiver_id"]').value;
+    const jasaId = document.querySelector('[name="jasa_id"]').value;
+    const message = messageInput.value.trim();
+    const priceOffer = priceInput.value.trim();
+
+    if (!message) return;
+
+    fetch('/messages', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            jasa_id: jasaId,
+            receiver_id: receiverId,
+            message: message,
+            price_offer: priceOffer || null
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            messageInput.value = '';
+            priceInput.value = '';
+            getMessages();
+        }
     });
-    
-    // Auto scroll to bottom on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      const chatMessages = document.getElementById('chat-messages');
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    });
+}
   </script>
+  <script src="{{ asset('js/chat.js') }}"></script>
 </body>
 </html>
