@@ -665,27 +665,20 @@
                 @endphp
 
                 <div class="provider-info">
-                    @if($photoExists)
-                        <img src="{{ asset('storage/' . $fotoPenyedia) }}" alt="Foto Penyedia">
-                    @else
-                        <div class="provider-placeholder">
-                            <i class="fas fa-user"></i>
-                        </div>
-                    @endif
+                    @if($jasa->user->photo)
+                                <img src="{{ asset('storage/' . $jasa->user->photo) }}" 
+                                     alt="Foto Penyedia" 
+                                     class="rounded-circle shadow-sm" 
+                                     width="60">
+                            @else
+                                <i class="fas fa-user-circle fa-3x text-secondary"></i>
+                            @endif
                     <div class="provider-details">
-                        <h3>{{ $namaPenyedia }}</h3>
+                        <h3>{{ $jasa->user->full_name }}</h3>
+
                         <span class="badge">
                             <i class="fas fa-award"></i> Top Rated Seller
                         </span>
-                        <div class="rating-section">
-                            <span class="star"><i class="fas fa-star"></i></span>
-                            <span class="star"><i class="fas fa-star"></i></span>
-                            <span class="star"><i class="fas fa-star"></i></span>
-                            <span class="star"><i class="fas fa-star"></i></span>
-                            <span class="star"><i class="fas fa-star-half-alt"></i></span>
-                            <span class="rating-number">4.8</span>
-                            <span class="review-count">(124 ulasan)</span>
-                        </div>
                     </div>
                 </div>
 
@@ -695,7 +688,7 @@
                 </div>
 
                 <div class="card-box">
-                    <h3 class="package-title">STANNBAAAYY NEEHHHHH.....</h3>
+                    <h3 class="package-title">Harga Jasa</h3>
                     <div class="package-price">
                         <span class="price-currency">Rp</span>
                         {{ number_format($jasa->minimal_harga, 0, ',', '.') }}
@@ -706,7 +699,7 @@
                             <i class="fas fa-shopping-cart"></i> Pesan Sekarang
                         </a>
                         <a href="{{ route('chat.show', $jasa->id) }}" class="btn-custom btn-secondary-custom">
-                            <i class="fas fa-comments"></i> Curhat YUKKSSS
+                            <i class="fas fa-comments"></i> Chat Negosiasi
                         </a>
                     </div>
                 </div>
