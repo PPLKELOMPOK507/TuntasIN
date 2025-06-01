@@ -16,7 +16,7 @@ class WithdrawalsController extends Controller
             // Validasi bank_account: harus ada jika withdraw_method=bank, panjang tepat 16 digit, hanya angka
             'bank_account' => 'required_if:withdraw_method,bank|digits:16',
             // Validasi ewallet_phone: harus ada jika withdraw_method=ewallet, panjang tepat 13 digit, hanya angka
-            'ewallet_phone' => 'required_if:withdraw_method,ewallet|digits:13',
+            'ewallet_phone' => 'required_if:withdraw_method,ewallet|digits:12',
         ]);
 
         $user = auth()->user();

@@ -13,14 +13,17 @@ class JasaController extends Controller
     // Menampilkan Dashboard berdasarkan role pengguna
     public function dashboard()
     {
+        $categories = Category::all();
+        
         if (auth()->user()->role === 'Pengguna Jasa') {
+            // Ambil semua jasa dengan data penyedia jasanya
             $jasa = Jasa::with(['user', 'category'])->get();
-            $categories = Category::all();
-            return view('dashboard', compact('jasa', 'categories'));
         } else {
-            $jasa = Jasa::where('user_id', auth()->id())->with('category')->get();
-            return view('dashboard', compact('jasa'));
+            // Untuk penyedia jasa, tampilkan hanya jasanya sendiri
+            $jasa = Jasa::where('user_id', auth()->id())->get();
         }
+        
+        return view('dashboard', compact('jasa', 'categories'));
     }
     public function show($id)
 {
@@ -41,9 +44,9 @@ class JasaController extends Controller
         $validated = $request->validate([
             'nama_jasa' => 'required|string|max:255',
             'deskripsi' => 'required|string',
+            'kategori' => 'required|exists:categories,id',
             'minimal_harga' => 'required|integer|min:0',
             'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'category_id' => 'required|exists:categories,id'
         ]);
 
         // Simpan gambar ke folder public/storage/jasa
@@ -52,6 +55,7 @@ class JasaController extends Controller
         // Simpan data jasa ke database
         Jasa::create([
             'user_id' => Auth::id(),
+            'category_id' => $validated['kategori'],
             'nama_jasa' => $validated['nama_jasa'],
             'deskripsi' => $validated['deskripsi'],
             'minimal_harga' => $validated['minimal_harga'],

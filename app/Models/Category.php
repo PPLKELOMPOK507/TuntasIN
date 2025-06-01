@@ -25,7 +25,7 @@ class Category extends Model
 
     public function services()
     {
-        return $this->hasMany(Service::class);
+        return $this->hasMany(Jasa::class, 'category_id'); // Ubah dari Service::class ke Jasa::class
     }
     public function category()
     {
