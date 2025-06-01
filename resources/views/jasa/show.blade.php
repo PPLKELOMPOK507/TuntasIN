@@ -700,14 +700,6 @@
                         <span class="price-currency">Rp</span>
                         {{ number_format($jasa->minimal_harga, 0, ',', '.') }}
                     </div>
-                    <p class="package-desc">Layanan standar sesuai deskripsi dengan kualitas terjamin dan kepuasan pelanggan yang diutamakan.</p>
-
-                    <ul class="feature-list">
-                        <li><i class="fas fa-clock"></i> Pengerjaan dalam 3 Hari</li>
-                        <li><i class="fas fa-sync-alt"></i> Garansi 2 Revisi</li>
-                        <li><i class="fas fa-comments"></i> Konsultasi Gratis</li>
-                        <li><i class="fas fa-shield-alt"></i> Garansi Kepuasan</li>
-                    </ul>
 
                     <div class="action-buttons">
                         <a href="{{ route('pesanan.create', $jasa->id) }}" class="btn-custom btn-primary-custom">

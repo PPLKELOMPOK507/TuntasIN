@@ -13,7 +13,7 @@ class CreateJasasTable extends Migration
     {
         Schema::create('jasas', function (Blueprint $table) {
             $table->id(); // ID auto-increment
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('nama_jasa'); // nama jasa
             $table->text('deskripsi'); // deskripsi jasa
             $table->integer('minimal_harga'); // minimal harga (harus integer)

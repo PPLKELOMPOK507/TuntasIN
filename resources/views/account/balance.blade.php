@@ -76,7 +76,7 @@
                     @csrf
                     <div class="form-group mb-3">
                         <label for="withdrawAmount">Masukkan jumlah untuk ditarik</label>
-                        <input type="number" min="50000" step="1000" class="form-control" id="withdrawAmount" name="amount" placeholder="0">
+                        <input type="number" min="50000" class="form-control" id="withdrawAmount" name="amount" placeholder="0">
                         <small class="form-text text-muted">IDR {{ number_format(auth()->user()->balance, 0, ',', '.') }} tersedia</small>
                     </div>
 

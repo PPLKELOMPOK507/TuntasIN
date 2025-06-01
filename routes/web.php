@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\RefundController;
 use App\Http\Controllers\JasaController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\LikeController;
@@ -20,7 +22,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PurchaseController; 
-use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\PemesananController;
+use App\Http\Controllers\AdminPaymentController;
+use App\Http\Controllers\AdminRefundController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -56,6 +60,14 @@ Route::get('/profile', function () {
     return view('profile');
 })->middleware(['auth'])->name('profile');
 
+// Payment Routes
+Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+Route::post('/payment/submit', [PaymentController::class, 'submitPayment'])->name('payment.submit');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/refund', [RefundController::class, 'showRefundForm'])->name('refund.form');
+    Route::post('/refund', [RefundController::class, 'submitRefund'])->name('refund.submit');
+});
 Route::put('/profile', [ProfileController::class, 'update'])
     ->middleware(['auth'])
     ->name('profile.update');
@@ -124,10 +136,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/forum/discussions/{id}', [DiscussionController::class, 'show'])->name('discussion.show');
     Route::delete('/forum/discussions/{id}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
 });
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('dashboard');
 
-Route::get('/pesan/{jasa}', [App\Http\Controllers\PemesananController::class, 'create'])->name('pesanan.create');
-Route::post('/pesan/{jasa}', [App\Http\Controllers\PemesananController::class, 'store'])->name('pesanan.store');
+
 
 Route::post('/messages', [ChatController::class, 'store'])->name('messages.store');
 
@@ -144,13 +157,50 @@ Route::middleware(['auth'])->group(function () {
         ->name('purchases.history');
     Route::post('/review/{pemesanan_id}', [ReviewController::class, 'store'])->name('review.store');
 });
+Route::middleware(['auth'])->group(function () {
+    // ...existing routes...
+    Route::get('/pesan/{jasa}', [PemesananController::class, 'create'])->name('pesanan.create');
+    Route::post('/pesan/{jasa}', [PemesananController::class, 'store'])->name('pesanan.store');
+});
 
-Route::put('/profile', [ProfileController::class, 'update'])
-    ->middleware(['auth'])
-    ->name('profile.update');
-Route::prefix('admin')->name('admin.')->middleware('auth', 'admin')->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+// Admin Management Routes
+Route::middleware(['auth', 'admin'])->group(function () {
+    // Dashboard Admin
+    Route::get('/manage', function () {
+        $data = [
+            'jasa' => \App\Models\Jasa::with(['user', 'category'])->get(),
+            'totalUsers' => \App\Models\User::count(),
+            'users' => \App\Models\User::all(),
+            'categories' => \App\Models\Category::withCount('services')->get(),
+            'payments' => \App\Models\Payment::with(['user', 'pemesanan.jasa'])->get()
+        ];
+        return view('admin', $data);
+    })->name('manage');
+
+    // Admin Routes with /manage prefix
+    Route::prefix('manage')->name('manage.')->group(function() {
+        // Users Management
+        Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+        Route::delete('/jasa/{id}', [AdminController::class, 'destroyJasa'])->name('jasa.destroy');
+
+        // Categories Management
+        Route::controller(CategoryController::class)->group(function() {
+            Route::get('/categories/create', 'create')->name('categories.create');
+            Route::post('/categories', 'store')->name('categories.store');
+            Route::get('/categories/{id}/edit', 'edit')->name('categories.edit');
+            Route::put('/categories/{id}', 'update')->name('categories.update');
+            Route::delete('/categories/{id}', 'destroy')->name('categories.destroy');
+        });
+
+        // Payment Management
+        Route::post('/payments/{payment}/verify', [AdminPaymentController::class, 'verifyPayment'])
+            ->name('payments.verify');
+
+        // Admin Refund Management
+        Route::get('/refunds', [AdminRefundController::class, 'index'])->name('refunds.index');
+        Route::get('/refunds/{id}', [AdminRefundController::class, 'show'])->name('refunds.show');
+        Route::post('/refunds/{id}/review', [AdminRefundController::class, 'review'])->name('refunds.review');
+    });
 });
 
 // Purchase History Routes (Protected + Pengguna Jasa Only)
@@ -158,3 +208,54 @@ Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
     ->middleware(['auth'])
     ->name('purchases.history');
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/manage', function () {
+        if (auth()->user()->role !== 'Admin') {
+            return redirect()->route('dashboard');
+        }
+        $data = [
+        'jasa' => \App\Models\Jasa::with(['user', 'category'])->get(),
+        'totalUsers' => \App\Models\User::count(),
+        'users' => \App\Models\User::all(),
+        'categories' => \App\Models\Category::withCount('services')->get(),
+        'payments' => \App\Models\Payment::with(['user', 'pemesanan.jasa'])->get()
+        ];
+
+        return view('admin', $data);
+    })->name('manage');
+    Route::prefix('manage')->name('manage.')->group(function() {
+
+    Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+    Route::delete('/jasa/{id}', [AdminController::class, 'destroyJasa'])->name('jasa.destroy');
+
+    Route::controller(CategoryController::class)->group(function() {
+        Route::get('/categories/create', 'create')->name('categories.create');
+        Route::post('/categories', 'store')->name('categories.store');
+        Route::get('/categories/{id}/edit', 'edit')->name('categories.edit');
+        Route::put('/categories/{id}', 'update')->name('categories.update');
+        Route::delete('/categories/{id}', 'destroy')->name('categories.destroy');
+    });
+});
+Route::middleware(['auth'])->group(function () {
+    // Payment Routes
+    Route::get('/payment/{pemesanan}', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
+    Route::post('/payment/{pemesanan}/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+    
+    });
+    Route::middleware(['auth'])->group(function () {
+    // Refund routes
+    Route::get('/pemesanan/{pemesanan_id}/refund', [RefundController::class, 'create'])->name('refunds.create');
+    Route::post('/pemesanan/{pemesanan_id}/refund', [RefundController::class, 'store'])->name('refunds.store');
+    Route::get('/refunds', [RefundController::class, 'index'])->name('refunds.index');
+});
+});
+Route::middleware(['auth', 'provider'])->group(function () {
+    Route::get('/provider/refunds', [RefundController::class, 'providerIndex'])->name('provider.refunds.index');
+    Route::get('/provider/refunds/{id}', [RefundController::class, 'providerShow'])->name('provider.refunds.show');
+    Route::post('/provider/refunds/{id}/response', [RefundController::class, 'providerResponse'])->name('provider.refunds.response');
+});
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/refunds', [AdminRefundController::class, 'index'])->name('admin.refunds.index');
+    Route::get('/admin/refunds/{id}', [AdminRefundController::class, 'show'])->name('admin.refunds.show');
+    Route::post('/admin/refunds/{id}/review', [AdminRefundController::class, 'review'])->name('admin.refunds.review');
+});

@@ -48,41 +48,69 @@
             <div class="filters">
                 <select class="filter-select" id="status-filter">
                     <option value="all">Semua Status</option>
-                    <option value="pending">Menunggu Konfirmasi</option>
-                    <option value="process">Sedang Diproses</option>
-                    <option value="completed">Selesai</option>
-                    <option value="cancelled">Dibatalkan</option>
+                    <option value="pending">Menunggu Pembayaran</option>
+                    <option value="awaiting_payment">Menunggu Verifikasi</option>
+                    <option value="paid">Pembayaran Diterima</option>
+                    <option value="cancelled">Pembayaran Ditolak</option>
                 </select>
             </div>
         </div>
 
         <div class="purchases-grid">
-            <!-- Sample Purchase Card -->
-            <div class="purchase-card">
-                <div class="service-image">
-                    <img src="{{ asset('images/sample-service.jpg') }}" alt="Service Image">
+            @forelse($purchases as $purchase)
+                <div class="purchase-card" data-status="{{ $purchase->status }}">
+                    <div class="service-image">
+                        <img src="{{ asset('storage/' . $purchase->jasa->gambar) }}" alt="{{ $purchase->jasa->nama_jasa }}">
+                    </div>
+                    <div class="purchase-info">
+                        <div class="purchase-header">
+                            <span class="order-id">#{{ $purchase->id }}</span>
+                            <span class="purchase-date">{{ $purchase->created_at->format('d M Y') }}</span>
+                        </div>
+                        <h3 class="service-name">{{ $purchase->jasa->nama_jasa }}</h3>
+                        <div class="provider-info">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Oleh: {{ $purchase->jasa->user->full_name }}</span>
+                        </div>
+                        <div class="price-info">
+                            <span>Total Pembayaran:</span>
+                            <strong>Rp {{ number_format($purchase->harga, 0, ',', '.') }}</strong>
+                        </div>
+                        <div class="status-badge {{ $purchase->status }}">
+                            @switch($purchase->status)
+                                @case('pending')
+                                    Menunggu Pembayaran
+                                    @break
+                                @case('awaiting_verification')
+                                    Menunggu Verifikasi Admin
+                                    @break
+                                @case('paid')
+                                    Pembayaran Diterima
+                                    @break
+                                @case('cancelled')
+                                    Pembayaran Ditolak
+                                    @break
+                                @default
+                                    {{ ucfirst($purchase->status) }}
+                            @endswitch
+                        </div>
+
+                        <div class="action-buttons">
+                            @if($purchase->status === 'pending')
+                                <a href="{{ route('payment.form', $purchase->id) }}" class="btn-pay">
+                                    Bayar Sekarang
+                                </a>
+                            @endif
+                        </div>
+                    </div>
                 </div>
-                <div class="purchase-info">
-                    <div class="purchase-header">
-                        <span class="order-id">#ORD12345</span>
-                        <span class="purchase-date">15 Mar 2024</span>
-                    </div>
-                    <h3 class="service-name">Jasa Design Logo Professional</h3>
-                    <div class="provider-info">
-                        <i class="fas fa-user-circle"></i>
-                        <span>Oleh: John Designer</span>
-                    </div>
-                    <div class="price-info">
-                        <span>Total Pembayaran:</span>
-                        <strong>Rp 500.000</strong>
-                    </div>
-                    <div class="status-badge pending">Menunggu Konfirmasi</div>
-                    <div class="action-buttons">
-                        <button class="btn-detail">Lihat Detail</button>
-                        <button class="btn-chat">Chat Penjual</button>
-                    </div>
+            @empty
+                <div class="empty-state">
+                    <img src="{{ asset('images/empty-purchase.svg') }}" alt="No purchases" class="empty-icon">
+                    <h2>Belum ada pembelian</h2>
+                    <p>Riwayat pembelian Anda akan muncul di sini</p>
                 </div>
-            </div>
+            @endforelse
         </div>
     </div>
 </div>
@@ -92,4 +120,31 @@
 <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
 <link href="{{ asset('css/purchases-history.css') }}" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusFilter = document.getElementById('status-filter');
+    
+    statusFilter.addEventListener('change', function() {
+        const selectedStatus = this.value;
+        const purchaseCards = document.querySelectorAll('.purchase-card');
+        
+        purchaseCards.forEach(card => {
+            const status = card.dataset.status;
+            if (selectedStatus === 'all' || status === selectedStatus) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+
+function showPurchaseDetail(purchaseId) {
+    // Implement purchase detail modal/page navigation
+    window.location.href = `/purchases/${purchaseId}`;
+}
+</script>
 @endpush
