@@ -21,11 +21,17 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+            
+            // Redirect berdasarkan role
+            if (Auth::user()->role === 'Admin') {
+                return redirect()->route('manage');
+            } else {
+                return redirect()->route('dashboard');
+            }
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'Email atau password salah.',
         ])->onlyInput('email');
     }
 

@@ -55,7 +55,7 @@
 }
 
 .service-info {
-    padding: 1rem;
+    padding: 1.5rem; /* Menambah padding dari 1rem ke 1.5rem */
 }
 
 .service-info h3 {
@@ -177,25 +177,29 @@ button.add-service-button:hover {
 }
 
 .service-actions {
-    text-align: right;
-    padding: 1rem;
+    display: flex;
+    gap: 10px;
+    margin-top: 20px; /* Menambah margin-top dari 15px ke 20px */
+    padding: 0 10px 10px 10px; /* Menambah padding di sekitar tombol */
 }
 
-.edit-btn,
+.edit-btn, 
 .delete-btn {
-    padding: 8px 16px;  /* Ukuran padding yang sama untuk kedua tombol */
+    flex: 1;
+    padding: 10px 16px; /* Menambah padding vertikal dari 8px ke 10px */
     font-weight: bold;
     border-radius: 4px;
-    display: inline-block;
+    text-align: center;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    width: auto; /* Menjaga ukuran tombol sesuai konten */
+    font-size: 14px;
+    border: none;
+    text-decoration: none;
 }
 
 .edit-btn {
     background-color: #007bff;
     color: white;
-    text-decoration: none;
 }
 
 .edit-btn:hover {
@@ -203,13 +207,12 @@ button.add-service-button:hover {
 }
 
 .delete-btn {
-    background-color: #f44336; /* Merah */
+    background-color: #f44336;
     color: white;
-    border: none;
 }
 
 .delete-btn:hover {
-    background-color: #e53935; /* Merah lebih gelap */
+    background-color: #e53935;
 }
 
 .delete-btn:focus {
@@ -230,4 +233,33 @@ button.add-service-button:hover {
 .form-group select:focus {
     outline: none;
     border-color: #4CAF50;
+}
+
+.wishlist-btn-card {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.wishlist-btn-card:hover {
+    transform: scale(1.1);
+}
+
+.wishlist-btn-card.active {
+    color: #ff4f4f;
+}
+
+.service-image {
+    position: relative;
 }

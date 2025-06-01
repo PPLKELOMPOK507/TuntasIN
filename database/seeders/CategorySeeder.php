@@ -11,18 +11,16 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            'Full Time',
-            'Part Time',
-            'Freelance',
-            'Remote',
-            'Internship',
-            'Volunteer',
-            'Temporary',
-            'Contract',
+            'Kebersihan',
+            'Perbaikan',
+            'Rumah Tangga',
+            'Teknologi',
+            'Transportasi',
+            'Lainnya'
         ];
 
         foreach ($categories as $category) {
-            Category::firstOrCreate(['name' => $category]);
+            Category::create(['name' => $category]);
         }
     }
 }

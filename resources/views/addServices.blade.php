@@ -10,33 +10,6 @@
                 <a href="/">TUNTAS<span class="logo-in">IN</span></a>
             @endauth
         </div>
-
-        <div class="user-profile">
-            <div class="user-info">
-                <div class="profile-image">
-                    @if(Auth::user()->photo)
-                        <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Profile">
-                    @else
-                        <div class="profile-placeholder"></div>
-                    @endif
-                </div>
-                <span class="user-name">{{ Auth::user()->full_name }}</span>
-            </div>
-            <div class="dropdown-menu">
-                <a href="{{ route('services') }}" class="menu-item active">
-                    <i class="fas fa-briefcase"></i>
-                    <span>Jasa Saya</span>
-                </a>
-                <a href="{{ route('sales.history') }}" class="menu-item">
-                    <i class="fas fa-history"></i>
-                    <span>Riwayat Penjualan</span>
-                </a>
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="logout-btn">Logout</button>
-                </form>
-            </div>
-        </div>
     </nav>
 
     {{-- Form Tambah Jasa --}}
@@ -48,7 +21,6 @@
 
         <form action="{{ route('jasa.store') }}" method="POST" enctype="multipart/form-data" class="add-service-form">
             @csrf
-
             <div class="form-group">
                 <label for="nama_jasa">Nama Jasa</label>
                 <input type="text" name="nama_jasa" id="nama_jasa" value="{{ old('nama_jasa') }}" required>
@@ -77,13 +49,15 @@
                 <label for="kategori">Kategori Jasa</label>
                 <select name="kategori" id="kategori" required>
                     <option value="" disabled selected>Pilih Kategori</option>
-                    <option value="Kebersihan">Kebersihan</option>
-                    <option value="Perbaikan">Perbaikan</option>
-                    <option value="Rumah Tangga">Rumah Tangga</option>
-                    <option value="Teknologi">Teknologi</option>
-                    <option value="Transportasi">Transportasi</option>
-                    <option value="Lainnya">Lainnya</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ old('kategori') == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
                 </select>
+                @error('kategori')
+                    <small class="error">{{ $message }}</small>
+                @enderror
             </div>
 
             <div class="form-group">

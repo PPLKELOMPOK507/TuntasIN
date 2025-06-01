@@ -3,79 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TuntasINAPP_NAME=Laravel
-        APP_ENV=local
-        APP_KEY=base64:etI5WqWIT1+ZHDDAzJcDa7vo015rirGXlxaFPd9l71I=
-        APP_DEBUG=true
-        APP_URL=http://localhost:8000
-        
-        APP_LOCALE=en
-        APP_FALLBACK_LOCALE=en
-        APP_FAKER_LOCALE=en_US
-        
-        APP_MAINTENANCE_DRIVER=file
-        # APP_MAINTENANCE_STORE=database
-        
-        PHP_CLI_SERVER_WORKERS=4
-        
-        BCRYPT_ROUNDS=12
-        
-        LOG_CHANNEL=stack
-        LOG_STACK=single
-        LOG_DEPRECATIONS_CHANNEL=null
-        LOG_LEVEL=debug
-        
-        DB_CONNECTION=mysql
-        DB_HOST=127.0.0.1
-        DB_PORT=3306
-        DB_DATABASE=tuntasin
-        DB_USERNAME=root
-        DB_PASSWORD=
-        
-        SESSION_DRIVER=database
-        SESSION_LIFETIME=120
-        SESSION_ENCRYPT=false
-        SESSION_PATH=/
-        SESSION_DOMAIN=null
-        
-        BROADCAST_CONNECTION=log
-        FILESYSTEM_DISK=public
-        QUEUE_CONNECTION=database
-        
-        CACHE_STORE=database
-        # CACHE_PREFIX=
-        
-        MEMCACHED_HOST=127.0.0.1
-        
-        REDIS_CLIENT=phpredis
-        REDIS_HOST=127.0.0.1
-        REDIS_PASSWORD=null
-        REDIS_PORT=6379
-        
-        MAIL_MAILER=log
-        MAIL_SCHEME=null
-        MAIL_HOST=127.0.0.1
-        MAIL_PORT=2525
-        MAIL_USERNAME=null
-        MAIL_PASSWORD=null
-        MAIL_FROM_ADDRESS="hello@example.com"
-        MAIL_FROM_NAME="${APP_NAME}"
-        
-        AWS_ACCESS_KEY_ID=
-        AWS_SECRET_ACCESS_KEY=
-        AWS_DEFAULT_REGION=us-east-1
-        AWS_BUCKET=
-        AWS_USE_PATH_STYLE_ENDPOINT=false
-        
-        VITE_APP_NAME="${APP_NAME}" - Satu Tempat, Semua Beres</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'TuntasIN') }}</title>
+    
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     @stack('styles')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-material-ui/material-ui.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .colored-toast.swal2-icon-success {
+            background-color: #2563eb !important;
+        }
+        .colored-toast .swal2-title,
+        .colored-toast .swal2-html-container {
+            color: white;
+        }
+        .swal2-popup {
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+        .swal2-title {
+            color: #1e293b;
+            font-size: 1.5rem;
+        }
+        .swal2-html-container {
+            color: #64748b;
+        }
+        .swal2-confirm {
+            padding: 0.75rem 1.5rem !important;
+            font-weight: 600 !important;
+            border-radius: 0.75rem !important;
+        }
+        .swal2-cancel {
+            padding: 0.75rem 1.5rem !important;
+            font-weight: 600 !important;
+            border-radius: 0.75rem !important;
+        }
+        .swal2-icon {
+            border-width: 3px !important;
+        }
+        .swal2-timer-progress-bar {
+            background: #2563eb;
+        }
+    </style>
 </head>
 @stack('scripts')
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <body>
     @yield('content')
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    @stack('scripts')
+
+    @if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: "{{ session('message') }}",
+            showConfirmButton: true,
+            confirmButtonColor: '#2563eb',
+            timer: 3000,
+            timerProgressBar: true,
+            customClass: {
+                popup: 'colored-toast'
+            }
+        }).then((result) => {
+            // Optional: tambahkan logika setelah notifikasi ditutup
+        });
+    </script>
+    @endif
 </body>
 </html>

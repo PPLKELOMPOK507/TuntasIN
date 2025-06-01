@@ -1,4 +1,3 @@
-php
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -13,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->enum('role', ['Penyedia Jasa', 'Pengguna Jasa']);
+            $table->enum('role', ['Admin', 'Penyedia Jasa', 'Pengguna Jasa']);
             $table->string('email')->unique();
             $table->string('mobile_number');
             $table->string('photo')->nullable();
