@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 
 class Pemesanan extends Model
@@ -36,6 +37,16 @@ class Pemesanan extends Model
         return $this->belongsTo(Jasa::class);
     }
 
+    // Memeriksa apakah pemesanan memiliki ulasan
+    public function hasReview(): HasOne
+    {
+        return $this->hasOne(ReviewRating::class);
+    }
+
+    public function review(): HasOne
+    {
+        return $this->hasOne(ReviewRating::class);
+    }
     public function refunds()
     {
         return $this->hasMany(\App\Models\Refund::class, 'pemesanan_id');

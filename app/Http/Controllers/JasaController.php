@@ -27,8 +27,14 @@ class JasaController extends Controller
     }
     public function show($id)
 {
-    $jasa = Jasa::findOrFail($id);
-    return view('jasa.show', compact('jasa'));
+    $jasa = Jasa::with(['user', 'reviewratings.user', 'reviewratings' => function($query) {
+        $query->orderBy('created_at', 'desc'); // Urutkan dari yang terbaru
+    }])->findOrFail($id);
+    
+    $averageRating = $jasa->reviewratings->avg('rating') ?? 0;
+    $reviewCount = $jasa->reviewratings->count();
+
+    return view('pesanan.create', compact('jasa', 'averageRating', 'reviewCount'));
 }
 
     // Halaman tambah jasa

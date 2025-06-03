@@ -40,11 +40,92 @@
                     <h5 class="text-primary">Rp {{ number_format($jasa->minimal_harga, 0, ',', '.') }}</h5>
                 </div>
             </div>
+
+            <!-- Ulasan Pengguna -->
+            <div class="reviews-section mt-4">
+                <h4 class="fw-bold mb-4">Ulasan Pengguna</h4>
+                
+                @if($jasa->reviewratings->count() > 0)
+                    <!-- Rating Summary -->
+                    <div class="rating-summary p-4 bg-light rounded-lg mb-4">
+                        <div class="d-flex align-items-center">
+                            <div class="rating-average text-center">
+                                <span class="display-4 fw-bold text-primary">
+                                    {{ number_format($jasa->averageRating, 1) }}
+                                </span>
+                                <div class="stars">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($i <= $jasa->averageRating)
+                                            <i class="fas fa-star text-warning"></i>
+                                        @elseif($i - 0.5 <= $jasa->averageRating)
+                                            <i class="fas fa-star-half-alt text-warning"></i>
+                                        @else
+                                            <i class="far fa-star text-warning"></i>
+                                        @endif
+                                    @endfor
+                                </div>
+                                <p class="text-muted mb-0">{{ $jasa->reviewratings->count() }} ulasan</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Cards -->
+                    <div class="reviews-list">
+                        @foreach($jasa->reviewratings as $review)
+                            <div class="review-card bg-white p-4 rounded-lg shadow-sm mb-4">
+                                <div class="review-header d-flex align-items-center mb-3">
+                                    <div class="reviewer-info d-flex align-items-center">
+                                        <!-- User Avatar -->
+                                        <div class="reviewer-avatar me-3">
+                                            @if($review->user->photo)
+                                                <img src="{{ asset('storage/' . $review->user->photo) }}" 
+                                                     alt="User Avatar"
+                                                     class="rounded-circle"
+                                                     width="48"
+                                                     height="48">
+                                            @else
+                                                <div class="avatar-placeholder">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        
+                                        <!-- User Info & Rating -->
+                                        <div>
+                                            <h6 class="mb-1 fw-bold">{{ $review->user->first_name }} {{ $review->user->last_name }}</h6>
+                                            <div class="review-rating">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    <i class="fas fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted' }}"></i>
+                                                @endfor
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Review Date -->
+                                    <small class="text-muted ms-auto">
+                                        {{ $review->created_at->diffForHumans() }}
+                                    </small>
+                                </div>
+                                
+                                <!-- Review Content -->
+                                <div class="review-content">
+                                    <p class="mb-0 text-dark">{{ $review->review }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="text-center py-5 bg-light rounded">
+                        <i class="fas fa-comment-alt fa-3x text-muted mb-3"></i>
+                        <p class="text-muted mb-0">Belum ada ulasan untuk jasa ini</p>
+                    </div>
+                @endif
+            </div>
         </div>
 
         <!-- Bagian Kanan - Form Pemesanan -->
         <div class="col-lg-5">
-            <div class="card-box bg-white rounded-lg shadow p-4 sticky-top" style="top: 2rem;">
+            <div class="card-box bg-white rounded-lg shadow p-4 sticky-top">
                 <!-- Info Penyedia Jasa -->
                 <div class="provider-info p-3 mb-4 bg-light rounded-lg">
                     <div class="d-flex align-items-center">
@@ -124,236 +205,10 @@
     </div>
 </div>
 
-<style>
-    /* Navbar Styles */
-    .nav-container {
-        display: flex;
-        align-items: center;
-        padding: 1rem 2rem;
-        background: linear-gradient(to right, #2563eb, #1d4ed8);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin-bottom: 2rem;
-    }
-
-    .logo {
-        font-size: 1.8rem;
-        font-weight: 700;
-    }
-
-    .logo a {
-        text-decoration: none;
-        color: white;
-    }
-
-    .logo-in {
-        color: #93c5fd;
-    }
-
-    .service-title {
-        font-size: 2.25rem;
-        font-weight: 700;
-        color: #1e40af;
-        line-height: 1.2;
-    }
-    
-    .image-section {
-        width: 100%;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    }
-    
-    .service-image {
-        width: 100%;
-        height: 400px;
-        object-fit: cover;
-    }
-    
-    .description-box {
-        border-radius: 16px;
-        line-height: 1.6;
-        background-color: white;
-        border-left: 5px solid #2563eb;
-    }
-    
-    .provider-info {
-        border-left: 5px solid #2563eb; /* Ubah ke biru */
-        background-color: #f0f7ff !important;
-        border: 1px solid #dbeafe;
-    }
-    
-    .form-control {
-        padding: 0.75rem 1rem;
-        border-radius: 8px;
-        border: 2px solid #e9ecef;
-        font-size: 1rem;
-    }
-    
-    .form-control:focus {
-        border-color: #2563eb; /* Ubah ke biru */
-        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25); /* Ubah ke biru dengan opacity */
-    }
-    
-    .btn-primary {
-        background-color: #2563eb; /* Ubah ke biru */
-        border: none;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-primary:hover {
-        background-color: #1d4ed8; /* Ubah ke biru yang lebih gelap */
-        transform: translateY(-2px);
-    }
-    
-    .sticky-top {
-        z-index: 1020;
-    }
-
-    @media (max-width: 991.98px) {
-        .sticky-top {
-            position: relative !important;
-            top: 0 !important;
-        }
-        
-        .service-image {
-            height: 300px;
-        }
-        
-        .service-title {
-            font-size: 1.75rem;
-        }
-    }
-
-    /* Style untuk tombol kembali */
-    .back-button {
-        display: inline-flex;
-        align-items: center;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        padding: 8px 5px;
-    }
-
-    .back-button:hover {
-        transform: translateX(-5px);
-    }
-
-    .back-button-circle {
-        background: linear-gradient(145deg, #2563eb, #1d4ed8); /* Ubah ke gradien biru */
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 12px;
-        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2); /* Ubah ke biru dengan opacity */
-        transition: all 0.3s ease;
-    }
-
-    .back-button:hover .back-button-circle {
-        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3); /* Ubah ke biru dengan opacity */
-        transform: scale(1.05);
-    }
-
-    .back-button-circle i {
-        color: white;
-        font-size: 1rem;
-    }
-
-    .back-button-text {
-        color: #2d3436;
-        font-weight: 600;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-    }
-
-    .back-button:hover .back-button-text {
-        color: #2563eb; /* Ubah ke biru */
-    }
-
-    /* Animasi hover */
-    @keyframes pulse {
-        0% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.05);
-        }
-        100% {
-            transform: scale(1);
-        }
-    }
-
-    .back-button:hover .back-button-circle {
-        animation: pulse 1s infinite;
-    }
-
-    /* Badge untuk Penyedia Jasa */
-    .badge.bg-success {
-        background-color: #2563eb !important; /* Ubah ke biru */
-    }
-
-    /* Text Primary untuk harga */
-    .text-primary {
-        color: #2563eb !important; /* Ubah ke biru */
-    }
-
-    /* Hover effects */
-    .back-button:hover {
-        color: #2563eb; /* Ubah ke biru */
-    }
-
-    .provider-info {
-        border-left: 5px solid #2563eb; /* Ubah ke biru */
-        background-color: #f0f5ff !important; /* Tambah background biru muda */
-    }
-
-    /* Input group text */
-    .input-group-text {
-        background-color: #2563eb; /* Ubah ke biru */
-        color: white;
-        border: none;
-    }
-
-    /* Small text muted hover */
-    .text-muted:hover {
-        color: #2563eb !important; /* Ubah ke biru */
-    }
-
-    /* Additional hover effects */
-    .card-box {
-        transition: transform 0.3s ease;
-    }
-    
-    .card-box:hover {
-        transform: translateY(-5px);
-    }
-    
-    /* Container adjustment for better spacing */
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 1rem;
-    }
-    
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .nav-container {
-            padding: 1rem;
-        }
-        
-        .logo {
-            font-size: 1.5rem;
-        }
-    }
-</style>
-@endsection
-
 @push('styles')
 <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
 <link href="{{ asset('css/services.css') }}" rel="stylesheet">
+<link href="{{ asset('css/pesanan.css') }}" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 @endpush
 

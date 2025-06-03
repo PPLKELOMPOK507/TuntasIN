@@ -10,7 +10,7 @@ class PemesananController extends Controller
 {
     public function create($jasaId)
     {
-        $jasa = Jasa::findOrFail($jasaId);
+        $jasa = Jasa::with(['user', 'reviewratings.user'])->findOrFail($jasaId);
         return view('pesanan.create', compact('jasa'));
     }
 

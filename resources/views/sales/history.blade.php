@@ -5,14 +5,9 @@
     <!-- Navigation -->
     <nav class="nav-container">
         <div class="logo">
-            @auth
-                <a href="{{ route('dashboard') }}">TUNTAS<span class="logo-in">IN</span></a>
-            @else
-                <a href="/">TUNTAS<span class="logo-in">IN</span></a>
-            @endauth
+            <a href="{{ route('dashboard') }}">TUNTAS<span class="logo-in">IN</span></a>
         </div>
-
-        <!-- User Profile Dropdown -->
+        
         <div class="user-profile">
             <div class="user-info">
                 <div class="profile-image">
@@ -48,99 +43,80 @@
         </div>
     </nav>
 
-    <div class="sales-history-container">
+    <div class="purchases-history-container">
         <div class="history-header">
-            <h1>Riwayat Penjualan</h1>
-            <div class="filters">
-                <select class="filter-select" id="status-filter">
-                    <option value="all">Semua Status</option>
-                    <option value="awaiting_verification">Sedang Diverifikasi</option>
-                    <option value="paid">Terbayar</option>
-                    <option value="cancelled">Dibatalkan</option>
-                </select>
-            </div>
+            <h1>Riwayat Pembelian</h1>
         </div>
 
-        <div class="sales-grid">
-            @forelse($sales as $sale)
-                <div class="sale-card" data-status="{{ $sale->status }}">
+        <div class="purchases-grid">
+            @forelse($purchases as $purchase)
+                <div class="purchase-card">
                     <div class="service-image">
-                        <img src="{{ asset('storage/' . $sale->jasa->gambar) }}" alt="{{ $sale->jasa->nama_jasa }}">
+                        <img src="{{ asset('storage/' . $purchase->jasa->gambar) }}" alt="{{ $purchase->jasa->nama_jasa }}">
                     </div>
-                    <div class="sale-info">
-                        <div class="sale-header">
-                            <div class="sale-id-date">
-                                <span class="order-id">#{{ $sale->id }}</span>
-                                <span class="sale-date">{{ $sale->created_at->format('d M Y') }}</span>
-                            </div>
-                            @php
-                                $refundPending = isset($sale->refunds) && $sale->refunds->where('status', 'pending')->count() > 0;
-                                $pendingRefund = isset($sale->refunds) ? $sale->refunds->where('status', 'pending')->first() : null;
-                                $refundStatus = null;
-                                if ($pendingRefund) {
-                                    $refundStatus = $pendingRefund->provider_response ?? 'pending';
-                                }
-                            @endphp
-                            <div class="status-badge {{ $sale->status }} 
-                                @if($sale->status === 'paid' && $refundPending)
-                                    @if($refundStatus === 'pending') refund-request
-                                    @elseif($refundStatus === 'accepted') refund-accepted
-                                    @elseif($refundStatus === 'declined') refund-declined
-                                    @endif
-                                @endif">
-                                @switch($sale->status)
-                                    @case('awaiting_verification')
-                                        Sedang Diverifikasi
-                                        @break
+                    <div class="purchase-info">
+                        <div class="purchase-header">
+                            <span class="purchase-date">{{ $purchase->created_at->format('d M Y') }}</span>
+                        </div>
+                        <div class="service-details">
+                            <h3>{{ $purchase->jasa->nama_jasa }}</h3>
+                            <p><span class="label">Oleh:</span> {{ $purchase->jasa->user->full_name }}</p>
+                            <p><span class="label">Total Pembayaran:</span> Rp {{ number_format($purchase->harga, 0, ',', '.') }}</p>
+                            <span class="status-badge {{ $purchase->status }}">
+                                @switch($purchase->status)
                                     @case('paid')
-                                        @if($refundPending)
-                                            @if($refundStatus === 'pending')
-                                                Request Refund
-                                            @elseif($refundStatus === 'accepted')
-                                                Refund Diterima, Menunggu Verifikasi Admin
-                                            @elseif($refundStatus === 'declined')
-                                                Refund Ditolak Penyedia Jasa
-                                            @endif
-                                        @else
-                                            Terbayar
-                                        @endif
+                                        Pembayaran Diterima
                                         @break
-                                    @case('cancelled')
-                                        Dibatalkan
+                                    @case('pending')
+                                        Menunggu Pembayaran
                                         @break
                                     @default
-                                        {{ ucfirst($sale->status) }}
+                                        {{ ucfirst($purchase->status) }}
                                 @endswitch
-                            </div>
+                            </span>
                         </div>
-                        <div class="sale-details">
-                            <h3>{{ $sale['service_name'] }}</h3>
-                            <div class="buyer-info">
-                                <i class="fas fa-user"></i>
-                                <div class="buyer-details">
-                                    <span class="buyer-label">Pembeli:</span>
-                                    <span class="buyer-name">{{ $sale->user->fullname }}</span>
-                                    @if($sale->status === 'paid')
-                                        <div class="buyer-location">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                            <span>{{ $sale->user->address }}</span>
+                    </div>
+                </div>
+
+                <!-- Modal Review -->
+                <div class="modal fade" id="reviewModal-{{ $purchase->id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Beri Ulasan untuk {{ $purchase->jasa->nama_jasa }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form action="{{ route('review.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="pemesanan_id" value="{{ $purchase->id }}">
+                                <div class="modal-body">
+                                    <div class="rating-input mb-3">
+                                        <label>Rating:</label>
+                                        <div class="star-rating">
+                                            @for($i = 5; $i >= 1; $i--)
+                                                <input type="radio" name="rating" value="{{ $i }}" id="star{{ $i }}-{{ $purchase->id }}" required>
+                                                <label for="star{{ $i }}-{{ $purchase->id }}">
+                                                    <i class="fas fa-star"></i>
+                                                </label>
+                                            @endfor
                                         </div>
-                                    @endif
+                                    </div>
+                                    <div class="review-input">
+                                        <label>Review:</label>
+                                        <textarea name="review" class="form-control" rows="3" placeholder="Bagikan pengalaman Anda menggunakan jasa ini..." required></textarea>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- Modifikasi tampilan harga -->
-                            <div class="price-info">
-                                <span class="price-label">Total Pembayaran:</span>
-                                <span class="price-amount">Rp {{ number_format($sale['harga'], 0, ',', '.') }}</span>
-                            </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary">Kirim Review</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             @empty
                 <div class="empty-state">
-                    <i class="fas fa-receipt"></i>
-                    <h3>Belum ada penjualan</h3>
-                    <p>Riwayat penjualan Anda akan muncul di sini</p>
+                    <p>Belum ada riwayat pembelian</p>
                 </div>
             @endforelse
         </div>

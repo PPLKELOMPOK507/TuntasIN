@@ -1,0 +1,25 @@
+.service-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.service-rating .stars {
+    display: flex;
+    gap: 2px;
+}
+
+.service-rating .stars i {
+    color: #ffd700;
+    font-size: 14px;
+}
+
+.service-rating .stars i.far {
+    color: #ddd;
+}
+
+.rating-count {
+    color: #666;
+    font-size: 14px;
+}

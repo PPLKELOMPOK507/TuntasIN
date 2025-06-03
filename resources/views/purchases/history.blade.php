@@ -49,7 +49,7 @@
                 <select class="filter-select" id="status-filter">
                     <option value="all">Semua Status</option>
                     <option value="pending">Menunggu Pembayaran</option>
-                    <option value="awaiting_payment">Menunggu Verifikasi</option>
+                    <option value="awaiting_verification">Menunggu Verifikasi</option>
                     <option value="paid">Pembayaran Diterima</option>
                     <option value="cancelled">Pembayaran Ditolak</option>
                 </select>
@@ -121,11 +121,24 @@
                                 </a>
                             @endif
 
-                            {{-- Tombol Ajukan Refund hanya muncul jika status paid dan BELUM ada refund approved/rejected --}}
-                            @if($purchase->status === 'paid' && !$refundApproved && !$refundRejected)
-                                <a href="{{ route('refunds.create', $purchase->id) }}" class="btn-refund">
-                                    Ajukan Refund
-                                </a>
+                            @if($purchase->status === 'paid')
+                                @if($purchase->hasReview()->exists())
+                                    <!-- Tampilkan tombol edit jika sudah ada review -->
+                                    <a href="{{ route('review.edit', $purchase->review->id) }}" class="btn-edit-review">
+                                        <i class="fas fa-edit"></i> Edit Review
+                                    </a>
+                                @else
+                                    <!-- Tampilkan tombol beri review jika belum ada -->
+                                    <a href="{{ route('review.create', $purchase->id) }}" class="btn-review">
+                                        <i class="fas fa-star"></i> Beri Review
+                                    </a>
+                                @endif
+
+                                @if(!$refundApproved && !$refundRejected)
+                                    <a href="{{ route('refunds.create', $purchase->id) }}" class="btn-refund">
+                                        Ajukan refund
+                                    </a>
+                                @endif
                             @endif
                         </div>
                     </div>
@@ -158,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const purchaseCards = document.querySelectorAll('.purchase-card');
         
         purchaseCards.forEach(card => {
-            const status = card.dataset.status;
+            const status = card.getAttribute('data-status');
             if (selectedStatus === 'all' || status === selectedStatus) {
                 card.style.display = 'flex';
             } else {
