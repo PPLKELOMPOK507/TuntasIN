@@ -73,13 +73,37 @@
                                 <span class="order-id">#{{ $sale->id }}</span>
                                 <span class="sale-date">{{ $sale->created_at->format('d M Y') }}</span>
                             </div>
-                            <div class="status-badge {{ $sale->status }}">
+                            @php
+                                $refundPending = isset($sale->refunds) && $sale->refunds->where('status', 'pending')->count() > 0;
+                                $pendingRefund = isset($sale->refunds) ? $sale->refunds->where('status', 'pending')->first() : null;
+                                $refundStatus = null;
+                                if ($pendingRefund) {
+                                    $refundStatus = $pendingRefund->provider_response ?? 'pending';
+                                }
+                            @endphp
+                            <div class="status-badge {{ $sale->status }} 
+                                @if($sale->status === 'paid' && $refundPending)
+                                    @if($refundStatus === 'pending') refund-request
+                                    @elseif($refundStatus === 'accepted') refund-accepted
+                                    @elseif($refundStatus === 'declined') refund-declined
+                                    @endif
+                                @endif">
                                 @switch($sale->status)
                                     @case('awaiting_verification')
                                         Sedang Diverifikasi
                                         @break
                                     @case('paid')
-                                        Terbayar
+                                        @if($refundPending)
+                                            @if($refundStatus === 'pending')
+                                                Request Refund
+                                            @elseif($refundStatus === 'accepted')
+                                                Refund Diterima, Menunggu Verifikasi Admin
+                                            @elseif($refundStatus === 'declined')
+                                                Refund Ditolak Penyedia Jasa
+                                            @endif
+                                        @else
+                                            Terbayar
+                                        @endif
                                         @break
                                     @case('cancelled')
                                         Dibatalkan
@@ -91,41 +115,21 @@
                         </div>
                         <div class="sale-details">
                             <h3>{{ $sale['service_name'] }}</h3>
-                            <p>Pembeli: {{ $sale->user->fullname }}</p>
-                            <p>Harga: Rp {{ number_format($sale['harga'], 0, ',', '.') }}</p>
-                            @php
-                                $refundPending = isset($sale->refunds) && $sale->refunds->where('status', 'pending')->count() > 0;
-                                $pendingRefund = isset($sale->refunds) ? $sale->refunds->where('status', 'pending')->first() : null;
-                                $refundStatus = null;
-                                if ($pendingRefund) {
-                                    $refundStatus = $pendingRefund->provider_response ?? 'pending';
-                                }
-                            @endphp
-                            <span class="status-badge
-                                @if($sale['status'] === 'completed') completed
-                                @elseif($sale['status'] === 'pending') pending
-                                @elseif($sale['status'] === 'cancelled') cancelled
-                                @elseif($sale['status'] === 'paid' && $refundPending && $refundStatus === 'pending') refund-request
-                                @elseif($sale['status'] === 'paid' && $refundPending && $refundStatus === 'accepted') refund-accepted
-                                @elseif($sale['status'] === 'paid' && $refundPending && $refundStatus === 'declined') refund-declined
-                                @endif
-                            ">
-                                @if($sale['status'] === 'paid' && $refundPending)
-                                    @if($refundStatus === 'pending')
-                                        Request Refund
-                                    @elseif($refundStatus === 'accepted')
-                                        Refund Diterima, Menunggu Verifikasi Admin
-                                    @elseif($refundStatus === 'declined')
-                                        Refund Ditolak Penyedia Jasa
-                                    @else
-                                        Request Refund
+                            <div class="buyer-info">
+                                <i class="fas fa-user"></i>
+                                <div class="buyer-details">
+                                    <span class="buyer-label">Pembeli:</span>
+                                    <span class="buyer-name">{{ $sale->user->fullname }}</span>
+                                    @if($sale->status === 'paid')
+                                        <div class="buyer-location">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span>{{ $sale->user->address }}</span>
+                                        </div>
                                     @endif
-                                @else
-                                    {{ ucfirst($sale['status']) }}
-                                @endif
-                            </span>
+                                </div>
+                            </div>
+                            <p class="price">Harga: Rp {{ number_format($sale['harga'], 0, ',', '.') }}</p>
                             @if($sale['status'] === 'paid' && $refundPending && $pendingRefund)
-                                <br>
                                 <a href="{{ route('provider.refunds.show', $pendingRefund->id) }}" class="btn btn-info" style="margin-top:8px;">
                                     Lihat Detail Refund
                                 </a>

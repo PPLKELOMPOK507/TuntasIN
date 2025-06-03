@@ -189,12 +189,11 @@
 .buyer-info {
     display: flex;
     align-items: flex-start;
-    gap: 0.75rem;
-    padding: 1rem;
+    gap: 1rem;
+    padding: 1.25rem;
     margin: 1rem 0;
     background-color: #f8fafc;
-    border-radius: 8px;
-    border-left: 4px solid #4fbafc;
+    border-radius: 12px;
 }
 
 .buyer-info i {
@@ -205,6 +204,9 @@
 
 .buyer-details {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .buyer-label {
@@ -215,20 +217,19 @@
 }
 
 .buyer-name {
-    display: block;
+    color: #1e293b;
     font-size: 1rem;
     font-weight: 500;
-    color: #1e293b;
-    margin-bottom: 0.5rem;
 }
 
 .buyer-location {
     display: flex;
     align-items: flex-start;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px dashed #e2e8f0;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 .buyer-location i {
@@ -239,7 +240,7 @@
 .buyer-location span {
     font-size: 0.875rem;
     color: #64748b;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
 /* Price Info */
