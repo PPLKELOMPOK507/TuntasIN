@@ -7,13 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Refund extends Model
 {
     protected $fillable = [
-        'pemesanan_id',
         'user_id',
+        'pemesanan_id',
         'reason',
         'bukti_refund',
         'status',
-        'provider_response',      
-        'provider_responded_at',  
+        'provider_response',
+        'provider_notes',
+        'provider_responded_at',
+        'admin_notes',
+        'admin_reviewed_at'
     ];
 
     public function pemesanan()

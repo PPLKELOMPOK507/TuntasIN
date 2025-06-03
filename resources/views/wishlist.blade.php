@@ -11,14 +11,39 @@
                 <a href="/">TUNTAS<span class="logo-in">IN</span></a>
             @endauth
         </div>
+        <!-- User Menu -->
+        <div class="user-profile">
+            <div class="user-info">
+                <div class="profile-image">
+                    @if(Auth::user()->photo)
+                        <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Profile">
+                    @else
+                        <div class="profile-placeholder"></div>
+                    @endif
+                </div>
+            </div>
+            <div class="dropdown-menu">
+                <a href="{{ route('profile') }}" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
     </nav>
 
     <div class="wishlist-container">
         <div class="wishlist-header">
             <a href="{{ route('dashboard') }}" class="back-button">
-                <i class="fas fa-arrow-left"></i> Kembali
+                <i class="fas fa-arrow-left"></i> Back
             </a>
-            <h1>Wishlist Layanan Saya</h1>
+            <h1>My Service Wishlist</h1>
         </div>
 
         <div class="service-grid">
@@ -37,10 +62,10 @@
                     <div class="service-info">
                         <h3 class="service-title">{{ $item->service->nama_jasa }}</h3>
                         <div class="service-price">
-                            <span>Mulai dari</span>
+                            <span>Start From</span>
                             <strong>Rp {{ number_format($item->service->minimal_harga, 0, ',', '.') }}</strong>
                         </div>
-                        <a href="{{ route('jasa.detail', $item->service->id) }}" class="view-service-btn">Lihat Detail</a>
+                        <a href="{{ route('jasa.detail', $item->service->id) }}" class="view-service-btn">See Details</a>
                     </div>
                 </div>
             @empty

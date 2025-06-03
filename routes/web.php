@@ -25,6 +25,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\AdminPaymentController;
 use App\Http\Controllers\AdminRefundController;
+use App\Http\Controllers\ReviewRatingController;
 
 // Registration routes
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
@@ -152,8 +153,17 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::middleware(['auth'])->group(function () {
     // ...existing routes...
+    // Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.store');
     Route::get('/pesan/{jasa}', [PemesananController::class, 'create'])->name('pesanan.create');
     Route::post('/pesan/{jasa}', [PemesananController::class, 'store'])->name('pesanan.store');
+    Route::get('/review/create/{pemesanan_id}', [ReviewRatingController::class, 'create'])->name('review.create');
+    Route::post('/review/{pemesanan_id}', [ReviewRatingController::class, 'store'])->name('review.store');
+    Route::get('/review/{id}/edit', [ReviewRatingController::class, 'edit'])->name('review.edit');
+    Route::put('/review/{id}', [ReviewRatingController::class, 'update'])->name('review.update');
+
+    // Riwayat Pembelian route (Pengguna Jasa only)
+    Route::get('/riwayat-pembelian', [PurchaseController::class, 'history'])
+        ->name('purchases.history');
 });
 
 // Admin Management Routes
@@ -229,11 +239,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/refunds', [RefundController::class, 'index'])->name('refunds.index');
 });
 });
-Route::middleware(['auth', 'provider'])->group(function () {
-    Route::get('/provider/refunds', [RefundController::class, 'providerIndex'])->name('provider.refunds.index');
-    Route::get('/provider/refunds/{id}', [RefundController::class, 'providerShow'])->name('provider.refunds.show');
-    Route::post('/provider/refunds/{id}/response', [RefundController::class, 'providerResponse'])->name('provider.refunds.response');
+Route::middleware(['auth', 'provider'])->prefix('provider')->name('provider.')->group(function () {
+    // Provider routes
+    Route::get('/refunds', [RefundController::class, 'providerIndex'])
+        ->name('refunds.index');
+    Route::get('/refunds/{id}', [ProviderController::class, 'showRefund'])
+        ->name('refunds.detail');
+    Route::post('/refunds/{id}/response', [ProviderController::class, 'respondToRefund'])
+        ->name('refunds.response');
 });
+
+// Admin routes
 Route::middleware(['auth', 'admin'])->group(function () {
     // Admin dashboard route
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');

@@ -58,7 +58,7 @@
                         <h6 class="border-bottom pb-2">Bukti Pembayaran</h6>
                         <div class="bukti-wrapper">
                             @if($payment->bukti_pembayaran)
-                                <img src="{{ Storage::url($payment->bukti_pembayaran) }}" 
+                                <img src="{{ asset('storage/'.$payment->bukti_pembayaran) }}" 
                                      class="img-fluid rounded shadow-sm" 
                                      alt="Bukti Pembayaran">
                             @else

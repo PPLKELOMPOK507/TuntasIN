@@ -295,9 +295,11 @@
                                     </span>
                                 </td>
                                 <td>
+                                    @if($payment->status === 'awaiting_verification')
                                     <a href="{{ route('admin.payments.show', $payment->id) }}" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-eye"></i> Lihat Detail
+                                        <i class="fas fa-eye"></i> Review Pembayaran
                                     </a>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach

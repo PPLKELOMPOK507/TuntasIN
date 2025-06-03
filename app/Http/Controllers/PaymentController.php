@@ -36,8 +36,8 @@ class PaymentController extends Controller
             // Buat payment reference
             $paymentReference = 'PAY-' . uniqid();
 
-            // Buat record pembayaran
-            Payment::create([
+            // Buat record pembayaran dengan status awaiting_verification
+            $payment = Payment::create([
                 'pemesanan_id' => $pemesanan->id,
                 'user_id' => auth()->id(),
                 'amount' => $pemesanan->harga,
@@ -46,6 +46,13 @@ class PaymentController extends Controller
                 'payment_reference' => $paymentReference,
                 'bukti_pembayaran' => $buktiPath
             ]);
+
+            // Pastikan file bukti disimpan dengan benar
+            if ($request->hasFile('bukti_pembayaran')) {
+                $buktiPath = $request->file('bukti_pembayaran')->store('bukti-pembayaran', 'public');
+                $payment->bukti_pembayaran = $buktiPath;
+                $payment->save(); // Tambahkan ini untuk memastikan perubahan tersimpan
+            }
 
             // Update status pemesanan 
             $pemesanan->update(['status' => 'awaiting_verification']);

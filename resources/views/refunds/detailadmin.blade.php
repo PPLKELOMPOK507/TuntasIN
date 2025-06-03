@@ -3,119 +3,126 @@
 @section('content')
 <div class="container py-4">
     <h2 class="mb-4 text-center">Detail Refund (Admin)</h2>
-    <div class="row">
-        <!-- Left Column - Information -->
-        <div class="col-md-7 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="mb-0">Informasi Refund</h5>
-                </div>
-                <div class="card-body">
-                    <div class="info-group mb-4">
-                        <h6 class="border-bottom pb-2 mb-3">Detail Pemesanan</h6>
-                        <div class="mb-3">
-                            <p class="mb-2"><strong>Nama Pembeli:</strong> {{ $refund->user->full_name ?? $refund->user->name }}</p>
-                            <p class="mb-2"><strong>Jasa:</strong> {{ $refund->pemesanan->jasa->nama_jasa ?? '-' }}</p>
-                            <p class="mb-2"><strong>Penyedia Jasa:</strong> {{ $refund->pemesanan->jasa->user->full_name ?? $refund->pemesanan->jasa->user->name }}</p>
-                            <p class="mb-2"><strong>Tanggal Pengajuan:</strong> {{ $refund->created_at->format('d M Y H:i') }}</p>
-                        </div>
-                    </div>
-
-                    <div class="info-group mb-4">
-                        <h6 class="border-bottom pb-2 mb-3">Status</h6>
-                        <div class="d-flex gap-3 mb-3">
-                            <div class="status-item">
-                                <label class="text-muted">Status Refund</label>
-                                <span class="badge status-badge 
-                                    @if($refund->status === 'pending') bg-warning text-dark
-                                    @elseif($refund->status === 'declined') bg-danger
-                                    @elseif($refund->status === 'accepted' || $refund->status === 'approved') bg-success
-                                    @else bg-secondary
-                                    @endif">
-                                    {{ ucfirst($refund->status) }}
-                                </span>
-                            </div>
-                            <div class="status-item">
-                                <label class="text-muted">Tanggapan Penyedia</label>
-                                <span class="badge 
-                                    @if($refund->provider_response === 'accepted') bg-success
-                                    @elseif($refund->provider_response === 'declined') bg-danger
-                                    @else bg-secondary
-                                    @endif">
-                                    {{ $refund->provider_response ? ucfirst($refund->provider_response) : 'Belum Ditanggapi' }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="info-group">
-                        <h6 class="border-bottom pb-2 mb-3">Alasan Refund</h6>
-                        <p class="reason-text">{{ $refund->reason }}</p>
-                    </div>
-                </div>
-            </div>
+    <div class="card shadow-sm mx-auto" style="padding: 2rem; margin-bottom: 2rem; max-width: 100%; width: 100%; max-width: 600px;">
+        <div class="mb-3">
+            <p><strong>Nama Pembeli:</strong> {{ $refund->user->full_name ?? $refund->user->email }}</p>
+            <p><strong>Jasa:</strong> {{ $refund->pemesanan->jasa->nama_jasa ?? '-' }}</p>
+            <p><strong>Penyedia Jasa:</strong> {{ $refund->pemesanan->jasa->user->email ?? '-' }}</p>
+            <p><strong>Tanggal Pengajuan:</strong> {{ $refund->created_at->format('d M Y H:i') }}</p>
+            <p><strong>Status Refund:</strong>
+                <span class="badge 
+                    @if($refund->status === 'pending') bg-warning text-dark
+                    @elseif($refund->status === 'rejected') bg-danger
+                    @elseif($refund->status === 'accepted' || $refund->status === 'approved') bg-success
+                    @else bg-secondary
+                    @endif
+                ">
+                    {{ ucfirst($refund->status) }}
+                </span>
+            </p>
+            <p><strong>Provider Response:</strong>
+                @if($refund->provider_response === 'accepted')
+                    <span class="badge bg-success">Accepted</span>
+                @elseif($refund->provider_response === 'rejected')
+                    <span class="badge bg-danger">Rejected</span>
+                @else
+                    <span class="badge bg-secondary">Belum Ditanggapi</span>
+                @endif
+            </p>
+            <p><strong>Alasan Refund:</strong> {{ $refund->reason }}</p>
+            @if($refund->bukti_refund)
+                <p><strong>Bukti Refund:</strong><br>
+                    <img src="{{ asset('storage/' . $refund->bukti_refund) }}" alt="Bukti Refund" style="max-width:100%; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                </p>
+            @endif
         </div>
 
-        <!-- Right Column - Bukti Refund & Actions -->
-        <div class="col-md-5 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-white border-bottom">
-                    <h5 class="mb-0">Bukti Refund</h5>
-                </div>
-                <div class="card-body">
-                    @if($refund->bukti_refund)
-                        <div class="bukti-wrapper mb-4">
-                            <img src="{{ asset('storage/' . $refund->bukti_refund) }}" 
-                                 alt="Bukti Refund" 
-                                 class="img-fluid rounded bukti-image">
+        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mt-4" style="flex-direction: column; align-items: stretch;">
+            <a href="{{ route('manage') }}" class="btn btn-secondary mb-2 w-100">
+                <i class="fas fa-arrow-left"></i> Kembali ke Daftar Refund
+            </a>
+            
+            {{-- Form ACC/Decline untuk admin selama belum diputuskan oleh admin --}}
+            @if($refund->status === 'pending' || !in_array($refund->status, ['approved', 'rejected']))
+                <div class="d-flex gap-2 w-100" style="justify-content: center;">
+                    <form action="{{ route('admin.refunds.review', $refund->id) }}" method="POST" style="display:inline; width:100%;">
+                        @csrf
+                        <input type="hidden" name="review" id="review_action" value="">
+                        
+                        {{-- Info Provider Response --}}
+                        <div class="alert @if($refund->provider_response === 'accepted') alert-info @else alert-warning @endif mb-3">
+                            <strong>Tanggapan Penyedia Jasa:</strong> 
+                            @if($refund->provider_response === 'accepted')
+                                Penyedia jasa menyetujui refund. <br>
+                                <small>Sebagai admin, Anda perlu memverifikasi apakah persetujuan ini valid.</small>
+                            @elseif($refund->provider_response === 'rejected')
+                                Penyedia jasa menolak refund. <br>
+                                <small>Sebagai admin, Anda perlu memverifikasi apakah penolakan ini beralasan. Jika tidak beralasan, Anda dapat meng-override keputusan penyedia.</small>
+                            @else
+                                Penyedia jasa belum menanggapi. <br>
+                                <small>Mohon tunggu tanggapan dari penyedia jasa terlebih dahulu.</small>
+                            @endif
                         </div>
-                    @else
-                        <div class="text-center py-5">
-                            <i class="fas fa-image text-muted fa-3x mb-3"></i>
-                            <p class="text-muted">Tidak ada bukti refund</p>
-                        </div>
-                    @endif
 
-                    @if($refund->status === 'pending' && $refund->provider_response === 'accepted')
-                        <div class="action-section mt-4">
-                            <form action="{{ route('admin.refunds.review', $refund->id) }}" 
-                                  method="POST" 
-                                  id="reviewForm">
-                                @csrf
-                                <input type="hidden" name="review" id="review_action">
-                                <div class="mb-3">
-                                    <label for="admin_notes" class="form-label">
-                                        <strong>Catatan Admin</strong> <span class="text-danger">*</span>
-                                    </label>
-                                    <textarea name="admin_notes" 
-                                              id="admin_notes" 
-                                              class="form-control @error('admin_notes') is-invalid @enderror" 
-                                              required 
-                                              rows="3"
-                                              placeholder="Tulis catatan verifikasi...">{{ old('admin_notes') }}</textarea>
-                                    @error('admin_notes')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="d-grid gap-2">
-                                    <button type="button" class="btn btn-success" onclick="confirmReview('approved')">
-                                        <i class="fas fa-check"></i> Setujui Refund
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="confirmReview('rejected')">
-                                        <i class="fas fa-times"></i> Tolak Refund
-                                    </button>
-                                </div>
-                                <div class="text-center mt-3">
-                                    <a href="{{ route('manage') }}" class="btn btn-secondary">
-                                        <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
-                                    </a>
-                                </div>
-                            </form>
+                        <div class="mb-3">
+                            <label for="admin_notes" class="form-label">
+                                <strong>Catatan Admin (wajib):</strong>
+                                @if($refund->provider_response === 'accepted')
+                                    <small class="text-muted">Jelaskan alasan verifikasi/penolakan Anda terhadap persetujuan refund dari penyedia</small>
+                                @elseif($refund->provider_response === 'rejected') 
+                                    <small class="text-muted">Jelaskan alasan Anda menyetujui refund (override) atau membenarkan penolakan dari penyedia</small>
+                                @else
+                                    <small class="text-muted">Mohon tunggu tanggapan penyedia jasa</small>
+                                @endif
+                            </label>
+                            <textarea name="admin_notes" id="admin_notes" class="form-control @error('admin_notes') is-invalid @enderror" 
+                                required rows="3" placeholder="Tulis alasan keputusan Anda...">{{ old('admin_notes') }}</textarea>
+                            @error('admin_notes')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                    @endif
+
+                        {{-- Alert untuk response penyedia --}}
+                        @if($refund->provider_response === 'rejected')
+                            <div class="alert alert-warning mb-3">
+                                <strong>Penyedia Jasa Menolak Refund</strong><br>
+                                <small>Sebagai admin, Anda perlu memverifikasi apakah penolakan ini beralasan:
+                                    <ul>
+                                        <li>Klik "Override Penolakan & Setujui Refund" jika penolakan tidak beralasan</li>
+                                        <li>Klik "Setuju dengan Penolakan Penyedia" jika penolakan sudah benar</li>
+                                    </ul>
+                                </small>
+                            </div>
+                        @endif
+
+                        {{-- Tombol aksi admin --}}
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success w-100" 
+                                onclick="document.getElementById('review_action').value='approved';">
+                                <i class="fas fa-check"></i> 
+                                @if($refund->provider_response === 'rejected')
+                                    Override Penolakan & Setujui Refund
+                                @else
+                                    Setujui Refund
+                                @endif
+                            </button>
+                            <button type="submit" class="btn btn-danger w-100" 
+                                onclick="document.getElementById('review_action').value='rejected';">
+                                <i class="fas fa-times"></i>
+                                @if($refund->provider_response === 'rejected')
+                                    Setuju dengan Penolakan Penyedia
+                                @else
+                                    Tolak Refund
+                                @endif
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </div>
+            @elseif($refund->status === 'approved' || $refund->status === 'rejected')
+                <div class="alert @if($refund->status === 'approved') alert-success @else alert-danger @endif">
+                    Refund telah {{ $refund->status === 'approved' ? 'disetujui' : 'ditolak' }} oleh admin dengan catatan: {{ $refund->admin_notes }}
+                </div>
+            @endif
         </div>
     </div>
 </div>

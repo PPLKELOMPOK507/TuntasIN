@@ -94,7 +94,7 @@
                 @endif
                 @if(Auth::user()->role === 'Penyedia Jasa' && $jasa->isNotEmpty())
                 <a href="{{ route('chat.show', $jasa->first()->id) }}" class="menu-item">
-                    <i class="fas fa-history"></i>
+                    <i class="fas fa-comments"></i> <!-- Mengubah dari fa-history ke fa-comments -->
                     <span>Chat Negosiasi</span>
                 </a>
                 @endif
@@ -154,6 +154,8 @@
                                     </a>
                                 </div>
                             </div>
+
+                            
                         </div>
                     @empty
                         <p>Tidak ada jasa ditemukan.</p>
@@ -182,6 +184,21 @@
                                 </div>
                                 <div class="service-info">
                                     <h3 class="service-title">{{ $item->nama_jasa }}</h3>
+                                    
+                                    <!-- Tambahkan bagian rating -->
+                                    <div class="service-rating">
+                                        <div class="stars">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                @if($i <= $item->average_rating)
+                                                    <i class="fas fa-star"></i>
+                                                @else
+                                                    <i class="far fa-star"></i>
+                                                @endif
+                                            @endfor
+                                        </div>
+                                        <span class="rating-count">({{ $item->reviews_count }} ulasan)</span>
+                                    </div>
+                                    
                                     <p>{{ $item->deskripsi }}</p>
                                     <span class="service-price">Rp {{ number_format($item->minimal_harga, 0, ',', '.') }}</span>
                                 </div>
