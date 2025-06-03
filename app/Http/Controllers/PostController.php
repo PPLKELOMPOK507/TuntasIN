@@ -37,7 +37,7 @@ class PostController extends Controller
 
         // Simpan data ke database
         Post::create([
-            'title' => $validatedData['title'],
+            'title' => $request->input('title'),
             'category_id' => $validatedData['category_id'],
             'body' => $validatedData['body'], // Gunakan 'body' jika tabel memiliki kolom 'body'
             'user_id' => Auth::id(), // Tambahkan user_id dari pengguna yang sedang login

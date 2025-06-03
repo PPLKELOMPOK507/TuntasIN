@@ -90,9 +90,15 @@
             {{-- New Comment Form --}}
             <form method="POST" action="{{ route('comments.store', $post) }}" class="mt-6">
                 @csrf
-                <textarea name="body" class="w-full border rounded p-4" placeholder="Write a new comment..."></textarea>
+                <textarea name="body" class="w-full border rounded p-4" placeholder="Write a new comment...">{{ old('body') }}</textarea>
+
+                @error('body')
+                    <p class="text-red-500 mt-2 text-sm font-semibold">{{ $message }}</p>
+                @enderror
+
                 <button type="submit" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded cursor-pointer">Send Comment</button>
             </form>
+
         </div>
     </div>
 </div>
