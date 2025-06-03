@@ -12,7 +12,7 @@
             <p><strong>Status Refund:</strong>
                 <span class="badge 
                     @if($refund->status === 'pending') bg-warning text-dark
-                    @elseif($refund->status === 'declined') bg-danger
+                    @elseif($refund->status === 'rejected') bg-danger
                     @elseif($refund->status === 'accepted' || $refund->status === 'approved') bg-success
                     @else bg-secondary
                     @endif
@@ -23,8 +23,8 @@
             <p><strong>Provider Response:</strong>
                 @if($refund->provider_response === 'accepted')
                     <span class="badge bg-success">Accepted</span>
-                @elseif($refund->provider_response === 'declined')
-                    <span class="badge bg-danger">Declined</span>
+                @elseif($refund->provider_response === 'rejected')
+                    <span class="badge bg-danger">Rejected</span>
                 @else
                     <span class="badge bg-secondary">Belum Ditanggapi</span>
                 @endif
@@ -41,24 +41,86 @@
             <a href="{{ route('manage') }}" class="btn btn-secondary mb-2 w-100">
                 <i class="fas fa-arrow-left"></i> Kembali ke Daftar Refund
             </a>
-            @if($refund->status === 'pending' && $refund->provider_response === 'accepted')
+            
+            {{-- Form ACC/Decline untuk admin selama belum diputuskan oleh admin --}}
+            @if($refund->status === 'pending' || !in_array($refund->status, ['approved', 'rejected']))
                 <div class="d-flex gap-2 w-100" style="justify-content: center;">
                     <form action="{{ route('admin.refunds.review', $refund->id) }}" method="POST" style="display:inline; width:100%;">
                         @csrf
                         <input type="hidden" name="review" id="review_action" value="">
-                        <div class="mb-2">
-                            <label for="admin_notes" class="form-label"><strong>Catatan Admin (wajib):</strong></label>
-                            <textarea name="admin_notes" id="admin_notes" class="form-control" required rows="2" placeholder="Tulis alasan atau catatan ACC/Decline"></textarea>
+                        
+                        {{-- Info Provider Response --}}
+                        <div class="alert @if($refund->provider_response === 'accepted') alert-info @else alert-warning @endif mb-3">
+                            <strong>Tanggapan Penyedia Jasa:</strong> 
+                            @if($refund->provider_response === 'accepted')
+                                Penyedia jasa menyetujui refund. <br>
+                                <small>Sebagai admin, Anda perlu memverifikasi apakah persetujuan ini valid.</small>
+                            @elseif($refund->provider_response === 'rejected')
+                                Penyedia jasa menolak refund. <br>
+                                <small>Sebagai admin, Anda perlu memverifikasi apakah penolakan ini beralasan. Jika tidak beralasan, Anda dapat meng-override keputusan penyedia.</small>
+                            @else
+                                Penyedia jasa belum menanggapi. <br>
+                                <small>Mohon tunggu tanggapan dari penyedia jasa terlebih dahulu.</small>
+                            @endif
                         </div>
+
+                        <div class="mb-3">
+                            <label for="admin_notes" class="form-label">
+                                <strong>Catatan Admin (wajib):</strong>
+                                @if($refund->provider_response === 'accepted')
+                                    <small class="text-muted">Jelaskan alasan verifikasi/penolakan Anda terhadap persetujuan refund dari penyedia</small>
+                                @elseif($refund->provider_response === 'rejected') 
+                                    <small class="text-muted">Jelaskan alasan Anda menyetujui refund (override) atau membenarkan penolakan dari penyedia</small>
+                                @else
+                                    <small class="text-muted">Mohon tunggu tanggapan penyedia jasa</small>
+                                @endif
+                            </label>
+                            <textarea name="admin_notes" id="admin_notes" class="form-control @error('admin_notes') is-invalid @enderror" 
+                                required rows="3" placeholder="Tulis alasan keputusan Anda...">{{ old('admin_notes') }}</textarea>
+                            @error('admin_notes')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Alert untuk response penyedia --}}
+                        @if($refund->provider_response === 'rejected')
+                            <div class="alert alert-warning mb-3">
+                                <strong>Penyedia Jasa Menolak Refund</strong><br>
+                                <small>Sebagai admin, Anda perlu memverifikasi apakah penolakan ini beralasan:
+                                    <ul>
+                                        <li>Klik "Override Penolakan & Setujui Refund" jika penolakan tidak beralasan</li>
+                                        <li>Klik "Setuju dengan Penolakan Penyedia" jika penolakan sudah benar</li>
+                                    </ul>
+                                </small>
+                            </div>
+                        @endif
+
+                        {{-- Tombol aksi admin --}}
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-success w-100" onclick="document.getElementById('review_action').value='approved'; return confirm('ACC refund ini?')">
-                                <i class="fas fa-check"></i> ACC
+                            <button type="submit" class="btn btn-success w-100" 
+                                onclick="document.getElementById('review_action').value='approved';">
+                                <i class="fas fa-check"></i> 
+                                @if($refund->provider_response === 'rejected')
+                                    Override Penolakan & Setujui Refund
+                                @else
+                                    Setujui Refund
+                                @endif
                             </button>
-                            <button type="submit" class="btn btn-danger w-100" onclick="document.getElementById('review_action').value='rejected'; return confirm('Tolak refund ini?')">
-                                <i class="fas fa-times"></i> Decline
+                            <button type="submit" class="btn btn-danger w-100" 
+                                onclick="document.getElementById('review_action').value='rejected';">
+                                <i class="fas fa-times"></i>
+                                @if($refund->provider_response === 'rejected')
+                                    Setuju dengan Penolakan Penyedia
+                                @else
+                                    Tolak Refund
+                                @endif
                             </button>
                         </div>
                     </form>
+                </div>
+            @elseif($refund->status === 'approved' || $refund->status === 'rejected')
+                <div class="alert @if($refund->status === 'approved') alert-success @else alert-danger @endif">
+                    Refund telah {{ $refund->status === 'approved' ? 'disetujui' : 'ditolak' }} oleh admin dengan catatan: {{ $refund->admin_notes }}
                 </div>
             @endif
         </div>

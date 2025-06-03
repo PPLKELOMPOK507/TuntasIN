@@ -239,11 +239,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/refunds', [RefundController::class, 'index'])->name('refunds.index');
 });
 });
-Route::middleware(['auth', 'provider'])->group(function () {
-    Route::get('/provider/refunds', [RefundController::class, 'providerIndex'])->name('provider.refunds.index');
-    Route::get('/provider/refunds/{id}', [RefundController::class, 'providerShow'])->name('provider.refunds.show');
-    Route::post('/provider/refunds/{id}/response', [RefundController::class, 'providerResponse'])->name('provider.refunds.response');
+Route::middleware(['auth', 'provider'])->prefix('provider')->name('provider.')->group(function () {
+    // Provider routes
+    Route::get('/refunds', [RefundController::class, 'providerIndex'])
+        ->name('refunds.index');
+    Route::get('/refunds/{id}', [ProviderController::class, 'showRefund'])
+        ->name('refunds.detail');
+    Route::post('/refunds/{id}/response', [ProviderController::class, 'respondToRefund'])
+        ->name('refunds.response');
 });
+
+// Admin routes
 Route::middleware(['auth', 'admin'])->group(function () {
     // Admin dashboard route
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');

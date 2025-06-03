@@ -26,42 +26,47 @@ class AdminRefundController extends Controller
 
     public function review(Request $request, $id)
     {
-        // Ganti 'status' menjadi 'review' agar sesuai dengan input form
         $request->validate([
             'review' => 'required|in:approved,rejected',
-            'admin_notes' => 'required|string',
+            'admin_notes' => 'required|string|min:10',
         ]);
 
         $refund = Refund::findOrFail($id);
-
+        
+        // Jika provider reject dan admin approved = Override penolakan provider
+        // Jika provider reject dan admin rejected = Setuju dengan penolakan provider
         $refund->update([
             'status' => $request->review,
             'admin_notes' => $request->admin_notes,
             'admin_reviewed_at' => now()
         ]);
 
-        // Jika refund disetujui (approved)
         if ($request->review === 'approved') {
+            // Proses refund dana ke user
             $pemesanan = $refund->pemesanan;
-
-            // // Update status pemesanan jika perlu
-            // $pemesanan->update(['status' => 'refunded']);
-
-            // Kembalikan dana ke user
             $user = $refund->user;
-            if (isset($user->balance) && isset($pemesanan->total_price)) {
-                $user->increment('balance', $pemesanan->total_price);
-            }
-
-            // Kurangi balance penyedia jasa
-            $penyediaJasa = $pemesanan->jasa->user ?? null;
-            if ($penyediaJasa && isset($penyediaJasa->balance) && isset($pemesanan->total_price)) {
-                $penyediaJasa->decrement('balance', $pemesanan->total_price);
+            
+            if ($user && $pemesanan) {
+                $user->increment('balance', $pemesanan->harga);
+                
+                // Kurangi balance penyedia jasa
+                $penyediaJasa = $pemesanan->jasa->user;
+                if ($penyediaJasa) {
+                    $penyediaJasa->decrement('balance', $pemesanan->harga);
+                }
+                $pemesanan->update(['status' => 'refunded']);
             }
         }
 
-        return redirect()
-            ->route('manage')
-            ->with('success', 'Review refund berhasil disimpan');
+        $message = $request->review === 'approved' ? 
+            ($refund->provider_response === 'rejected' ? 
+                'Admin override: Refund disetujui meskipun ditolak penyedia' : 
+                'Refund disetujui oleh admin') :
+            ($refund->provider_response === 'rejected' ? 
+                'Admin setuju dengan penolakan penyedia' : 
+                'Refund ditolak oleh admin');
+
+        return redirect()->route('manage')
+            ->with('success', $message);
     }
 }

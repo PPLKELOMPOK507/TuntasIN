@@ -144,19 +144,19 @@ class RefundController extends Controller
             'response' => 'required|in:accepted,rejected',
         ]);
 
-        $refund = Refund::whereHas('pemesanan.jasa', function($query) {
-            $query->where('user_id', auth()->id());
-        })->findOrFail($id);
-
+        $refund = Refund::findOrFail($id);
+        
+        // Update provider_response saja, tidak mengubah status refund
         $refund->update([
             'provider_response' => $request->response,
-            'provider_responded_at' => now(),
-            // Optional: update status jika declined
-            'status' => $request->response === 'rejected' ? 'rejected' : $refund->status,
+            'provider_notes' => $request->notes ?? null,
+            'provider_responded_at' => now()
         ]);
 
+        $statusText = $request->response === 'accepted' ? 'diterima' : 'ditolak';
+        $message = "Refund telah $statusText, menunggu verifikasi admin";
 
-        return redirect()->route('sales.history')
-            ->with('success', 'Tanggapan refund berhasil dikirim');
+        return redirect()->route('provider.refunds.index')
+            ->with('success', $message);
     }
 }

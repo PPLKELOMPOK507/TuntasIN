@@ -64,35 +64,35 @@ class ProfileTest extends DuskTestCase
     // }
 
     
-//     public function testUpdateProfilePhoto(): void
-//     {
-//         Storage::fake('public');
+    // public function testUpdateProfilePhoto(): void
+    // {
+    //     Storage::fake('public');
 
-//         $user = User::create([
-//             'first_name' => 'John',
-//             'last_name' => 'Doe', 
-//             'email' => 'johndoe@gmail.com',
-//             'role' => 'Penyedia Jasa',
-//             'mobile_number' => '081234567890',
-//             'password' => Hash::make('password123')
-//         ]);
+    //     $user = User::create([
+    //         'first_name' => 'John',
+    //         'last_name' => 'Doe', 
+    //         'email' => 'johndoe@gmail.com',
+    //         'role' => 'Penyedia Jasa',
+    //         'mobile_number' => '081234567890',
+    //         'password' => Hash::make('password123')
+    //     ]);
 
-//         $this->browse(function (Browser $browser) {
-//             $image = UploadedFile::fake()->image('profile.jpg');
+    //     $this->browse(function (Browser $browser) {
+    //         $image = UploadedFile::fake()->image('profile.jpg');
             
-//             $browser->visit('/login')
-//                 ->type('email', 'johndoe@gmail.com')
-//                 ->type('password', 'password123')
-//                 ->press('Login')
-//                 ->assertPathIs('/dashboard')
-//                 ->click('.user-profile')
-//                 ->clickLink('Profile')
-//                 ->assertPathIs('/profile')
+    //         $browser->visit('/login')
+    //             ->type('email', 'johndoe@gmail.com')
+    //             ->type('password', 'password123')
+    //             ->press('Login')
+    //             ->assertPathIs('/dashboard')
+    //             ->click('.user-profile')
+    //             ->clickLink('Profile')
+    //             ->assertPathIs('/profile')
                 
-//                 // Upload foto profile
-//                 ->attach('photo', $image->path());
-//         });
-//     }
+    //             // Upload foto profile
+    //             ->attach('photo', $image->path());
+    //     });
+    // }
 
 //     public function testInvalidProfileNameChange(): void
 //     {
@@ -112,9 +112,9 @@ class ProfileTest extends DuskTestCase
 //                 ->type('password', 'password123')
 //                 ->press('Login')
 //                 ->assertPathIs('/dashboard')
-//                 ->click('.user-profile')
-//                 ->clickLink('Profile')
-//                 ->assertPathIs('/profile')
+                // ->click('.user-profile')
+                // ->clickLink('Profile')
+                // ->assertPathIs('/profile')
                 
 //                 // Verify initial state
 //                 ->assertInputValue('first_name', 'John')

@@ -113,6 +113,27 @@
                                     @endswitch
                                 @endif
                             </div>
+
+                            <!-- Refund Status if exists -->
+                            @if($purchase->refunds && $purchase->refunds->count() > 0)
+                                @php $refund = $purchase->refunds->first(); @endphp
+                                <span class="status-badge refund-badge
+                                    @if($refund->status === 'pending' && !$refund->provider_response) bg-warning
+                                    @elseif($refund->status === 'pending' && $refund->provider_response === 'accepted') bg-info 
+                                    @elseif($refund->status === 'approved') bg-success
+                                    @elseif($refund->status === 'rejected' || $refund->provider_response === 'rejected') bg-danger
+                                    @endif">
+                                    @if($refund->status === 'pending' && !$refund->provider_response)
+                                        Permintaan Refund Baru
+                                    @elseif($refund->status === 'pending' && $refund->provider_response === 'accepted')
+                                        Menunggu Admin
+                                    @elseif($refund->status === 'approved')
+                                        Refund Disetujui
+                                    @elseif($refund->status === 'rejected' || $refund->provider_response === 'rejected')
+                                        Refund Ditolak oleh Penyedia Jasa
+                                    @endif
+                                </span>
+                            @endif
                         </div>
                         <div class="action-buttons" style="margin-left:auto; margin-top:auto;">
                             @if($purchase->status === 'pending')

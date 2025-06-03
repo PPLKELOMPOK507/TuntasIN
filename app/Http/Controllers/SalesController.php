@@ -9,15 +9,12 @@ class SalesController extends Controller
 {
     public function history()
     {
-        // Ambil semua pesanan untuk jasa yang dimiliki penyedia jasa
         $sales = Pemesanan::whereHas('jasa', function($query) {
                 $query->where('user_id', auth()->id());
             })
-            ->with(['jasa', 'user', 'payment','refunds'])
+            ->with(['jasa', 'user', 'payment', 'refunds'])
             ->orderBy('created_at', 'desc')
             ->get();
-
-
         
         return view('sales.history', compact('sales'));
     }
