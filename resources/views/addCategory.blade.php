@@ -37,9 +37,9 @@
                 @csrf
                 <div class="form-group">
                     <label for="name">Nama Kategori <span class="required">*</span></label>
-                    <input type="text" id="name" name="name" value="{{ old('name') }}" required>
+                    <input type="text" id="name" name="name" value="{{ old('name') }}">
                     @error('name')
-                        <small class="error">{{ $message }}</small>
+                        <div class="error-message">{{ $message }}</div>
                     @enderror
                 </div>
 

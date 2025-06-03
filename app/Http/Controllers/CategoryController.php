@@ -23,28 +23,29 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories'
+        ], [
+            'name.required' => 'Nama kategori wajib diisi!' // Custom message
         ]);
 
         Category::create($validated);
 
         return redirect()->route('manage')
-            ->with('success', 'Kategori berhasil ditambahkan!')
             ->with('activeTab', 'categories'); // Tambahkan ini
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id) 
     {
         $category = Category::findOrFail($id);
         
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $id
+        ], [
+            'name.required' => 'Nama kategori wajib diisi!'
         ]);
 
         $category->update($validated);
-        
-        return redirect()->route('manage')
-            ->with('success', 'Kategori berhasil diperbarui!')
-            ->with('activeTab', 'categories'); // Tambahkan ini
+
+        return redirect()->route('manage');
     }
 
     public function destroy($id)
@@ -61,7 +62,6 @@ class CategoryController extends Controller
         $category->delete();
         
         return redirect()->route('manage')
-            ->with('success', 'Kategori berhasil dihapus!')
             ->with('activeTab', 'categories'); // Tambahkan ini
     }
 }

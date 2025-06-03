@@ -34,14 +34,14 @@
         </div>
 
         <div class="form-container">
-            <form action="{{ route('categories.update', $category->id) }}" method="POST" class="edit-category-form">
+            <form action="{{ route('manage.categories.update', $category->id) }}" method="POST" class="edit-category-form">
                 @csrf
                 @method('PUT')
                 <div class="form-group">
                     <label for="name">Nama Kategori <span class="required">*</span></label>
-                    <input type="text" id="name" name="name" value="{{ old('name', $category->name) }}" required>
+                    <input type="text" id="name" name="name" value="{{ old('name', $category->name) }}">
                     @error('name')
-                        <small class="error">{{ $message }}</small>
+                        <div class="error-message">{{ $message }}</div>
                     @enderror
                 </div>
 

@@ -241,3 +241,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/refunds/{id}', [AdminRefundController::class, 'show'])->name('admin.refunds.show');
     Route::post('/admin/refunds/{id}/review', [AdminRefundController::class, 'review'])->name('admin.refunds.review');
 });
+Route::middleware(['auth'])->group(function () {
+    // Admin routes with manage prefix
+    Route::prefix('manage')->group(function () {
+        Route::get('/categories/create', [CategoryController::class, 'create'])->name('manage.categories.create');
+        Route::post('/categories', [CategoryController::class, 'store'])->name('manage.categories.store');
+        Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('manage.categories.edit');
+        Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('manage.categories.update');
+        Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('manage.categories.destroy');
+    });
+});
