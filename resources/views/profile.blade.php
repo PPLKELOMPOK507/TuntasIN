@@ -377,67 +377,56 @@ document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('profile-form');
         const saveButton = document.querySelector('.btn-save-all');
 
-        saveButton?.addEventListener('click', function(e) {
+        saveButton?.addEventListener('click', async function(e) {
             e.preventDefault();
             
-            // Show loading state
-            this.disabled = true;
-            const originalText = this.innerHTML;
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            try {
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
+                });
 
-            const formData = new FormData(form);
+                const data = await response.json();
 
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json' // Tambahkan header Accept
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
+                // Handle validation errors or other errors
+                if (!data.success) {
+                    const errorMessage = data.errors ? 
+                        Object.values(data.errors).flat().join('\n') : 
+                        (data.message || 'Failed to update profile');
+                        
                     Swal.fire({
-                        title: 'Success!',
-                        text: 'Profile updated successfully',
-                        icon: 'success',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        window.location.reload();
+                        title: 'Error!',
+                        text: errorMessage,
+                        icon: 'error',
+                        showConfirmButton: true,
+                        allowOutsideClick: false
                     });
-                } else {
-                    throw new Error(data.message || 'Failed to update profile');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Jika update berhasil tapi response JSON error, tetap refresh
-                if (error.message.includes('JSON')) {
-                    window.location.reload();
                     return;
                 }
-                
-                Swal.fire({
-                    title: 'Error!', 
-                    text: 'Profile has been updated but encountered display error',
-                    icon: 'info',
-                    showConfirmButton: true
-                }).then(() => {
-                    window.location.reload();
+
+                // Handle success
+                await Swal.fire({
+                    title: 'Success!',
+                    text: 'Profile updated successfully',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
                 });
-            })
-            .finally(() => {
-                // Restore button state
-                this.disabled = false;
-                this.innerHTML = originalText;
-            });
+
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Something went wrong. Please try again.',
+                    icon: 'error',
+                    showConfirmButton: true,
+                    allowOutsideClick: false
+                });
+            }
         });
     };
 
