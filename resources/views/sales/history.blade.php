@@ -128,12 +128,11 @@
                                     @endif
                                 </div>
                             </div>
-                            <p class="price">Harga: Rp {{ number_format($sale['harga'], 0, ',', '.') }}</p>
-                            @if($sale['status'] === 'paid' && $refundPending && $pendingRefund)
-                                <a href="{{ route('provider.refunds.show', $pendingRefund->id) }}" class="btn btn-info" style="margin-top:8px;">
-                                    Lihat Detail Refund
-                                </a>
-                            @endif
+                            <!-- Modifikasi tampilan harga -->
+                            <div class="price-info">
+                                <span class="price-label">Total Pembayaran:</span>
+                                <span class="price-amount">Rp {{ number_format($sale['harga'], 0, ',', '.') }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -153,6 +152,28 @@
 <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
 <link href="{{ asset('css/sales-history.css') }}" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+.price-info {
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price-label {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.price-amount {
+    font-weight: 600;
+    color: #2563eb;
+    font-size: 16px;
+}
+</style>
 @endpush
 
 @push('scripts')

@@ -94,7 +94,7 @@
                 @endif
                 @if(Auth::user()->role === 'Penyedia Jasa' && $jasa->isNotEmpty())
                 <a href="{{ route('chat.show', $jasa->first()->id) }}" class="menu-item">
-                    <i class="fas fa-history"></i>
+                    <i class="fas fa-comments"></i> <!-- Mengubah dari fa-history ke fa-comments -->
                     <span>Chat Negosiasi</span>
                 </a>
                 @endif

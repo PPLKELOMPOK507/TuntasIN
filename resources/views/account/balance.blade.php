@@ -18,7 +18,6 @@
                 </div>
                 <div class="col-md-6 text-md-end mt-3 mt-md-0">
                     <div class="balance-actions">
-                        <button id="depositBtn" class="btn btn-secondary btn-action me-2" data-bs-toggle="modal" data-bs-target="#depositModal">Tambah Saldo</button>
                         <button id="withdrawBtn" class="btn-primary btn-action" data-bs-toggle="modal" data-bs-target="#withdrawModal">Tarik Dana</button>
                     </div>
                 </div>
