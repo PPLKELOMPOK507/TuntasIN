@@ -484,6 +484,26 @@ button:hover {
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
 }
 
+/* File Input Styles */
+input[type="file"].form-control {
+    padding: 0.5rem;
+    border: 2px dashed #e2e8f0;
+    background-color: #f8fafc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+input[type="file"].form-control:hover {
+    border-color: #2563eb;
+    background-color: #f0f7ff;
+}
+
+.text-muted {
+    color: #64748b;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
 /* Submit Button */
 .btn-primary {
     border-radius: 0.75rem;

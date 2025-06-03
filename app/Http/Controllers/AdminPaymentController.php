@@ -17,15 +17,8 @@ class AdminPaymentController extends Controller
     }
 
     // Menampilkan detail pembayaran
-    public function show($id)
+    public function show(Payment $payment)
     {
-        $payment = Payment::find($id);
-
-        if (!$payment) {
-            return redirect()->route('admin.payments.index')
-                ->with('error', 'Pembayaran tidak ditemukan.');
-        }
-
         return view('admin.payments.show', compact('payment'));
     }
 

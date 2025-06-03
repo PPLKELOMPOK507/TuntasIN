@@ -9,15 +9,14 @@ class CreatePayments extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('pemesanan_id')->constrained('pemesanans')->onDelete('cascade');
             $table->decimal('amount', 10, 2);
             $table->string('payment_method');
             $table->string('status');
             $table->string('payment_reference')->unique();
+            $table->string('bukti_pembayaran')->nullable();
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

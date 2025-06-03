@@ -92,7 +92,7 @@
                         <span>Riwayat Penjualan</span>
                     </a>
                 @endif
-                @if(Auth::user()->role === 'Penyedia Jasa')
+                @if(Auth::user()->role === 'Penyedia Jasa' && $jasa->isNotEmpty())
                 <a href="{{ route('chat.show', $jasa->first()->id) }}" class="menu-item">
                     <i class="fas fa-history"></i>
                     <span>Chat Negosiasi</span>
