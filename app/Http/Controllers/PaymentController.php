@@ -22,24 +22,29 @@ class PaymentController extends Controller
     {
         try {
             // Validate request
-            if (!$request->payment_method) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Metode pembayaran harus dipilih'
-                ], 422);
+            $request->validate([
+                'payment_method' => 'required',
+                'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+            ]);
+
+            // Upload bukti pembayaran
+            $buktiPath = null;
+            if ($request->hasFile('bukti_pembayaran')) {
+                $buktiPath = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
             }
 
             // Buat payment reference
             $paymentReference = 'PAY-' . uniqid();
 
-            // Buat record pembayaran dengan status awaiting_verification
+            // Buat record pembayaran
             Payment::create([
                 'pemesanan_id' => $pemesanan->id,
                 'user_id' => auth()->id(),
                 'amount' => $pemesanan->harga,
                 'payment_method' => $request->payment_method,
                 'status' => 'awaiting_verification',
-                'payment_reference' => $paymentReference
+                'payment_reference' => $paymentReference,
+                'bukti_pembayaran' => $buktiPath
             ]);
 
             // Update status pemesanan 
@@ -56,6 +61,27 @@ class PaymentController extends Controller
                 'success' => false,
                 'message' => 'Gagal memproses pembayaran: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function verifyPayment(Payment $payment)
+    {
+        \DB::beginTransaction();
+        try {
+            // Update status pembayaran
+            $payment->update(['status' => 'completed']);
+            
+            // Tambah saldo penyedia jasa
+            $provider = $payment->pemesanan->jasa->user;
+            if ($provider->role === 'Penyedia Jasa') {
+                $provider->increment('balance', $payment->amount);
+            }
+
+            \DB::commit();
+            return redirect()->back()->with('success', 'Pembayaran berhasil diverifikasi');
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return redirect()->back()->with('error', 'Gagal memverifikasi pembayaran');
         }
     }
 }

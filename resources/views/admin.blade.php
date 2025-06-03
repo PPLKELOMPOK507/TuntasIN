@@ -295,17 +295,9 @@
                                     </span>
                                 </td>
                                 <td>
-                                    @if($payment->status === 'awaiting_verification')
-                                    <form action="{{ route('manage.payments.verify', $payment->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit" name="status" value="completed" class="btn btn-success btn-sm">
-                                            <i class="fas fa-check"></i> Accept
-                                        </button>
-                                        <button type="submit" name="status" value="declined" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-times"></i> Decline
-                                        </button>
-                                    </form>
-                                    @endif
+                                    <a href="{{ route('admin.payments.show', $payment->id) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye"></i> Lihat Detail
+                                    </a>
                                 </td>
                             </tr>
                             @endforeach
@@ -368,7 +360,7 @@
                                 <td>{{ $refund->created_at->format('d M Y H:i') }}</td>
                                 <td>
                                     <a href="{{ route('admin.refunds.show', $refund->id) }}" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-eye"></i> Review
+                                        <i class="fas fa-eye"></i> Lihat Detail
                                     </a>
                                 </td>
                             </tr>

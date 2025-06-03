@@ -84,4 +84,11 @@
         </div>
     </div>
 </div>
+
+<!-- Tombol Kembali -->
+<div class="text-center mt-3">
+    <a href="{{ route('manage') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+    </a>
+</div>
 @endsection
