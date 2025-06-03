@@ -24,9 +24,10 @@ class User extends Authenticatable
         'email',
         'mobile_number',
         'photo',
-        'cv_file', // Add this
+        'cv_file', 
         'password',
-        'address'
+        'address',
+        'balance',  
     ];
 
     /**

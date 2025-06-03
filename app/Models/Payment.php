@@ -12,7 +12,8 @@ class Payment extends Model
         'amount',
         'payment_method',
         'status',
-        'payment_reference'
+        'payment_reference',
+        'bukti_pembayaran'  
     ];
 
     public function user()
