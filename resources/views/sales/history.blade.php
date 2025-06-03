@@ -51,50 +51,24 @@
                     </div>
                     <div class="purchase-info">
                         <div class="purchase-header">
-                            <span class="order-id">#{{ $purchase->id }}</span>
                             <span class="purchase-date">{{ $purchase->created_at->format('d M Y') }}</span>
                         </div>
-                        <div class="sale-details">
-                            <h3>{{ $sale['service_name'] }}</h3>
-                            <p>Pembeli: {{ $sale->user->email }}</p>
-                            <p>Harga: Rp {{ number_format($sale['harga'], 0, ',', '.') }}</p>
-                            @php
-                                $refundPending = isset($sale->refunds) && $sale->refunds->where('status', 'pending')->count() > 0;
-                                $pendingRefund = isset($sale->refunds) ? $sale->refunds->where('status', 'pending')->first() : null;
-                                $refundStatus = null;
-                                if ($pendingRefund) {
-                                    $refundStatus = $pendingRefund->provider_response ?? 'pending';
-                                }
-                            @endphp
-                            <span class="status-badge
-                                @if($sale['status'] === 'completed') completed
-                                @elseif($sale['status'] === 'pending') pending
-                                @elseif($sale['status'] === 'cancelled') cancelled
-                                @elseif($sale['status'] === 'paid' && $refundPending && $refundStatus === 'pending') refund-request
-                                @elseif($sale['status'] === 'paid' && $refundPending && $refundStatus === 'accepted') refund-accepted
-                                @elseif($sale['status'] === 'paid' && $refundPending && $refundStatus === 'declined') refund-declined
-                                @endif
-                            ">
-                                @if($sale['status'] === 'paid' && $refundPending)
-                                    @if($refundStatus === 'pending')
-                                        Request Refund
-                                    @elseif($refundStatus === 'accepted')
-                                        Refund Diterima, Menunggu Verifikasi Admin
-                                    @elseif($refundStatus === 'declined')
-                                        Refund Ditolak Penyedia Jasa
-                                    @else
-                                        Request Refund
-                                    @endif
-                                @else
-                                    {{ ucfirst($sale['status']) }}
-                                @endif
+                        <div class="service-details">
+                            <h3>{{ $purchase->jasa->nama_jasa }}</h3>
+                            <p><span class="label">Oleh:</span> {{ $purchase->jasa->user->full_name }}</p>
+                            <p><span class="label">Total Pembayaran:</span> Rp {{ number_format($purchase->harga, 0, ',', '.') }}</p>
+                            <span class="status-badge {{ $purchase->status }}">
+                                @switch($purchase->status)
+                                    @case('paid')
+                                        Pembayaran Diterima
+                                        @break
+                                    @case('pending')
+                                        Menunggu Pembayaran
+                                        @break
+                                    @default
+                                        {{ ucfirst($purchase->status) }}
+                                @endswitch
                             </span>
-                            @if($sale['status'] === 'paid' && $refundPending && $pendingRefund)
-                                <br>
-                                <a href="{{ route('provider.refunds.show', $pendingRefund->id) }}" class="btn btn-info" style="margin-top:8px;">
-                                    Lihat Detail Refund
-                                </a>
-                            @endif
                         </div>
                     </div>
                 </div>
@@ -226,4 +200,3 @@ document.getElementById('status-filter').addEventListener('change', function() {
 });
 </script>
 @endpush
-@endsection

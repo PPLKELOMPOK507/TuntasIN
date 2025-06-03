@@ -49,7 +49,7 @@
                 <select class="filter-select" id="status-filter">
                     <option value="all">Semua Status</option>
                     <option value="pending">Menunggu Pembayaran</option>
-                    <option value="awaiting_payment">Menunggu Verifikasi</option>
+                    <option value="awaiting_verification">Menunggu Verifikasi</option>
                     <option value="paid">Pembayaran Diterima</option>
                     <option value="cancelled">Pembayaran Ditolak</option>
                 </select>
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const purchaseCards = document.querySelectorAll('.purchase-card');
         
         purchaseCards.forEach(card => {
-            const status = card.dataset.status;
+            const status = card.getAttribute('data-status');
             if (selectedStatus === 'all' || status === selectedStatus) {
                 card.style.display = 'flex';
             } else {
