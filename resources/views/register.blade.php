@@ -6,10 +6,6 @@
         <div class="logo">
             <a href="/">Tuntas<span class="logo-in">IN</span></a>
         </div>
-        <div class="nav-buttons">
-            <a href="{{ route('login') }}" class="login-btn">Login</a>
-            <a href="{{ route('register') }}" class="register-btn">Register</a>
-        </div>
     </div>
 
     <div class="form-container">
@@ -73,8 +69,12 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="done-btn"> Done</button>
+                    <button type="submit" class="done-btn">Register</button>
                 </div>
+
+                <p class="login-link">
+                    Already have an account? <a href="{{ route('login') }}">Login here</a>
+                </p>
             </div>
         </form>
     </div>
@@ -89,20 +89,24 @@
         font-family: 'Poppins', sans-serif;
         background: linear-gradient(to top, #4fbafc, #dadada);
         margin: 0;
-        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
     }
 
     .register-page {
-        width: 75rem;
-        margin: auto;
-        padding: 0rem;
+        width: 100%;
+        margin: 0 auto;
+        padding: 2rem 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
     }
 
     .nav-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 0rem;
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto 2rem auto;
     }
 
     .logo {
@@ -122,49 +126,24 @@
         color: #ffffffcc;
     }
 
-    .nav-buttons a {
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .login-btn {
-        color: #0066cc;
-    }
-
-    .register-btn {
-        background-color: #008CFF;
-        color: #fff;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-    }
-
-    h1 {
-        text-align: center;
-        font-size: 2.5rem;
-        color: #003366;
-        margin-bottom: 0.5rem;
-    }
-
-    .subtitle {
-        text-align: center;
-        margin-bottom: 0.5rem;
-        color: #003366;
-    }
-
-    .instruction {
-        text-align: center;
-        font-weight: 600;
-        margin-bottom: 2rem;
-        color: #003366;
-    }
-
     .form-container {
         background-color: #ffffff;
-        padding: 2rem 3rem;
+        padding: 2.5rem 3rem;
         border-radius: 10px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.05);
-        max-width: 600px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        max-width: 500px; /* Reduced from 800px to match login form */
+        width: 90%;
         margin: 0 auto;
+        position: relative;
+        top: -2rem;
+        margin-bottom: 4rem;
+    }
+
+    .form-section {
+        padding: 2rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        margin-bottom: 2rem;
     }
 
     .form-section h3 {
@@ -175,7 +154,17 @@
     }
 
     .form-group {
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+        width: 100%; /* Make form groups full width */
+    }
+
+    /* Remove the two-column layout */
+    @media (min-width: 768px) {
+        .form-section .form-group {
+            width: 100%;
+            display: block;
+            margin-right: 0;
+        }
     }
 
     label {
@@ -224,29 +213,49 @@
     }
 
     .done-btn {
-        display: block;
-        width: 100%;
         background-color: #008CFF;
         color: #fff;
-        padding: 0.75rem;
+        padding: 1rem;
         font-size: 1.1rem;
         border: none;
         border-radius: 6px;
         cursor: pointer;
-        margin-top: 1rem;
+        width: 100%;
+        margin-top: 2rem;
+        transition: all 0.3s ease;
     }
 
     .done-btn:hover {
         background-color: #0077cc;
+        transform: translateY(-2px);
+    }
+
+    /* Remove nav buttons styles since we're removing them */
+    .nav-buttons {
+        display: none;
+    }
+
+    /* Style for login link */
+    .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 1.1rem;
+    }
+
+    .login-link a {
+        color: #008CFF;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
     }
 
     @media (max-width: 1000px) {
-        .register-page {
-            padding: 1rem;
-        }
-
-        h1 {
-            font-size: 2rem;
+        .form-container {
+            max-width: 90%;
+            padding: 2rem;
         }
     }
 </style>

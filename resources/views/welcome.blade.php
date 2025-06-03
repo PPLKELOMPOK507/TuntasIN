@@ -18,7 +18,7 @@
         <div class="content-left">
             <h1>
                 <span class="title-main">Tuntasin: </span>
-                <span class="title-sub">Satu Tempat, Semua Beres.</span>
+                <span class="title-sub">Satu Tempat, Tuntas Semua</span>
             </h1>
             <p>Please register to be a part of the event.</p>
             <a href="{{ route('register') }}" class="register-now-btn">Register Now</a>
@@ -36,3 +36,125 @@
     </div>
 </div>
 @endsection
+
+<style>
+.welcome-container {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo a {
+    text-decoration: none;
+    color: #0e69a1;
+}
+
+.logo-in {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.nav-buttons a {
+    text-decoration: none;
+}
+
+.login-btn {
+    color: #0e69a1;
+    font-weight: 600;
+    margin-right: 1rem;
+    transition: color 0.3s ease;
+}
+
+.login-btn:hover {
+    color: #0077cc;
+}
+
+.register-btn {
+    background: #008CFF;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.register-btn:hover {
+    background: #0077cc;
+    transform: translateY(-1px);
+}
+
+.main-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.content-left h1 {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    color: #003366;
+}
+
+.title-main {
+    font-weight: 700;
+}
+
+.title-sub {
+    font-weight: 600;
+    color: #0e69a1;
+}
+
+.content-left p {
+    font-size: 1.2rem;
+    color: #4a5568;
+    margin-bottom: 2rem;
+}
+
+.register-now-btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: #008CFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.register-now-btn:hover {
+    background: #0077cc;
+    transform: translateY(-2px);
+}
+
+.illustration {
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .content-left h1 {
+        font-size: 2rem;
+    }
+}
+</style>
