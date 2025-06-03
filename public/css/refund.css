@@ -1,0 +1,33 @@
+.swal2-popup {
+    border-radius: 1rem;
+    padding: 2rem;
+}
+
+.swal2-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.swal2-html-container {
+    font-size: 1rem;
+    color: #666;
+}
+
+.swal2-confirm, .swal2-cancel {
+    border-radius: 0.5rem !important;
+    padding: 0.75rem 1.5rem !important;
+    font-weight: 500 !important;
+}
+
+.swal2-confirm {
+    background-color: var(--bs-success) !important;
+}
+
+.swal2-cancel {
+    background-color: var(--bs-secondary) !important;
+}
+
+.swal2-icon {
+    border-width: 3px !important;
+}

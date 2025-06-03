@@ -70,7 +70,7 @@
                 <div class="card-body p-4">
                     <h4 class="card-title mb-4">Metode Pembayaran</h4>
                     
-                    <form action="{{ route('payment.process', $pemesanan->id) }}" method="POST">
+                    <form action="{{ route('payment.process', $pemesanan->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="payment-options mb-4">
                             <!-- Credit Card -->
@@ -236,6 +236,17 @@
                                     <input type="tel" name="phone_number" class="form-control" placeholder="08xxxxxxxxxx">
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Tambahkan ini di dalam form, sebelum tombol submit -->
+                        <div class="mb-4">
+                            <label class="form-label">Bukti Pembayaran</label>
+                            <input type="file" 
+                                   name="bukti_pembayaran" 
+                                   class="form-control" 
+                                   accept="image/*"
+                                   required>
+                            <small class="text-muted">Format: JPG, JPEG, PNG (Max. 2MB)</small>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100">
@@ -423,10 +434,10 @@ document.querySelector('form').addEventListener('submit', function(e) {
             
             fetch(this.action, {
                 method: 'POST',
-                body: formData,
+                body: new FormData(this), // Gunakan FormData untuk handle file
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json' // Add this line
+                    // Hapus 'Content-Type' header karena FormData akan mengaturnya sendiri
                 }
             })
             .then(response => {

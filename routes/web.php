@@ -142,15 +142,13 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 
 
-Route::post('/messages', [ChatController::class, 'store'])->name('messages.store');
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
     Route::post('/wishlist/add/{id}', [WishlistController::class, 'add'])->name('wishlist.add');
     Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
     Route::get('/chat/{jasa_id}', [ChatController::class, 'show'])->name('chat.show');
     Route::get('/chat/{jasa_id}/messages', [ChatController::class, 'getMessages'])->name('chat.messages');
-    Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.store');
+    Route::post('/messages', [ChatController::class, 'store'])->name('messages.store');
 });
 Route::middleware(['auth'])->group(function () {
     // ...existing routes...
@@ -237,7 +235,15 @@ Route::middleware(['auth', 'provider'])->group(function () {
     Route::post('/provider/refunds/{id}/response', [RefundController::class, 'providerResponse'])->name('provider.refunds.response');
 });
 Route::middleware(['auth', 'admin'])->group(function () {
+    // Admin dashboard route
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    
+    // Existing admin routes
+    Route::get('/admin/payments/{payment}', [AdminPaymentController::class, 'show'])->name('admin.payments.show');
+    Route::post('/admin/payments/{payment}/verify', [AdminPaymentController::class, 'verifyPayment'])->name('admin.payments.verify');
     Route::get('/admin/refunds', [AdminRefundController::class, 'index'])->name('admin.refunds.index');
     Route::get('/admin/refunds/{id}', [AdminRefundController::class, 'show'])->name('admin.refunds.show');
     Route::post('/admin/refunds/{id}/review', [AdminRefundController::class, 'review'])->name('admin.refunds.review');
+    Route::get('/admin/payments/{payment}', [AdminPaymentController::class, 'show'])->name('admin.payments.show');
+    Route::post('/admin/payments/{payment}/verify', [AdminPaymentController::class, 'verifyPayment'])->name('admin.payments.verify');
 });

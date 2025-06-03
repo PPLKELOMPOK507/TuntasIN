@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('mobile_number');
             $table->string('photo')->nullable();
             $table->string('password');
+            $table->decimal('balance', 10, 2)->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
