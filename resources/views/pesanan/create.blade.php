@@ -4,7 +4,55 @@
 <!-- Navbar -->
 <nav class="nav-container">
     <div class="logo">
-        <a href="{{ route('dashboard') }}">TUNTAS<span class="logo-in">IN</span></a>
+        @auth
+            <a href="{{ route('dashboard') }}">TUNTAS<span class="logo-in">IN</span></a>
+        @else
+            <a href="/">TUNTAS<span class="logo-in">IN</span></a>
+        @endauth
+    </div>
+    
+    <!-- User Menu -->
+    <div class="user-profile">
+        <div class="user-info">
+            <div class="profile-image">
+                @if(Auth::user()->photo)
+                    <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Profile">
+                @else
+                    <div class="profile-placeholder"></div>
+                @endif
+            </div>
+            <button class="dropdown-toggle"></button>
+        </div>
+        <div class="dropdown-menu">
+            <a href="{{ route('profile') }}" class="menu-item">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+            
+            @if(Auth::user()->role === 'Penyedia Jasa')
+                <a href="{{ route('account.balance') }}" class="menu-item">
+                    <i class="fas fa-wallet"></i>
+                    <span>My Balance</span>
+                </a>
+                <a href="{{ route('sales.history') }}" class="menu-item">
+                    <i class="fas fa-history"></i>
+                    <span>Riwayat Penjualan</span>
+                </a>
+            @else
+                <a href="{{ route('purchases.history') }}" class="menu-item">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>Riwayat Pembelian</span>
+                </a>
+            @endif
+            
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
+        </div>
     </div>
 </nav>
 
@@ -194,11 +242,20 @@
                         @enderror
                     </div>
 
-                    <!-- Tombol Submit -->
-                    <button type="submit" class="btn btn-primary w-100 py-3 mt-3">
-                        <i class="fas fa-arrow-right me-2"></i>
-                        Lanjutkan
-                    </button>
+                    <!-- Button Group -->
+                    <div class="button-group mt-4">
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary w-100 py-3 mb-2">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            Lanjutkan
+                        </button>
+
+                        <!-- Chat Button -->
+                        <a href="{{ route('chat.show', $jasa->id) }}" class="btn btn-outline-primary w-100 py-3">
+                            <i class="fas fa-comments me-2"></i>
+                            Chat dengan Penyedia Jasa
+                        </a>
+                    </div>
                 </form>
             </div>
         </div>
@@ -231,3 +288,4 @@
     });
 </script>
 @endpush
+@endsection

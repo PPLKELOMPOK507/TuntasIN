@@ -11,6 +11,7 @@
                 <a href="/">TUNTAS<span class="logo-in">IN</span></a>
             @endauth
         </div>
+        
         <!-- User Menu -->
         <div class="user-profile">
             <div class="user-info">
@@ -21,12 +22,30 @@
                         <div class="profile-placeholder"></div>
                     @endif
                 </div>
+                <button class="dropdown-toggle"></button>
             </div>
             <div class="dropdown-menu">
                 <a href="{{ route('profile') }}" class="menu-item">
                     <i class="fas fa-user"></i>
                     <span>Profile</span>
                 </a>
+                
+                @if(Auth::user()->role === 'Penyedia Jasa')
+                    <a href="{{ route('account.balance') }}" class="menu-item">
+                        <i class="fas fa-wallet"></i>
+                        <span>My Balance</span>
+                    </a>
+                    <a href="{{ route('sales.history') }}" class="menu-item">
+                        <i class="fas fa-history"></i>
+                        <span>Riwayat Penjualan</span>
+                    </a>
+                @else
+                    <a href="{{ route('purchases.history') }}" class="menu-item">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Riwayat Pembelian</span>
+                    </a>
+                @endif
+                
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="logout-btn">

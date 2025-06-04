@@ -6,17 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table('refunds', function (Blueprint $table) {
-            $table->text('provider_notes')->nullable()->after('provider_response');
+            $table->text('admin_notes')->nullable();
+            $table->timestamp('admin_reviewed_at')->nullable();
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table('refunds', function (Blueprint $table) {
-            $table->dropColumn('provider_notes');
+            $table->dropColumn(['admin_notes', 'admin_reviewed_at']);
         });
     }
 };

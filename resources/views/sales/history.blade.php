@@ -8,6 +8,7 @@
             <a href="{{ route('dashboard') }}">TUNTAS<span class="logo-in">IN</span></a>
         </div>
         
+        <!-- User Menu -->
         <div class="user-profile">
             <div class="user-info">
                 <div class="profile-image">
@@ -17,7 +18,7 @@
                         <div class="profile-placeholder"></div>
                     @endif
                 </div>
-                <button class="dropdown-toggle"> ⌵ </button>
+                <button class="dropdown-toggle"></button>
             </div>
             <div class="dropdown-menu">
                 <a href="{{ route('profile') }}" class="menu-item">
@@ -45,7 +46,7 @@
 
     <div class="purchases-history-container">
         <div class="history-header">
-            <h1>Riwayat Pembelian</h1>
+            <h1>Riwayat Penjualan</h1>
         </div>
 
         <div class="purchases-grid">

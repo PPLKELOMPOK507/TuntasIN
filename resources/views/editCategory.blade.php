@@ -28,13 +28,20 @@
     </nav>
 
     <div class="content-container">
-        <div class="page-header">
-            <h1>Edit Kategori</h1>
-            <a href="{{ route('manage') }}#categories-section" class="back-btn">← Kembali</a>
+        <div class="category-header">
+            <a href="{{ route('manage') }}" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span>Kembali</span>
+            </a>
+            
+            <div class="header-content">
+                <h1>Edit Kategori</h1>
+            </div>
+            <div></div> <!-- Empty div for grid alignment -->
         </div>
 
         <div class="form-container">
-            <form action="{{ route('categories.update', $category->id) }}" method="POST" class="edit-category-form">
+            <form action="{{ route('manage.categories.update', $category->id) }}" method="POST" class="edit-category-form">
                 @csrf
                 @method('PUT')
                 <div class="form-group">

@@ -3,15 +3,14 @@
     display: flex;
     align-items: center;
     padding: 1rem 2rem;
-    background: linear-gradient(to right, #2563eb, #1d4ed8);
+    background: linear-gradient(to right, #edebeb, #4fbafc);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 2rem;
-    height: 70px; /* Sesuaikan dengan tinggi navbar Anda */
+    height: 70px;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 1030; /* Increased z-index to ensure navbar stays on top */
 }
 
 .logo {
@@ -21,17 +20,17 @@
 
 .logo a {
     text-decoration: none;
-    color: white;
+    color: #0e69a1;
 }
 
 .logo-in {
-    color: #93c5fd;
+    color: #ffffffcc;
 }
 
 .service-title {
     font-size: 2.25rem;
     font-weight: 700;
-    color: #1e40af;
+    color: #0e69a1;
     line-height: 1.2;
 }
 
@@ -69,27 +68,27 @@
 }
 
 .form-control:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    border-color: #0e69a1;
+    box-shadow: 0 0 0 0.25rem rgba(14, 105, 161, 0.25);
 }
 
 .btn-primary {
-    background-color: #2563eb;
-    border: none;
+    background: #0e69a1;
+    border-color: #0e69a1;
     font-weight: 600;
     border-radius: 8px;
     transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-    background-color: #1d4ed8;
-    transform: translateY(-2px);
+    background: #0d5585;
+    border-color: #0d5585;
 }
 
 .sticky-top {
     z-index: 1020;
     position: sticky;
-    top: 90px !important; /* Navbar height + desired gap */
+    top: 90px; /* Increase top position to prevent overlap with navbar */
 }
 
 /* Back Button Styles */
@@ -99,6 +98,7 @@
     text-decoration: none;
     transition: all 0.3s ease;
     padding: 8px 5px;
+    margin-top: 2rem; /* Add top margin */
 }
 
 .back-button:hover {
@@ -135,6 +135,9 @@
     font-weight: 600;
     font-size: 1.1rem;
     transition: all 0.3s ease;
+    line-height: 40px; /* Match height of circle */
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .back-button:hover .back-button-text {
@@ -143,11 +146,11 @@
 
 /* Badge Styles */
 .badge.bg-success {
-    background-color: #2563eb !important;
+    background-color: #0e69a1 !important;
 }
 
 .text-primary {
-    color: #2563eb !important;
+    color: #0e69a1 !important;
 }
 
 /* Review Section Styles */
@@ -222,14 +225,18 @@
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1rem;
-    padding-top: 90px; /* Navbar height + extra padding */
+    padding: 1rem;
+    padding-top: 100px; /* Increase top padding from 90px */
 }
 
 @media (max-width: 991.98px) {
     .sticky-top {
         position: relative !important;
         top: 0 !important;
+    }
+    
+    .container {
+        padding-top: 90px; /* Slightly reduced on mobile but still with good spacing */
     }
     
     .service-image {
@@ -249,4 +256,33 @@
     .logo {
         font-size: 1.5rem;
     }
+}
+
+/* Add to public/css/pesanan.css */
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.btn-outline-primary {
+    border: 2px solid #0e69a1;
+    color: #0e69a1;
+    background: transparent;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-outline-primary:hover {
+    background: #0e69a1;
+    border-color: #0e69a1;
+    color: white;
+}
+
+/* Back button container spacing */
+.mb-5 {
+    margin-bottom: 2rem !important;
+    margin-top: 1rem !important;
 }

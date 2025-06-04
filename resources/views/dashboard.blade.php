@@ -64,7 +64,7 @@
                         <div class="profile-placeholder"></div>
                     @endif
                 </div>
-                <button class="dropdown-toggle"> ⌵ </button>
+                <button class="dropdown-toggle"></button>
             </div>
             <div class="dropdown-menu">
                 <a href="{{ route('profile') }}" class="menu-item">
@@ -225,6 +225,7 @@
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
     <link href="{{ asset('css/services.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
     <style>
         .account-balance {
             border-top: 1px solid #eaeaea;

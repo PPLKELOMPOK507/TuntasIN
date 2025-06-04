@@ -4,67 +4,25 @@
 <div class="dashboard-container">
     <nav class="nav-container">
         <div class="logo">
-            @auth
-                <a href="{{ route('dashboard') }}">TUNTAS<span class="logo-in">IN</span></a>
-            @else
-                <a href="/">TUNTAS<span class="logo-in">IN</span></a>
-            @endauth
-        </div>
-        
-        <!-- User Menu -->
-        <div class="user-profile">
-            <div class="user-info">
-                <div class="profile-image">
-                    @if(Auth::user()->photo)
-                        <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Profile">
-                    @else
-                        <div class="profile-placeholder"></div>
-                    @endif
-                </div>
-                <span class="user-name">{{ Auth::user()->full_name }}</span>
-            </div>
-            <div class="dropdown-menu">
-                <a href="{{ route('profile') }}" class="menu-item active">
-                    <i class="fas fa-user"></i>
-                    <span>Profile</span>
-                </a>
-
-                @if(Auth::user()->role === 'Pengguna Jasa')
-                    <a href="{{ route('purchases.history') }}" class="menu-item">
-                        <i class="fas fa-shopping-bag"></i>
-                        <span>Riwayat Pembelian</span>
-                    </a>
-                @endif
-
-                @if(Auth::user()->role === 'Penyedia Jasa')
-                    <a href="{{ route('account.balance') }}" class="menu-item">
-                        <i class="fas fa-wallet"></i>
-                        <span>My Balance</span>
-                    </a>
-
-                    <a href="{{ route('sales.history') }}" class="menu-item">
-                        <i class="fas fa-history"></i>
-                        <span>Riwayat Penjualan</span>
-                    </a>
-                @endif
-
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="logout-btn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </button>
-                </form>
-            </div>
+            <a href="{{ route('dashboard') }}">TUNTAS<span class="logo-in">IN</span></a>
         </div>
     </nav>
 
     <div class="profile-container">
         <div class="profile-header">
+            <!-- Back button aligned left -->
+            <a href="{{ route('dashboard') }}" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span>Kembali</span>
+            </a>
+
+            <!-- Center content -->
             <div class="header-content">
                 <h1>My Profile</h1>
                 <p>Manage your account information and settings</p>
             </div>
+
+            <!-- Save button aligned right -->
             <div class="header-actions">
                 <button type="button" class="btn-save-all" form="profile-form">
                     <i class="fas fa-save"></i>

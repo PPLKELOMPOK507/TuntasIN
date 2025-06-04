@@ -166,7 +166,6 @@
                 </div>
             @empty
                 <div class="empty-state">
-                    <img src="{{ asset('images/empty-purchase.svg') }}" alt="No purchases" class="empty-icon">
                     <h2>Belum ada pembelian</h2>
                     <p>Riwayat pembelian Anda akan muncul di sini</p>
                 </div>

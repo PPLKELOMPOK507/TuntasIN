@@ -298,8 +298,29 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    gap: 1rem; /* Kurangi gap di sini untuk mendekatkan tombol wishlist dengan profil */
+    gap: 1rem;
     justify-content: space-between;
+}
+
+/* Logo styling */
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.logo a {
+    text-decoration: none !important; /* Force remove underline */
+    color: #0e69a1;
+    display: inline-block; /* Prevent underline on hover */
+}
+
+.logo a:hover {
+    text-decoration: none !important; /* Force remove underline on hover */
+    color: #0e69a1;
+}
+
+.logo-in {
+    color: #ffffffcc;
 }
 
 /* Category Navigation */
@@ -464,16 +485,20 @@
 }
 
 .wishlist-btn {
+    text-decoration: none !important; /* Force remove underline */
     background: none;
     border: none;
     font-size: 30px;
     color: #e74c3c;
     cursor: pointer;
     transition: transform 0.2s ease;
+    display: inline-block;
 }
 
 .wishlist-btn:hover {
+    text-decoration: none !important; /* Force remove underline on hover */
     transform: scale(1.2);
+    color: #e74c3c;
 }
 
 /* Tambahan untuk mengatur profile-placeholder */
@@ -506,16 +531,19 @@
 }
 
 .forum-btn {
+    text-decoration: none !important;
     font-size: 21px;
     color: #ffffff;
     background: none;
     border: none;
     cursor: pointer;
     transition: transform 0.2s ease;
-    margin-right: 5px; /* Tambahkan jarak ke kanan */
+    margin-right: 5px;
+    display: inline-block;
 }
 
 .forum-btn:hover {
+    text-decoration: none !important;
     transform: scale(1.1);
 }
 

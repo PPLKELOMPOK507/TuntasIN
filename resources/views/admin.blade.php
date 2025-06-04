@@ -6,7 +6,7 @@
         <div class="logo">
             <a href="{{ route('manage') }}">TUNTAS<span class="logo-in">IN</span></a>
         </div>
-
+        
         <!-- Admin Menu -->
         <div class="user-profile">
             <div class="user-info">
@@ -18,7 +18,7 @@
                     @endif
                 </div>
                 <span class="admin-label">Administrator</span>
-                <button class="dropdown-toggle"> ⌵ </button>
+                <button class="dropdown-toggle"></button>
             </div>
             <div class="dropdown-menu">
                 <form action="{{ route('logout') }}" method="POST">
@@ -198,9 +198,6 @@
                     </table>
                 </div>
             </div>
-
-            <!-- Add hidden radio button for section control -->
-            <input type="radio" id="categories-tab" name="admin-tab" class="admin-tab-input" {{ session('current_section') == 'categories' ? 'checked' : '' }}>
 
             <!-- Categories Section -->
             <div id="categories-section" class="admin-section {{ session('current_section') == 'categories' ? 'active' : '' }}">

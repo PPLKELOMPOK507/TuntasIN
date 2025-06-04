@@ -7,9 +7,15 @@
 
 .profile-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 2rem;
+    padding: 1rem 0;
+}
+
+.header-content {
+    flex: 1;
+    text-align: center;
 }
 
 .header-content h1 {
@@ -21,6 +27,11 @@
 .header-content p {
     color: #666;
     font-size: 0.95rem;
+}
+
+.header-actions {
+    flex-basis: 150px; /* Match width with back button */
+    text-align: right;
 }
 
 .btn-save-all {
@@ -441,6 +452,27 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
+}
+
+/* Back Button Styling */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    color: #666;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem; /* Increase font size */
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
+}
+
+.back-button i {
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.back-button:hover {
+    color: #2563eb;
 }
 
 /* Responsive Design */

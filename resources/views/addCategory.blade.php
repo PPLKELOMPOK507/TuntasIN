@@ -28,8 +28,16 @@
     </nav>
 
     <div class="content-container">
-        <div class="page-header">
-            <a href="{{ route('manage') }}" class="back-btn">← Kembali</a>
+        <div class="category-header">
+            <a href="{{ route('manage') }}" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span>Kembali</span>
+            </a>
+            
+            <div class="header-content">
+                <h1>Tambah Kategori</h1>
+            </div>
+            <div></div> <!-- Empty div for grid alignment -->
         </div>
 
         <div class="form-container">
